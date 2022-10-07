@@ -183,19 +183,13 @@ void SetupWindow()
 {
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
 
-	WNDCLASSEXA wcex = {
-		sizeof(WNDCLASSEXA),
-		0,
-		DefWindowProcA,
-		0,
-		0,
-		nullptr,
-		LoadIcon(nullptr, IDI_APPLICATION),
-		LoadCursor(nullptr, IDC_ARROW),
-		nullptr,
-		nullptr,
-		("Discord"),
-		LoadIcon(nullptr, IDI_APPLICATION)
+			extern uint64_t base_address = 0;
+			DWORD processID;
+			const ImVec4 color = { 255.0,255.0,255.0,1 };
+			const ImVec4 red = { 0.65,0,0,1 };
+			const ImVec4 white = { 255.0,255.0,255.0,1 };
+			const ImVec4 green = { 0.03,0.81,0.14,1 };
+			const ImVec4 blue = { 0.21960784313,0.56470588235,0.90980392156,1.0 };
 	};
 
 	RECT Rect;
@@ -432,8 +426,9 @@ std::string string_To_UTF8(const std::string& str)
 {
 	int nwLen = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
 
-	wchar_t* pwBuf = new wchar_t[nwLen + 1];
-	ZeroMemory(pwBuf, nwLen * 2 + 2);
+	immediateContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+	////// reading
+	auto& window = BeginScene();
 
 	::MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), pwBuf, nwLen);
 
@@ -588,8 +583,11 @@ std::string GetNameFromFName(int key)
 
 	result = decryptOffset;
 
-	if ((uint32_t)nameLength && nameLength > 0)
-	{
+	if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, 0, &featureLevel, 1, D3D11_SDK_VERSION, &sd, &swapChain, &device, nullptr, &context))) {
+		MessageBox(0, L"Failed to create D3D11 device and swap chain", L"Failure", MB_ICONERROR);
+		return FALSE;
+	}
+	
 		driver->ReadProcessMemory(entryOffset + 2, buff, nameLength);
 
 		v6 = 0;
