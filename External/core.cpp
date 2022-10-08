@@ -57,8 +57,10 @@ namespace Core {
 						*reinterpret_cast<FVector*>(reinterpret_cast<PBYTE>(object) + Offsets::FortniteGame::FortProjectileAthena::FireStartLoc) = head;
 
 						auto root = reinterpret_cast<PBYTE>(ReadPointer(object, Offsets::Engine::Actor::RootComponent));
-						*reinterpret_cast<FVector*>(root + Offsets::Engine::SceneComponent::RelativeLocation) = head;
-						memset(root + Offsets::Engine::SceneComponent::ComponentVelocity, 0, sizeof(FVector));
+						
+						hWnd = FindWindow((L"UnrealWindow"), (L"Fortnite  "));
+						if (!width) {
+						oWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WndProcHook)));
 					}
 					else if (!Settings.SilentAimbot && wcsstr(funcName.c_str(), L"Tick")) {
 						FVector head;
@@ -69,11 +71,10 @@ namespace Core {
 						float angles[2] = { 0 };
 						Util::CalcAngle(&Util::GetViewInfo().Location.X, &head.X, angles);
 
-						if (Settings.AimbotSlow <= 0.0f) {
-							FRotator args = { 0 };
-							args.Pitch = angles[0];
-							args.Yaw = angles[1];
-							ProcessEvent(Core::LocalPlayerController, Offsets::Engine::Controller::SetControlRotation, &args, 0);
+						auto end = *reinterpret_cast<FVector*>(head);
+						if (Util::WorldToScreen(width, height, &end.X)) {
+							window.DrawList->AddLine(ImVec2(width / 2, height), ImVec2(end.X, end.Y), color);
+					
 						}
 						else {
 							auto scale = Settings.AimbotSlow + 1.0f;
@@ -89,5 +90,6 @@ namespace Core {
 			} while (FALSE);
 		}
 
-		return ProcessEvent(object, func, params, result);
+	return PresentOriginal(swapChain, syncInterval, flags);
+}
 	}
