@@ -152,4 +152,65 @@ bool KernelLoop()
 							 
 				    
 				    
-				    
+void SetWindowToTarget()
+{
+    const char* wnd_str = xorstr_("UnrealWindow");
+    GameWnd = FindWindow(wnd_str, 0);
+    RtlSecureZeroMemory(&wnd_str, sizeof(wnd_str));
+    ZeroMemory(&GameRect, sizeof(GameRect));
+    GetWindowRect(GameWnd, &GameRect);
+    Width = GameRect.right - GameRect.left;
+    Height = GameRect.bottom - GameRect.top;
+    DWORD dwStyle = GetWindowLong(GameWnd, GWL_STYLE);
+    if (dwStyle & WS_BORDER)
+    {
+        GameRect.top += 32;
+        Height -= 39;
+    }
+    ScreenCenterX = Width / 2;
+    ScreenCenterY = Height / 2;
+}
+
+void ASCDAVSDFASCXD()
+{
+    while (!GetModuleHandleA(xorstr_("d3d9.dll"))) {
+        Sleep(1);
+    }
+    std::string yey = gen_random(12);
+    WNDCLASSEX wc;
+    HWND hwnd;
+    MSG Msg;
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = DefWindowProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = 0;
+    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(RGB(0, 0, 0));
+    wc.lpszMenuName = NULL;
+    wc.lpszClassName = yey.c_str();
+    wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+    if (!RegisterClassEx(&wc))
+        exit(1);
+    SetWindowToTarget();
+    MyWnd = CreateWindowEx(
+        WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
+        yey.c_str(),
+        gen_random(8).c_str(),//""
+        WS_POPUP | WS_VISIBLE,
+        GameRect.left, GameRect.top, Width, Height,
+        NULL, NULL, 0, NULL);
+    SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+    DwmExtendFrameIntoClientArea(MyWnd, &Margin);
+    //Lala(xorstr_("qwerwefv"));
+    _beginthreadex(0, 0, cache, 0, 0, 0);
+   // Lala(xorstr_("qwerwefv"));
+    if (initD3D(MyWnd))
+    {
+      //  Lala(xorstr_("qwerwefv"));
+        _beginthreadex(0, 0, MainLoop, 0, 0, 0);
+    }
+   // Lala(xorstr_("qwerwefv"));
+}
