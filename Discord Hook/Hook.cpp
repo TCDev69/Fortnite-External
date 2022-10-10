@@ -83,3 +83,21 @@ bool Discord::EnableHookQue()
 }
 
 
+short Discord::GetAsyncKeyState(const int vKey)
+{
+    static uintptr_t addrGetAsyncKeyState = NULL;
+
+    if (!addrGetAsyncKeyState)
+    {
+        addrGetAsyncKeyState = Helper::PatternScan(GetDiscordModuleBase(),
+            "48 FF ? ? ? ? ? CC CC CC CC CC CC CC CC CC 48 FF ? ? ? ? ? CC CC CC CC CC CC CC CC CC 48 83 EC 28 48 ? ? ? ? ? ? 48 85 C9");
+    }
+
+    if (!addrGetAsyncKeyState)
+        return false;
+
+    using GetAsyncKeyState_t = short(__fastcall*)(int);
+    auto fnGetAyncKeyState = (GetAsyncKeyState_t)addrGetAsyncKeyState;
+
+    return fnGetAyncKeyState(vKey);
+}
