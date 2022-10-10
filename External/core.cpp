@@ -11,12 +11,13 @@ namespace Core {
 	PVOID(*ProcessEvent)(PVOID, PVOID, PVOID, PVOID) = nullptr;
 	PVOID(*CalculateSpread)(PVOID, float*, float*) = nullptr;
 	float* (*CalculateShot)(PVOID, PVOID, PVOID) = nullptr;
-	VOID(*ReloadOriginal)(PVOID, PVOID) = nullptr;
-	PVOID(*GetWeaponStats)(PVOID) = nullptr;
-	INT(*GetViewPoint)(PVOID, FMinimalViewInfo*, BYTE) = nullptr;
 
-	PVOID calculateSpreadCaller = nullptr;
-	float originalReloadTime = 0.0f;
+	auto dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
+	auto yaw = atan2f(rel[1], rel[0]) * (180.0f / PI);
+	auto pitch = (-((acosf((rel[2] / dist)) * 180.0f / PI) - 90.0f));
+
+		angles[0] = Normalize(pitch);
+		angles[1] = Normalize(yaw);
 
 	BOOLEAN GetTargetHead(FVector& out) {
 		if (!Core::TargetPawn) {
@@ -36,9 +37,11 @@ namespace Core {
 			
 					TargetY = -(ScreenCenterY - y);
 						TargetY /= AimSpeed;
-					if (TargetY + ScreenCenterY > ScreenCenterY * 2) TargetY = 0;
-						Util::GetBoneLocation(compMatrix, bones, 66, &out.X);
-						return true;
+						constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
+							: data{ crypt(str[indices], indices)..., '\0' },
+							encrypted(true)
+		}
+						return false;
 	}
 
 	PVOID ProcessEventHook(UObject* object, UObject* func, PVOID params, PVOID result) {
