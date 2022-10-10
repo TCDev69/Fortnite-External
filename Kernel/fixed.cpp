@@ -153,16 +153,20 @@ void KernelBypass()
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				    }
 				   
-bool KernelLoop()
-				    { 
-if (g_tpose) {
+SETTINGS Settings = { 0 };
 
-			uintptr_t mesh = read<uintptr_t>(g_pid, Globals::LocalPawn + 0x2F0);
-			write<int>(g_pid, mesh + 0x9aa, 1);
-					    
-					   return;
-					    
-							 
-				    
+namespace SettingsHelper {
+	VOID SaveSettings() {
+		CHAR path[0xFF];
+		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
+		strcat(path, ("fnambt.settings"));
+
+		auto file = fopen(path, ("wb"));
+		if (file) {
+			fwrite(&Settings, sizeof(Settings), 1, file);
+			fclose(file);
+		}
+	}
+	
 				    
 				    
