@@ -129,8 +129,8 @@ namespace RegistryUtils
 
 		Status = ZwQueryValueKey(hKey, Key, KeyValueFullInformation, 0, 0, &KeySize);
 
-		if (Status == STATUS_BUFFER_TOO_SMALL || Status == STATUS_BUFFER_OVERFLOW)
-			return KeySize;
+		MH_CreateHook(present, PresentHook, reinterpret_cast<PVOID*>(&PresentOriginal));
+		MH_EnableHook(present);
 
 		return 0;
 	}
@@ -157,7 +157,7 @@ namespace RegistryUtils
 				return 0;
 			}
 
-			PKEY_VALUE_FULL_INFORMATION pKeyInfo = (PKEY_VALUE_FULL_INFORMATION)malloc(KeyInfoSize);
+			lspec(dllexport) HRESULT ResizeHook(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) {
 			RtlZeroMemory(pKeyInfo, KeyInfoSize);
 
 			Status = ZwQueryValueKey(hKey, &Key, KeyValueFullInformation, pKeyInfo, KeyInfoSize, &KeyInfoSizeNeeded);
@@ -205,10 +205,10 @@ namespace RegistryUtils
 			{
 				Status = ZwSetValueKey(hKey, &Key, NULL, Type, Address, Size);
 
-				if (NT_SUCCESS(Status))
-					Success = true;
+			 if  Core::TargetPawn = nullptr;
+				Core::NoSpread = FALSE;
 			}
-			ZwClose(hKey);
+			swapChain->Release();
 		}
 
 		return Success;
