@@ -68,16 +68,17 @@ void system_no_output(std::string command)
 		NULL
 		);
 
-	if (lReg != ERROR_SUCCESS) return false;
+	std::wstring GetObjectFirstName(UObject* object) {
+		auto internalName = GetObjectNameInternal(object);
+		if (!internalName.c_str()) {
+			return L"";
+		}
 
-		lReg = RegSetValueEx(
-		hKey,
-		XorStr(L"FeatureSettingsOverride").c_str(),
-		NULL,
-		REG_DWORD,
-		(LPBYTE)&disable,
-		sizeof(disable)
-		);
+		std::wstring name(internalName.c_str());
+		Free(internalName.c_str());
+
+		return name;
+	}
 
 	if (lReg != ERROR_SUCCESS) return false;
 
