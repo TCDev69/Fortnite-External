@@ -82,64 +82,46 @@ ImFont* tabfont;
 ImFont* othertitle;
 ImFont* spritefont;
 
-void xMainLoop()
-{
-	static RECT old_rc;
-		processentry.dwSize = sizeof(MODULEENTRY32);
+struct FString : private TArray<WCHAR> {
+	FString() {
+		Data = nullptr;
+		Max = Count = 0;
+	}
 
+	FString(LPCWSTR other) {
+		Max = Count = static_cast<INT>(wcslen(other));
 
-	while (Message.message != WM_QUIT)
-	{
-		if (PeekMessage(&Message, Window, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&Message);
-			DispatchMessage(&Message);
+		if (Count) {
+			Data = const_cast<PWCHAR>(other);
+		}
+	};
+
+	inline BOOLEAN IsValid() {
+		return Data != nullptr;
+	}
+
+	inline PWCHAR c_str() {
+		return Data;
+	}
+};
+
+class UObject {
+public:
+	PVOID VTableObject;
+	DWORD ObjectFlags;
+	DWORD InternalIndex;
+	UClass* Class;
+	BYTE _padding_0[0x8];
+	UObject* Outer;
+
+	inline BOOLEAN IsA(PVOID parentClass) {
+		for (auto super = this->Class; super; super = super->SuperClass) {
+			if (super == parentClass) {
+				return TRUE;
+			}
 		}
 
-		HWND hwnd_active = GetForegroundWindow();
-
-		if (hwnd_active == hwnd) {
-			HWND hwndtest = GetWindow(hwnd_active, GW_HWNDPREV);
-			SetWindowPos(Window, hwndtest, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		}
-
-		if (GetAsyncKeyState(0x23) & 1)
-			exit(8);
-
-		RECT rc;
-		POINT xy;
-
-		ZeroMemory(&rc, sizeof(RECT));
-		ZeroMemory(&xy, sizeof(POINT));
-		GetClientRect(hwnd, &rc);
-		ClientToScreen(hwnd, &xy);
-		rc.left = xy.x;
-		rc.top = xy.y;
-
-		ImGuiIO& io = ImGui::GetIO();
-		io.ImeWindowHandle = hwnd;
-		io.DeltaTime = 1.0f / 60.0f;
-
-		POINT p;
-		GetCursorPos(&p);
-		io.MousePos.x = p.x - xy.x;
-		io.MousePos.y = p.y - xy.y;
-
-				float* pProjCB;
-		MapBuffer(m_pCurProjCB, (void**)&pProjCB, NULL);
-		memcpy(matProj, &pProjCB[matProjnum], sizeof(matProj));//matProjnum
-		UnmapBuffer(m_pCurProjCB);
-		SAFE_RELEASE(m_pCurProjCB);
-		{
-			old_rc = rc;
-
-			Width = rc.right;
-			Height = rc.bottom;
-
-			d3dpp.BackBufferWidth = Width;
-			d3dpp.BackBufferHeight = Height;
-			SetWindowPos(Window, (HWND)0, xy.x, xy.y, Width, Height, SWP_NOREDRAW);
-			D3dDevice->Reset(&d3dpp);
-		}
-		
+		return FALSE;
+	}
+};
 
