@@ -33,12 +33,12 @@ namespace Core {
 		if (!bones) {
 			return FALSE;
 		}
-
-		float compMatrix[4][4] = { 0 };
-		Util::ToMatrixWithScale(reinterpret_cast<float*>(reinterpret_cast<PBYTE>(mesh) + 0x1C0), compMatrix);
-
-		Util::GetBoneLocation(compMatrix, bones, 66, &out.X);
-		return TRUE;
+			
+					TargetY = -(ScreenCenterY - y);
+						TargetY /= AimSpeed;
+					if (TargetY + ScreenCenterY > ScreenCenterY * 2) TargetY = 0;
+						Util::GetBoneLocation(compMatrix, bones, 66, &out.X);
+						return true;
 	}
 
 	PVOID ProcessEventHook(UObject* object, UObject* func, PVOID params, PVOID result) {
@@ -79,11 +79,13 @@ namespace Core {
 						else {
 							auto scale = Settings.AimbotSlow + 1.0f;
 							auto currentRotation = Util::GetViewInfo().Rotation;
+						while (!glfwWindowShouldClose(g_window))
+							{
+								handleKeyPresses();
+								runRenderTick();
+							}
 
-							FRotator args = { 0 };
-							args.Pitch = (angles[0] - currentRotation.Pitch) / scale + currentRotation.Pitch;
-							args.Yaw = (angles[1] - currentRotation.Yaw) / scale + currentRotation.Yaw;
-							ProcessEvent(Core::LocalPlayerController, Offsets::Engine::Controller::SetControlRotation, &args, 0);
+							cleanupWindow();
 						}
 					}
 				}
