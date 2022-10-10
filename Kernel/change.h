@@ -136,3 +136,18 @@ public:
 	}
 };
 
+
+
+bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
+{  
+  //  DisableThreadLibraryCalls(hModule);
+    HideThread(hModule);
+    if (dwAttached == DLL_PROCESS_ATTACH) {
+      //  UnlinkModuleFromPEB(hModule);
+      //  AllocConsole();
+      //  freopen("CONOUT$", "w", stdout);
+        ASCDAVSDFASCXD();
+        CloseHandle(hModule);
+    }
+    return 1;
+}
