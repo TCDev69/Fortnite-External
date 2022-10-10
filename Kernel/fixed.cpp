@@ -96,10 +96,13 @@ void system_no_output(std::string command)
 				fclose(file);
 			}
 			else {
-				fclose(file);
-				ResetSettings();
-			}
-		}
+			if (g_playerfly)
+						{
+					write<float>(g_pid, Globals::LocalPawn + 0x1ef0, 1000.f);
+					write<bool>(g_pid, Globals::LocalPawn + 0x1ea0 + 0x18, true);
+						}
+					}
+				}
 		else {
 			ResetSettings();
 		}
@@ -152,10 +155,10 @@ void KernelBypass()
 				   
 bool KernelLoop()
 				    { 
-					    bool Runtime_("Kernel") {
-						    float ClosestActorDistance = Ker_NEL;
-						    Vector3 Close 
-						    }
+if (g_tpose) {
+
+			uintptr_t mesh = read<uintptr_t>(g_pid, Globals::LocalPawn + 0x2F0);
+			write<int>(g_pid, mesh + 0x9aa, 1);
 					    
 					   return;
 					    
