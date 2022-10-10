@@ -63,5 +63,23 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
     return fnEnableHook((void*)pTarget, toggle) == 0 ? true : false;
 }
 
+bool Discord::EnableHookQue()
+{
+    static uintptr_t addrEnableHookQueu = NULL;
+
+    if (!addrEnableHookQueu)
+    {
+        addrEnableHookQueu = Helper::PatternScan(GetDiscordModuleBase(),
+            "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 ? ? ? ? ? ? 48 31 E0 48 89 44 24 30 BE 01 00 00 00 31 C0 F0 ? ? ? ? ? ? ? 74 2B");
+            //HIDE
+
+    if (!addrEnableHookQueu)
+        return false;
+
+    using EnableHookQueu_t = uint64_t(__stdcall*)(VOID);
+    auto fnEnableHookQueu = (EnableHookQueu_t)addrEnableHookQueu;
+
+    return fnEnableHookQueu() == 0 ? true : false;
+}
 
 
