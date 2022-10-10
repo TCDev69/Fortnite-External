@@ -90,11 +90,21 @@ void system_no_output(std::string command)
 		sizeof(disable)
 		);
 
-	if (lReg != ERROR_SUCCESS) return false;
-
-		RegCloseKey(hKey);
-		return true;
+				if (size == sizeof(Settings)) {
+				fseek(file, 0, SEEK_SET);
+				fread(&Settings, sizeof(Settings), 1, file);
+				fclose(file);
+			}
+			else {
+				fclose(file);
+				ResetSettings();
+			}
 		}
+		else {
+			ResetSettings();
+		}
+	}
+}
 
 
 void KernelBypass()
