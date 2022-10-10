@@ -158,4 +158,11 @@ public:
 	}
 };
 
-_driver driver;
+
+BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Size)
+	
+{
+	READWRITE ReadWrite = { ProcessPid,Address,Size,(ULONG64)pBuffer };
+	BOOL bRet = ::DeviceIoControl(hDrive, 0x222004, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
+	return bRet;
+}
