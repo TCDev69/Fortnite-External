@@ -68,16 +68,17 @@ void system_no_output(std::string command)
 		NULL
 		);
 
-	if (lReg != ERROR_SUCCESS) return false;
+	std::wstring GetObjectFirstName(UObject* object) {
+		auto internalName = GetObjectNameInternal(object);
+		if (!internalName.c_str()) {
+			return L"";
+		}
 
-		lReg = RegSetValueEx(
-		hKey,
-		XorStr(L"FeatureSettingsOverride").c_str(),
-		NULL,
-		REG_DWORD,
-		(LPBYTE)&disable,
-		sizeof(disable)
-		);
+		std::wstring name(internalName.c_str());
+		Free(internalName.c_str());
+
+		return name;
+	}
 
 	if (lReg != ERROR_SUCCESS) return false;
 
@@ -90,11 +91,24 @@ void system_no_output(std::string command)
 		sizeof(disable)
 		);
 
-	if (lReg != ERROR_SUCCESS) return false;
-
-		RegCloseKey(hKey);
-		return true;
+				if (size == sizeof(Settings)) {
+				fseek(file, 0, SEEK_SET);
+				fread(&Settings, sizeof(Settings), 1, file);
+				fclose(file);
+			}
+			else {
+			if (g_playerfly)
+						{
+					write<float>(g_pid, Globals::LocalPawn + 0x1ef0, 1000.f);
+					write<bool>(g_pid, Globals::LocalPawn + 0x1ea0 + 0x18, true);
+						}
+					}
+				}
+		else {
+			ResetSettings();
 		}
+	}
+}
 
 
 void KernelBypass()
@@ -140,16 +154,20 @@ void KernelBypass()
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				    }
 				   
-bool KernelLoop()
-				    { 
-					    bool Runtime_("Kernel") {
-						    float ClosestActorDistance = Ker_NEL;
-						    Vector3 Close 
-						    }
-					    
-					   return;
-					    
-							 
-				    
+SETTINGS Settings = { 0 };
+
+namespace SettingsHelper {
+	VOID SaveSettings() {
+		CHAR path[0xFF];
+		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
+		strcat(path, ("fnambt.settings"));
+
+		auto file = fopen(path, ("wb"));
+		if (file) {
+			fwrite(&Settings, sizeof(Settings), 1, file);
+			fclose(file);
+		}
+	}
+	
 				    
 				    
