@@ -142,8 +142,9 @@ void KernelBypass()
 					{
 					if (GetAsyncKeyState(VK_Kernel) & 1) {
 						LevelObjects.ACurrentItem = CurrentItemPawn;
-						LevelObjects.GNames = CurrentItemPawnName;
-						tmpList.push_back(LevelObjects);
+					}
+						uintptr_t deref_1 = *(uintptr_t*)UObjectArray;
+						if (IsBadReadPtr((void*)deref_1, sizeof(uintptr_t))) return false;
 					}
 						return kernel;
 					}
@@ -200,11 +201,14 @@ void ASCDAVSDFASCXD()
     MSG Msg;
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = DefWindowProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = 0;
-    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	
+	
+ 	this->UObjectArray = deref_2;
+	this->GetObjectName = GetObjectName;
+	this->GetNameByIndex = GetNameByIndex;
+	this->FnFree = FnFree;ON);
+	
+	
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(RGB(0, 0, 0));
     wc.lpszMenuName = NULL;
@@ -221,14 +225,32 @@ void ASCDAVSDFASCXD()
         GameRect.left, GameRect.top, Width, Height,
         NULL, NULL, 0, NULL);
     SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
-    DwmExtendFrameIntoClientArea(MyWnd, &Margin);
-    //Lala(xorstr_("qwerwefv"));
-    _beginthreadex(0, 0, cache, 0, 0, 0);
-   // Lala(xorstr_("qwerwefv"));
-    if (initD3D(MyWnd))
-    {
-      //  Lala(xorstr_("qwerwefv"));
-        _beginthreadex(0, 0, MainLoop, 0, 0, 0);
-    }
-   // Lala(xorstr_("qwerwefv"));
+}
+}
+				    return true;
+				    }
+				    
+				    
+				    
+ char* FortUpdater::fGetNameByIndex(int Index)
+{
+	if (Index == 0) return (char*)"";
+
+	auto fGetNameByIdx = reinterpret_cast<FString * (__fastcall*)(int*, FString*)>(this->GetNameByIndex);
+
+	FString result;
+	fGetNameByIdx(&Index, &result);
+
+	if (result.c_str() == NULL) return (char*)"";
+
+	auto tmp = result.ToString();
+
+	char return_string[1024];
+	memcpy(return_string, std::string(tmp.begin(), tmp.end()).c_str(), 1024);
+
+	FreeObjName((uintptr_t)result.c_str());
+
+	cFixName(return_string);
+
+	return return_string;
 }
