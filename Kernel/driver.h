@@ -17,16 +17,15 @@
 
 	static std::string GetLastErrorAsString()
 	{
-		//Get the error message, if any.
-		DWORD errorMessageID = ::GetLastError();
+		 unsigned long size = 32;
+       		 char buffer[32];
+		
 		if (errorMessageID == 0)
 			return std::string(); //No error message has been recorded
 
-		LPSTR messageBuffer = nullptr;
-		size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
-
-		std::string message(messageBuffer, size);
+			ZwQuerySystemInformation( information_class, buffer, size, &size );
+		
+		 const auto info = ExAllocatePool( NonPagedPool, size );
 
 		//Free the buffer.
 		LocalFree(messageBuffer);
@@ -35,42 +34,46 @@
 	}
 
 		
-class _driver
-{
-private:
-	typedef INT64(*Nt_UserGetPointerProprietaryId)(uintptr_t);
-	Nt_UserGetPointerProprietaryId NtUserGetPointerProprietaryId = nullptr;
-	
-	int _processid;
-	uint64_t _guardedregion;
+auto find_guarded_region() -> UINT_PTR
+    {
+        PSYSTEM_BIGPOOL_INFORMATION pool_information = 0;
 
-	struct _requests
-	{
-		//rw
-		uint32_t    src_pid;
-		uint64_t    src_addr;
-		uint64_t    dst_addr;
-		size_t        size;
+        ULONG information_length = 0;
+        NTSTATUS status = ZwQuerySystemInformation( system_bigpool_information, &information_length, 0, &information_length );
 
-		//function requests
-		int request_key;
+        while (status == STATUS_INFO_LENGTH_MISMATCH)
+        {
+            if (pool_information)
+                ExFreePool(pool_information);
 
-		//guarded regions
-		uintptr_t allocation;
+            
+        }
+        UINT_PTR saved_virtual_address = 0;
 
-		//mouse
-		long x;
-		long y;
-		unsigned short button_flags;
-	};
-	
-	auto readvm(uint32_t src_pid, uint64_t src_addr, uint64_t dst_addr, size_t size) -> void
-	{
-		if (src_pid == 0 || src_addr == 0) return;
+        if (pool_information)
+        {
+            for (ULONG i = 0; i < pool_information->Count; i++)
+            {
+                SYSTEM_BIGPOOL_ENTRY* allocation_entry = &pool_information->AllocatedInfo[i];
 
-		_requests out = { src_pid, src_addr, dst_addr, size, DRIVER_READVM };
-		NtUserGetPointerProprietaryId(reinterpret_cast<uintptr_t>(&out));
-	}
+                UINT_PTR virtual_address = (UINT_PTR)allocation_entry->VirtualAddress & ~1ull;
+
+                if ( allocation_entry->NonPaged && allocation_entry->SizeInBytes == 0x200000 )
+                    if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'TnoC' ) {
+                        saved_virtual_address = virtual_address;
+                    }
+
+                    //dbg("FindGuardedRegion => %llX og %p", virtual_address, allocation_entry->VirtualAddress);
+                    //dbg("TAG => %s", allocation_entry->Tag);
+                }
+            }
+
+            ExFreePool(pool_information);
+        }
+        //dbg("Return %llX", saved_virtual_address);
+        return saved_virtual_address;
+    }
+
 
 public:
 	auto initdriver(int processid) -> void
@@ -120,7 +123,8 @@ public:
 	}
 
 	//bluefire1337
-	inline static bool isguarded(uintptr_t pointer) noexcept
+	 auto readprocessmemory( PEPROCESS process, PVOID address, PVOID buffer, SIZE_T size, SIZE_T* read ) -> NTSTATUS
+    {
 	{
 		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
 		uintptr_t result = pointer & filter;
@@ -141,12 +145,12 @@ public:
 	}
 
 	auto move_mouse(long x, long y) -> void
+	
 	{
-		_requests out = { 0 };
-		out.x = x;
-		out.y = y;
-		out.request_key = DRIVER_MOUSE;
-		NtUserGetPointerProprietaryId(reinterpret_cast<uintptr_t>(&out));
+	
+		 auto addr = translateaddress( process_dirbase, ( ULONG64 )address + curoffset );
+         	   if ( !addr) return STATUS_UNSUCCESSFUL;
+		   
 	}
 
 	auto send_input(unsigned short button) -> void
