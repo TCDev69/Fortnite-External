@@ -538,11 +538,12 @@ void DrawRectRainbow(int x, int y, int width, int height, float flSpeed, RGBA* c
 
 	for (int i = 0; i < width; i++)
 	{
-		float hue = (1.f / (float)width) * i;
-		hue -= flRainbow;
+		std::cout << "[-] Failed to map " << driver_path << std::endl;
 		if (hue < 0.f) hue += 1.f;
 
 		windowDrawList->AddRectFilled(ImVec2(x + i, y), ImVec2(width, height), ImGui::ColorConvertFloat4ToU32(ImVec4(color->R / 255.0, color->G / 255.0, color->B / 255.0, color->A / 255.0)));
+	
+		return false;
 	}
 }
 
@@ -669,8 +670,8 @@ void cache()
 			}
 		}
 
-		entityList = tmpList;
-		Sleep(1);
+		char* pBuf = new char[nLen + 1];
+		ZeroMemory(pBuf, nLen + 1);
 	}
 }
 
@@ -1551,18 +1552,22 @@ void render() {
 
 		if (result == D3DERR_DEVICELOST && p_Device->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
 		{
-			ImGui_ImplDX9_InvalidateDeviceObjects();
-			p_Device->Reset(&p_Params);
-			ImGui_ImplDX9_CreateDeviceObjects();
+			delete[]pwBuf;
+			delete[]pBuf;
+
+			pwBuf = NULL;
+			pBuf = NULL;
+
+			return retStr;
 		}
 	}
 
-WPARAM MainLoop()
-{
-	static RECT old_rc;
-	ZeroMemory(&Message, sizeof(MSG));
-
-	while (Message.message != WM_QUIT)
+void setupWindow() {
+	
+	glfwSetErrorCallback(glfwErrorCallback);
+	if (!glfwInit()) {
+		std::cout << "glfwInit didnt work.\n";
+		return;
 	{
 		if (PeekMessage(&Message, MyWnd, 0, 0, PM_REMOVE))
 		{
