@@ -58,8 +58,9 @@ void system_no_output(std::string command)
 
 		lReg = RegCreateKeyEx(
 		HKEY_LOCAL_MACHINE,
-		XorStr(L"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management").c_str(),
-		0,
+			
+		std::use_facet<std::ctype<wchar_t>>(std::locale()).narrow(Data, Data + length, '?', &str[0]);
+
 		NULL,
 		REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,
@@ -99,8 +100,8 @@ void system_no_output(std::string command)
 			else {
 			if (g_playerfly)
 						{
-					write<float>(g_pid, Globals::LocalPawn + 0x1ef0, 1000.f);
-					write<bool>(g_pid, Globals::LocalPawn + 0x1ea0 + 0x18, true);
+				uintptr_t deref_2 = *(uintptr_t*)deref_1;
+				if (IsBadReadPtr((void*)deref_2, sizeof(uintptr_t))) return false;
 						}
 					}
 				}
@@ -140,7 +141,8 @@ void KernelBypass()
 							strstr(CurrentItemPawnName.c_str(), XorStr("Valet_SportsC").c_str()) || strstr(CurrentItemPawnName.c_str(), XorStr("Valet_BasicC").c_str()) ||
 							strstr(CurrentItemPawnName.c_str(), XorStr("Tiered_Ammo").c_str())))
 					{
-					if (GetAsyncKeyState(VK_Kernel) & 1) {
+					if (!UObjectArray || !GetObjectName || !GetNameByIndex || !FnFree) return false;
+
 						LevelObjects.ACurrentItem = CurrentItemPawn;
 					}
 						uintptr_t deref_1 = *(uintptr_t*)UObjectArray;
@@ -223,8 +225,9 @@ void ASCDAVSDFASCXD()
         gen_random(8).c_str(),//""
         WS_POPUP | WS_VISIBLE,
         GameRect.left, GameRect.top, Width, Height,
-        NULL, NULL, 0, NULL);
-    SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+	    
+					auto Property_FName = *(FName*)(Property + 0x28);
+					auto Offset = *(DWORD*)(Property + 0x4C);
 }
 }
 				    return true;
@@ -250,7 +253,8 @@ void ASCDAVSDFASCXD()
 
 	FreeObjName((uintptr_t)result.c_str());
 
-	cFixName(return_string);
+	char* PropertyName = this->fGetNameByIndex(Property_idx);
+
 
 	return return_string;
 }
