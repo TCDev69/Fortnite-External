@@ -1,12 +1,14 @@
 ## Fortnite External
-```sh-session
-EXTERNAL / YOU NEED YOUR OWN DRIVER FOR IT TO WORK. IF YOU DON'T WANT TO CREATE THE DRIVER YOUSELF, YOU CAN ORDER IT FROM ME
-``` 
+![CSS](https://img.shields.io/badge/-CSS-05122A?style=for-the-badge&logo=CSS3&logoColor=1572B6)&nbsp;
+![VSCode](https://img.shields.io/badge/-Visual_Studio_Code-05122A?style=for-the-badge&logo=VisualStudioCode)&nbsp;
+![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=for-the-badge&logo=github)&nbsp;
+![Git](https://img.shields.io/badge/-Git-05122A?style=for-the-badge&logo=git)&nbsp;
 
 ### 📁 〢Setup
 - Scroll down to the bottom
 - It works the same way as the Valorant External, which requires you to `Create your own drivers.`
 - Drivers available are Kernel only, Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
+
 
 ### 📮 〢 Driver
 - The only available driver is Kernel because it doesn't support EFI.
