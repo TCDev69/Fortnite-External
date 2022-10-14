@@ -48,9 +48,9 @@ Vector3 GetBoneWithRotation(DWORD_PTR mesh, int id) {
 	return Vector3(Matrix._41, Matrix._42, Matrix._43);
 }
 D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
-	float radPitch = (rot.x * float(M_PI) / 180.f);
-	float radYaw = (rot.y * float(M_PI) / 180.f);
-	float radRoll = (rot.z * float(M_PI) / 180.f);
+		float height = 16.0f;
+		float width = height * 1.60f;
+		float radius = height * 0.50f;
 
 	float SP = sinf(radPitch);
 	float CP = cosf(radPitch);
@@ -128,56 +128,28 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 }
 
 
+VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVOID pawn, LPCSTR text, ImU32 color) {
+	auto root = Util::GetPawnRootLocation(pawn);
+	if (root) {
+		auto pos = *root;
+		float dx = start[0] - pos.X;
+		float dy = start[1] - pos.Y;
+		float dz = start[2] - pos.Z;
 
+		if (Util::WorldToScreen(width, height, &pos.X)) {
+			float dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy + dz * dz) / 1000.0f;
 
+			CHAR modified[0xFF] = { 0 };
+			snprintf(modified, sizeof(modified), xorstr("%s\n| %dm |"), text, static_cast<INT>(dist));
 
-
-HRESULT DirectXInit(HWND hWnd)
-{
-	if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, &p_Object)))
-		exit(3);
-
-	ZeroMemory(&p_Params, sizeof(p_Params));
-	p_Params.Windowed = TRUE;
-	p_Params.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	p_Params.hDeviceWindow = hWnd;
-	p_Params.MultiSampleQuality = D3DMULTISAMPLE_NONE;
-	p_Params.BackBufferFormat = D3DFMT_A8R8G8B8;
-	p_Params.BackBufferWidth = Width;
-	p_Params.BackBufferHeight = Height;
-	p_Params.EnableAutoDepthStencil = TRUE;
-	p_Params.AutoDepthStencilFormat = D3DFMT_D16;
-	p_Params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-
-	if (FAILED(p_Object->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &p_Params, 0, &p_Device)))
-	{
-		p_Object->Release();
-		exit(4);
+			auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
+			window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
+		}
 	}
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::GetIO().Fonts->AddFontDefault();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.Fonts->AddFontFromFileTTF(E("C:\\Windows\\Fonts\\impact.ttf"), 13.f);
-
-
-	static const ImWchar ranges[] =
-	{
-		0x0020, 0x00FF,
-		0x0400, 0x044F,
-		0,
-	};
-
-
-	ImGui_ImplWin32_Init(hWnd);
-	ImGui_ImplDX9_Init(p_Device);
-
-	return S_OK;
-}bool IsVec3Valid(Vector3 vec3)
-{
-	return !(vec3.x == 0 && vec3.y == 0 && vec3.z == 0);
 }
+
+
+
 void SetupWindow()
 {
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
@@ -267,7 +239,7 @@ static auto move_to(float x, float y) -> void {
 	{
 		if (y > center_y)
 		{
-			target_y = -(center_y - y);
+			target_y = -(center_y - y - z);
 			target_y /= item.Aim_SpeedY;
 			if (target_y + center_y > center_y * 2.f) target_y = 0.f;
 		}
@@ -466,17 +438,20 @@ std::wstring MBytesToWString(const char* lpcszString)
 	return wString;
 }
 
-void DrawStrokeText(int x, int y, RGBA* color, const char* str)
-{
-	ImFont a;
-	std::string utf_8_1 = std::string(str);
-	std::string utf_8_2 = string_To_UTF8(utf_8_1);
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y - 1), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y + 1), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x - 1, y), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x + 1, y), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y), ImGui::ColorConvertFloat4ToU32(ImVec4(color->R / 255.0, color->G / 255.0, color->B / 255.0, color->A / 255.0)), utf_8_2.c_str());
+ImGuiWindow& BeginScene() {
+	ImGui_ImplDX11_NewFrame();
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+	ImGui::Begin(xorstr("##scene"), nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
+
+	auto& io = ImGui::GetIO();
+	ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+	ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
+
+	return *ImGui::GetCurrentWindow();
 }
+
 void DrawStrokeText2(int x, int y, RGBA* color, const std::string str)
 {
 	ImFont a;
@@ -529,151 +504,36 @@ void DrawLine2(const ImVec2& from, const ImVec2& to, uint32_t color, float thick
 	float b = (color) & 0xff;
 	ImGui::GetOverlayDrawList()->AddLine(from, to, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), thickness);
 }
-void DrawRectRainbow(int x, int y, int width, int height, float flSpeed, RGBA* color, float& flRainbow)
-{
-	ImDrawList* windowDrawList = ImGui::GetWindowDrawList();
-
-	flRainbow += flSpeed;
-	if (flRainbow > 1.f) flRainbow = 0.f;
-
-	for (int i = 0; i < width; i++)
-	{
-		std::cout << "[-] Failed to map " << driver_path << std::endl;
-		if (hue < 0.f) hue += 1.f;
-
-		windowDrawList->AddRectFilled(ImVec2(x + i, y), ImVec2(width, height), ImGui::ColorConvertFloat4ToU32(ImVec4(color->R / 255.0, color->G / 255.0, color->B / 255.0, color->A / 255.0)));
-	
-		return false;
-	}
-}
-
-typedef struct _FNlEntity {
-	uint64_t Actor;
-	int ID;
-	uint64_t mesh;
-}FNlEntity;
-
-std::vector<FNlEntity> entityList;
-
-std::string GetNameFromFName(int key)
-{
-	uint32_t ChunkOffset = (uint32_t)((int)(key) >> 16);
-	uint16_t NameOffset = (uint16_t)key;
-
-	uint64_t NamePoolChunk = read<uint64_t>((uintptr_t)base_address + 0xB6528C0 + ((ChunkOffset + 2) * 8)); // ERROR_NAME_SIZE_EXCEEDED
-	uint64_t entryOffset = NamePoolChunk + (DWORD)(2 * NameOffset);
-	uint16_t nameEntry = read<uint16_t>(entryOffset);
-
-	int nameLength = nameEntry >> 6;
-	char buff[1028x1349];
-
-	char* v2 = buff; // rdi
-	unsigned __int16* v3; // rbx
-	int v4 = nameLength; // ebx
-	int16 result; // ax
-	int v6; // edx
-	int v7; // ecx
-	int v8; // ecx
-	__int16 v9; // ax
-
-	static DWORD_PTR decryptOffset = NULL;
-
-	if (!decryptOffset)
-		decryptOffset = read<DWORD_PTR>((uintptr_t)base_address + 0xB4F9288);
-
-	result = decryptOffset;
-
-	if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, 0, &featureLevel, 1, D3D11_SDK_VERSION, &sd, &swapChain, &device, nullptr, &context))) {
-		MessageBox(0, L"Failed to create D3D11 device and swap chain", L"Failure", MB_ICONERROR);
-		return FALSE;
-	}
-	
-		driver->ReadProcessMemory(entryOffset + 2, buff, nameLength);
-
-		v6 = 0;
-		v7 = 38;
-
-		do
-		{
-			v8 = v6++ | v7;
-			v9 = v8;
-			v7 = 2 * v8;
-			result = ~v9;
-			*v2 ^= result;
-			++v2;
-		} while (v6 < nameLength);
-
-
-		buff[nameLength] = '\0';
-		return std::string(buff);
-	}
-	else
-	{
-		return "";
-	}
-}
-void cache()
-{
-	while (false) {
-		std::vector<FNlEntity> tmpList;
-
-		Uworld = read<DWORD_PTR>(sdk::module_base + 0xB613240);
-		DWORD_PTR Gameinstance = read<DWORD_PTR>(Uworld + 0x190);
-		DWORD_PTR LocalPlayers = read<DWORD_PTR>(Gameinstance + 0x38);
-	
-		Localplayer = read<DWORD_PTR>(LocalPlayers);
-		PlayerController = read<DWORD_PTR>(Localplayer + 0x30);
-		LocalPawn = read<DWORD_PTR>(PlayerController + 0x2B0);
-
-
-		PlayerState = read<DWORD_PTR>(LocalPawn + 0x240);
-		Rootcomp = read<DWORD_PTR>(LocalPawn + 0x138); //old 130
-
-		offests::uworld = read<uint64_t>(sdk::module_base + 0xB613240);
-
-		offests::game_instance = read<uint64_t>(offests::uworld + 0x190);
-
-		offests::local_players_array = read<uint64_t>(read<uint64_t>(offests::game_instance + 0x38));
-
-		offests::player_controller = read<uint64_t>(offests::local_players_array + 0x30);
-
-		offests::Pawn = read<uint64_t>(offests::player_controller + 0x2B0);
-		if (!offests::Pawn)continue;
-
-		offests::rootcomponent = read<uint64_t>(offests::Pawn + 0x138);
-		if (!offests::rootcomponent)continue;
-
-		offests::relativelocation = read<Vector3>(offests::rootcomponent + 0x11C);
-		if (!IsVec3Valid(offests::relativelocation))continue;
-
-		relativelocation = read<DWORD_PTR>(Rootcomp + 0x11C);
-
-		if (LocalPawn != 0) {
-			localplayerID = read<int>(LocalPawn + 0x18);
+bool isRage = config_system.item.AutoAimbot;
+		if (config_system.item.SpinBot && Util::SpoofCall(GetAsyncKeyState, config_system.keybind.Spinbot) && Util::SpoofCall(GetForegroundWindow) == hWnd) {
+			int rnd = rand();
+			FRotator args = { 0 };
+			args.Yaw = rnd;
+			if (closestPawn) {
+				Core::TargetPawn = closestPawn;
+				Core::NoSpread = TRUE;
+			}
+			else {
+				Core::ProcessEvent(Core::LocalPlayerController, Offsets::Engine::Controller::ClientSetRotation, &args, 0);
+			}
+			config_system.item.AutoAimbot = true;
+			config_system.item.SilentAimbot = true;
 		}
+		else {
+			if (!isSilent) {
+				config_system.item.SilentAimbot = false;
+			}
+			if (!isRage) {
+				config_system.item.AutoAimbot = false;
+			}
 
-		Persistentlevel = read<DWORD_PTR>(Uworld + 0x30);
-		DWORD ActorCount = read<DWORD>(Persistentlevel + 0xA0);
-		DWORD_PTR AActors = read<DWORD_PTR>(Persistentlevel + 0x98);
-
-		for (int i = 0; i < ActorCount; i++) {
-			uint64_t CurrentActor = read<uint64_t>(AActors + i * 0x8);
-
-			int curactorid = read<int>(CurrentActor + 0x18);
-
-			if (curactorid == localplayerID || curactorid == localplayerID + 765) {
-				FNlEntity fnlEntity{ };
-				fnlEntity.Actor = CurrentActor;
-				fnlEntity.mesh = read<uint64_t>(CurrentActor + 0x288);
-				fnlEntity.ID = curactorid;
-				tmpList.push_back(fnlEntity);
+			if (config_system.item.SilentAimbot) {
+				isSilent = true;
+			}
+			if (config_system.item.AutoAimbot) {
+				isRage = true;
 			}
 		}
-
-		char* pBuf = new char[nLen + 1];
-		ZeroMemory(pBuf, nLen + 1);
-	}
-}
 
 
 
