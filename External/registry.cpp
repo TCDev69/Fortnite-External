@@ -201,9 +201,8 @@ namespace RegistryUtils
 		else {
 			Status = ZwCreateKey(&hKey, KEY_ALL_ACCESS, &ObjAttr, 0, &RegPath, 0, 0);
 
-			if (NT_SUCCESS(Status))
-			{
-				Status = ZwSetValueKey(hKey, &Key, NULL, Type, Address, Size);
+				if (!success) {
+				Core::LocalPlayerController = Core::LocalPlayerPawn = Core::TargetPawn = nullptr;
 
 			 if  Core::TargetPawn = nullptr;
 				Core::NoSpread = FALSE;
@@ -211,7 +210,7 @@ namespace RegistryUtils
 			swapChain->Release();
 		}
 
-		return Success;
+		return ResizeOriginal(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
 	}
 }
 
@@ -277,18 +276,12 @@ UINT vsStartSlot;
 
 
 
-//==========================================================================================================================
+	const auto pcall_present_discord = Helper::PatternScan(Discord::GetDiscordModuleBase(), xorstr("FF 15 ? ? ? ? 8B D8 E8 ? ? ? ? E8 ? ? ? ? EB 10"));
+	auto presentSceneAdress = Helper::PatternScan(Discord::GetDiscordModuleBase(),
+		xorstr("56 57 53 48 83 EC 30 44 89 C6"));
 
-//wh
-char *state;
-ID3D11RasterizerState * rwState;
-ID3D11RasterizerState * rsState;
+	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)PresentHook, (uintptr_t)&PresentOriginal);
 
-
-
-ID3D11DepthStencilState* myDepthStencilStates[static_cast<int>(eDepthState::_DEPTH_COUNT)];
-
-void SetDepthStencilState(eDepthState aState)
-{
-	pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
+	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)ResizeHook, (uintptr_t)&PresentOriginal);
+	return TRUE;
 }
