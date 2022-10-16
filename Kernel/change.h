@@ -58,7 +58,7 @@ public:
 		if (!trampoline) 
 		{
 			hDrive = ::CreateFileA(XorStr("\\\\.\\Sandy64").c_str(), GENERIC_ALL, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_HIDDEN, NULL);
-			return hDrive != 0;
+			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...);
 			}
 	}
 
@@ -66,8 +66,8 @@ public:
 	T readguarded(uintptr_t src, size_t size = sizeof(T))
 		{
 				PVOID Trampoline;
-			PVOID Function;
-			PVOID Reg;
+				template <typename Ret, typename... Args>
+				Ret SpoofCall(Ret(*fn)(Args...), Args... args) {
 		} params = {
 			trampoline,
 			reinterpret_cast<void*>(fn),
