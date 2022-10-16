@@ -192,69 +192,47 @@ void SetWindowToTarget()
     ScreenCenterY = Height / 2;
 }
 
-void ASCDAVSDFASCXD()
+DWORD FortUpdater::FindOffset(const char* Class, const char* varName)
 {
-    while (!GetModuleHandleA(xorstr_("d3d9.dll"))) {
-        Sleep(1);
-    }
-    std::string yey = gen_random(12);
-    WNDCLASSEX wc;
-    HWND hwnd;
-    MSG Msg;
-    wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-	
-	
- 	this->UObjectArray = deref_2;
-	this->GetObjectName = GetObjectName;
-	this->GetNameByIndex = GetNameByIndex;
-	this->FnFree = FnFree;ON);
-	
-	
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)(RGB(0, 0, 0));
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = yey.c_str();
-    wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-    if (!RegisterClassEx(&wc))
-        exit(1);
-    SetWindowToTarget();
-    MyWnd = CreateWindowEx(
-        WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
-        yey.c_str(),
-        gen_random(8).c_str(),//""
-        WS_POPUP | WS_VISIBLE,
-        GameRect.left, GameRect.top, Width, Height,
-	    
+	for (DWORD i = 0x0; i < 0x9000; i++)
+	{
+		auto CurrentObject = *(uintptr_t*)(this->UObjectArray + (i * 0x18));
+
+		if (!CurrentObject) return NULL;
+		if (!(*(uintptr_t*)(CurrentObject + 0x50)) || *(DWORD*)(CurrentObject + 0x54) == 0xFFFFFFFF) continue;
+
+		char* CurObjectName = this->fGetObjectName(CurrentObject);
+
+		if (!strcmp(CurObjectName, Class)) //Same class
+		{
+			for (auto Property = *(uint64_t*)(CurrentObject + 0x50); !IsBadReadPtr((void*)Property, 8); Property = *(uint64_t*)(Property + 0x20))
+			{
+				auto Type = *(uint64_t*)(Property + 0x8);
+
+				if (!IsBadReadPtr((void*)Type, 8) && Type)
+				{
 					auto Property_FName = *(FName*)(Property + 0x28);
 					auto Offset = *(DWORD*)(Property + 0x4C);
-}
-}
-				    return true;
-				    }
-				    
-				    
-				    
- char* FortUpdater::fGetNameByIndex(int Index)
-{
-	if (Index == 0) return (char*)"";
 
-	auto fGetNameByIdx = reinterpret_cast<FString * (__fastcall*)(int*, FString*)>(this->GetNameByIndex);
+					if (Offset != 0)
+					{
+						auto Property_idx = Property_FName.ComparisonIndex;
 
-	FString result;
-	fGetNameByIdx(&Index, &result);
+						if (Property_idx)
+						{
+							char* PropertyName = this->fGetNameByIndex(Property_idx);
 
-	if (result.c_str() == NULL) return (char*)"";
+							if (!strcmp(PropertyName, varName))
+							{
+								return Offset;
+							}
+						}
+						printf(" % X", Offset);
+						system("pause");
+					}
+				}
 
-	auto tmp = result.ToString();
-
-	char return_string[1024];
-	memcpy(return_string, std::string(tmp.begin(), tmp.end()).c_str(), 1024);
-
-	FreeObjName((uintptr_t)result.c_str());
-
-	char* PropertyName = this->fGetNameByIndex(Property_idx);
-
-
-	return return_string;
+			}
+		}
+	}
 }
