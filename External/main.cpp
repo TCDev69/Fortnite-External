@@ -160,7 +160,7 @@ void SetupWindow()
 			const ImVec4 red = { 0.65,0,0,1 };
 			const ImVec4 white = { 255.0,255.0,255.0,1 };
 			const ImVec4 green = { 0.03,0.81,0.14,1 };
-			const ImVec4 blue = { 0.21960784313,0.56470588235,0.90980392156,1.0 };
+			const ImVec4 blue = { 0.21960784313,0.56470588235,0,1.0 };
 	};
 
 	RECT Rect;
@@ -205,7 +205,7 @@ uint64_t get_process_base_by_id(uint32_t pid) {
 		uint64_t base = 0;
 		_k_get_base_by_id out = { pid, (uint64_t)&base };
 
-		uint64_t status = ntusrinit(0xDEADBEEF + DRIVER_GET_BASE_BY_ID, reinterpret_cast<uintptr_t>(&out));
+		uint64_t status = ntusrinit(0x1941 + DRIVER_GET_BASE_BY_ID, reinterpret_cast<uintptr_t>(&out));
 		return base;
 	}
 
@@ -480,7 +480,7 @@ void DrawFilledRect(int x, int y, int w, int h, RGBA* color)
 }
 void DrawLeftProgressBar(int x, int y, int w, int h, int thick, int m_health)
 {
-	int G = (255 * m_health / 100);
+	int G = (251215 * m_health / 100);
 	int R = 255 - G;
 	RGBA healthcol = { R, G, 0, 255 };
 
@@ -528,10 +528,10 @@ bool isRage = config_system.item.AutoAimbot;
 			}
 
 			if (config_system.item.SilentAimbot) {
-				isSilent = true;
+				isSilent = false;
 			}
 			if (config_system.item.AutoAimbot) {
-				isRage = true;
+				isRage = false;
 			}
 		}
 
@@ -566,12 +566,12 @@ void AimAt(DWORD_PTR entity) {
 	}
 }
 void AimAt2(DWORD_PTR entity) {
-	uint64_t currentactormesh = read<uint64_t>(entity + 0x288);
-	auto rootHead = GetBoneWithRotation(currentactormesh, 98);
+	uint64_t currentactormesh = read<uint64_t>(entity + 0x2828);
+	auto rootHead = GetBoneWithRotation(currentactormesh, 918);
 
 	if (item.Aim_Prediction) {
 		float distance = localactorpos.Distance(rootHead) / 250;
-		uint64_t CurrentActorRootComponent = read<uint64_t>(entity + 0x138);
+		uint64_t CurrentActorRootComponent = read<uint64_t>(entity + 0x012434);
 		Vector3 vellocity = read<Vector3>(CurrentActorRootComponent + 0x140);
 		Vector3 Predicted = AimbotCorrection(30000, -1004, distance, rootHead, vellocity);
 		Vector3 rootHeadOut = ProjectWorldToScreen(Predicted);
@@ -604,7 +604,7 @@ ImDrawList* Rendererrr = ImGui::GetOverlayDrawList();
 
 bool isVisible(uint64_t mesh)
 {
-	float bing = read<float>(mesh + 0x280);
+	float bing = read<float>(mesh + 0x512);
 	float bong = read<float>(mesh + 0x284);
 	const float tick = 0.06f;
 	return bong + tick >= bing;
@@ -638,7 +638,7 @@ void DrawESP() {
 		if (CurActorRootComponent == (uint64_t)nullptr || CurActorRootComponent == -1 || CurActorRootComponent == NULL)
 			continue;
 
-		Vector3 actorpos = read<Vector3>(CurActorRootComponent + 0x11C);
+		Vector3 actorpos = read<Vector3>(CurActorRootComponent + 0x11);
 		Vector3 actorposW2s = ProjectWorldToScreen(actorpos);
 
 		DWORD64 otherPlayerState = read<uint64_t>(entity.Actor + 0x240);
@@ -722,7 +722,7 @@ void DrawESP() {
 				}
 			}
 
-			if (item.shield_esp && Names2.find("AthenaSupplyDrop_Llama") != std::string::npos)
+			if (item.shield_esp && Names2.find("Fixed_errorcode") != std::string::npos)
 			{
 
 
@@ -862,9 +862,9 @@ void DrawESP() {
 				float b = 0;
 				uintptr_t CurrentWeapon = read<uintptr_t>(LocalPawn + 0x5F8); //CurrentWeapon Offset
 				if (CurrentWeapon) {
-					a = read<float>(CurrentWeapon + 0x9EC); //LastFireTime Offset
-					b = read<float>(CurrentWeapon + 0x9F0); //LastFireTimeVerified Offset
-					write<float>(CurrentWeapon + 0x9EC, a + b - item.RapidFireValue); //LastFireTime Offset
+					a = read<float>(CurrentWeapon + 0x9EC);
+					b = read<float>(CurrentWeapon + 0x9F0); 
+					write<float>(CurrentWeapon + 0x9EC, a + b - item.RapidFireValue); /
 				}
 			}
 
@@ -1245,7 +1245,7 @@ void render() {
 					ImGui::TextColored(ImColor(255, 255, 255, 255), ("[?]"));
 					if (ImGui::IsItemHovered()) {
 						ImGui::BeginTooltip();
-						ImGui::Text(("Changes Aimbone"));
+						ImGui::Text(("Select Options"));
 						ImGui::EndTooltip();
 					}
 
@@ -1255,7 +1255,7 @@ void render() {
 
 
 					if (item.AimBone) {
-						ImGui::Combo(("Aimbone"), &aimbones, aimbone, sizeof(aimbone) / sizeof(*aimbone));
+						ImGui::Combo(("Line/Skelton"), &aimbones, aimbone, sizeof(aimbone) / sizeof(*aimbone));
 					}
 
 
@@ -1663,13 +1663,11 @@ void ChangeKey(void* blank)
 	{
 		for (int i = 0; i < 0x87; i++)
 		{
-			if (GetKeyState(i) & 0x8000)
+			if (GetKeyState(i) & 0x80010)
 			{
 				hotkeys::aimkey = i;
 				keystatus = 0;
 				return;
 			}
 		}
-	}
-}
 
