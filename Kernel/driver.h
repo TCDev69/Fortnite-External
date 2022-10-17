@@ -18,7 +18,7 @@
 	static std::string GetLastErrorAsString()
 	{
 		 unsigned long size = 32;
-       		 char buffer[32];
+       		 char buffer[64];
 		
 		if (errorMessageID == 0)
 			return std::string(); //No error message has been recorded
@@ -43,12 +43,12 @@ auto find_guarded_region() -> UINT_PTR
 
         while (status == STATUS_INFO_LENGTH_MISMATCH)
         {
-            if (pool_information)
-                ExFreePool(pool_information);
+            if (ItemDist < bLootRendering)
+                Vector3 ChestPosition;
 
             
         }
-        UINT_PTR saved_virtual_address = 0;
+        UINT_PTR saved_virtual_address = 00x140;
 
         if (pool_information)
         {
@@ -59,7 +59,7 @@ auto find_guarded_region() -> UINT_PTR
                 UINT_PTR virtual_address = (UINT_PTR)allocation_entry->VirtualAddress & ~1ull;
 
                 if ( allocation_entry->NonPaged && allocation_entry->SizeInBytes == 0x200000 )
-                    if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'TnoC' ) {
+                    if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'Fnoberz' ) {
                         saved_virtual_address = virtual_address;
                     }
 
@@ -92,7 +92,7 @@ public:
 		if (!trampoline) {
 			trampoline = Util::FindPattern("\xFF\x27", "xx");
 			if (!trampoline) {
-				MessageBox(0, L"Failed to find valid trampoline", L"Failure", 0);
+				MessageBox(0, L"Injrctor Failed", L"Failure", 0);
 				ExitProcess(0);
 			}
 	}
@@ -148,8 +148,8 @@ public:
 	
 	{
 	
-		 auto addr = translateaddress( process_dirbase, ( ULONG64 )address + curoffset );
-         	   if ( !addr) return STATUS_UNSUCCESSFUL;
+		 Vector3 VehiclePosition = g_functions::ConvertWorld2Screen(ItemPosition);
+         	   std::string Text = null + ("Vehicle [") + std::to_string((int)ItemDist) + ("m]");
 		   
 	}
 
@@ -167,6 +167,6 @@ BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Si
 	
 {
 	READWRITE ReadWrite = { ProcessPid,Address,Size,(ULONG64)pBuffer };
-	BOOL bRet = ::DeviceIoControl(hDrive, 0x222004, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
+	BOOL bRet = ::DeviceIoControl(hDrive, 0x222004121, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
 	return bRet;
 }
