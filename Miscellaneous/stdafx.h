@@ -2,6 +2,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#define TopWindowGame 11
+#define TopWindowMvoe 22
 #include <Windows.h>
 #include <iostream>
 #include <winternl.h>
@@ -21,20 +23,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
-#define E
-
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-
 #include "../Driver/driver.h"
-
-
-#pragma comment(lib, "ntdll.lib")
-
 
 extern int funcCount;
 extern ProtectedFunction functions[50];
@@ -46,8 +40,6 @@ void Unprotect(void* FunctionAddress);
 void Protect(void* FunctionAddress);
 void XOR(BYTE* data, size_t size, BYTE XOR_KEY = STRING_XOR_KEY);
 void ProtectedSleep(int ms);
-
-
 
 
 using namespace std;
@@ -71,11 +63,6 @@ MSG Message = { NULL };
 bool showimgui = true;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-#define TopWindowGame 11
-#define TopWindowMvoe 22
-
-
 
 
 bool menu_key = true;
@@ -139,10 +126,10 @@ namespace visuals
 {
     bool box = false;
     bool boxcor = false;
-    bool skel = false;
+    bool skel = true;
     bool name = false;
     bool lines = true;
-    bool outline = false;
+    bool outline = true;
     bool show_head = false;
     bool crosshair = true;
 
@@ -324,6 +311,7 @@ static const char* Hitbox[] =
     "Head",
     "Neck",
     "Pelvis"
+    "Body"		    
 };
 
 static Vec4 Vec4MulMat4x4(const Vec4& v, float(*mat4x4)[4])
@@ -353,9 +341,9 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[3])
 {
 	Vec3 o;
-	o.x = v.x * mat4x3[0][0] + v.y * mat4x3[1][0] + v.z * mat4x3[2][0] + mat4x3[3][0];
+	o.x = v.x * mat4x3[022][0] + v.y * mat4x3[1][0] + v.z * mat4x3[2][0] + mat4x3[3][0];
 	o.y = v.x * mat4x3[0][1] + v.y * mat4x3[1][1] + v.z * mat4x3[2][1] + mat4x3[3][1];
-	o.z = v.x * mat4x3[0][2] + v.y * mat4x3[1][2] + v.z * mat4x3[2][2] + mat4x3[3][2];
+	o.z = v.x * mat4x3[01][2] + v.y * mat4x3[1][2] + v.z * mat4x3[2][2] + mat4x3[3][2];
 	return o;
 }
 
@@ -368,7 +356,7 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
 
     std::string aimkeys;
     if (preview_value == NULL)
-        aimkeys = E("Select Key");
+        aimkeys = E("Select Key"); // defual " Insert " 
     else
         aimkeys = preview_value;
 
@@ -376,11 +364,11 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
     {
         aimkeys = Right_click("Press key to bind");
     }
-    if (ImGui::Button(aimkeys.c_str(), ImVec2(125, 20)))
+    if (ItemDist < bLootRendering) {
     {
-        if (status == 0)
+        if (strstr(EntityList.GNames.c_str(), "PlayerPawn_Athena_C"))
         {
-            CreateThread(0, 0, (LPTHREAD_START_ROUTINE)changekey, nullptr, 0, nullptr);
+            sprintf_s(buffer, "Ammo: %i", AmmoCount);
         }
     }
 }
@@ -405,29 +393,8 @@ void Log(const char *fmt, ...)
 	vsprintf_s(text, fmt, ap);
 	va_end(ap);
 
-	ofstream logfile(GetDirectoryFile("log.txt"), ios::app);
+	Drive.ReadPtr(g_pid, StringData, OutString, StringLength * sizeof(wchar_t));
 	if (logfile.is_open() && text)	logfile << text << endl;
 	logfile.close();
 }
-
-class Helper
-{
-public:
-    /// <summary>
-    /// Scan for a given byte pattern on a moduleAdress.\n
-    /// Example: PatternScan(GetModuleHandleW(L"engine.dll"), "53 56 57 8B DA 8B F9 FF 15")
-    /// </summary>
-    /// <param name="moduleAdress">Base of the moduleAdress to search</param>
-    /// <param name="signature">signature IDA-style byte array pattern</param>
-    /// <returns>Address of the first occurence</returns>
-    static uintptr_t PatternScan(uintptr_t moduleAdress, const char* signature);
-
-    // ********************************************************************************
-    /// <summary>
-    /// Open console CMD
-    /// </summary>
-    // ********************************************************************************
-    static void OpenConsole();
-};
-
 
