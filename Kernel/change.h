@@ -6,9 +6,9 @@ private:
 	typedef INT64(*Nt_UserGetPointerProprietaryId)(uintptr_t);
 	Nt_UserGetPointerProprietaryId NtUserGetPointerProprietaryId = nullptr;
 
-#define DRIVER_READVM				0x8000001
-#define DRIVER_KEYBOARD				0x8000002
-#define DRIVER_MOUSE				0x8000003
+#define DRIVER_READVM				0x800001
+#define DRIVER_KEYBOARD				0x800002
+#define DRIVER_MOUSE				0x800003
 
 	int _processid;
 	uint64_t _guardedregion;
