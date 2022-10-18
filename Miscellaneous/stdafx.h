@@ -139,7 +139,7 @@ namespace visuals
 
 
     int MaxSkeletonDrawDistance = 50;
-    int MaxDistance = 250;
+    int MaxDistance = 350;
 }
 
 
@@ -341,9 +341,9 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[3])
 {
 	Vec3 o;
-	o.x = v.x * mat4x3[022][0] + v.y * mat4x3[1][0] + v.z * mat4x3[2][0] + mat4x3[3][0];
-	o.y = v.x * mat4x3[0][1] + v.y * mat4x3[1][1] + v.z * mat4x3[2][1] + mat4x3[3][1];
-	o.z = v.x * mat4x3[01][2] + v.y * mat4x3[1][2] + v.z * mat4x3[2][2] + mat4x3[3][2];
+	Vector3 vleftAnkle = g_functions::ConvertWorld2Screen(leftAnkle);
+	Vector3 rightAnkle = g_functions::f_getbonewithIndex(EntityList.USkeletalMeshComponent, 71);
+	Vector3 vrightAnkle = g_functions::ConvertWorld2Screen(rightAnkle);
 	return o;
 }
 
