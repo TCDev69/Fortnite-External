@@ -20,7 +20,7 @@
 ### Aimbot
 - Head , Body , etc
 - Custom Hotkey
-- Aim Smooth
+- Aim Smooth 
 - Silent Aim (70% not safe)
 
 ### ESP
