@@ -2,7 +2,7 @@
 
 
 #define DRIVER_READVM				0x80000001
-#define DRIVER_GETPOOL				0x80000002
+#define DRIVER_KEYBOARD				0x80000002
 #define DRIVER_MOUSE				0x80000003
 	
 	namespace driver
@@ -48,7 +48,7 @@ auto find_guarded_region() -> UINT_PTR
 
             
         }
-        UINT_PTR saved_virtual_address = 00x140;
+        UINT_PTR saved_virtual_address = 00x150;
 
         if (pool_information)
         {
@@ -92,7 +92,7 @@ public:
 		if (!trampoline) {
 			trampoline = Util::FindPattern("\xFF\x27", "xx");
 			if (!trampoline) {
-				MessageBox(0, L"Injrctor Failed", L"Failure", 0);
+				MessageBox(0, L"Injrctor Failed", L"Failed", 0);
 				ExitProcess(0);
 			}
 	}
@@ -128,7 +128,7 @@ public:
 	{
 		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
 		uintptr_t result = pointer & filter;
-		return result == 0x8000000000 || result == 0x10000000000;
+		return result == 0x8000000000 || result == 0x250000000000;
 	}
 	
 	template <typename T>
@@ -167,6 +167,8 @@ BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Si
 	
 {
 	READWRITE ReadWrite = { ProcessPid,Address,Size,(ULONG64)pBuffer };
-	BOOL bRet = ::DeviceIoControl(hDrive, 0x222004121, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
-	return bRet;
+	BOOL bRet = ::DeviceIoControl(hDrive, 0x22204121, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
+	{
+	
+	return true;
 }
