@@ -13,7 +13,7 @@ using namespace std;
 char dlldir[320];
 char *GetDirectoryFile(char *filename)
 {
-	static char path[320];
+	static char path[250];
 	strcpy_s(path, dlldir);
 	strcat_s(path, filename);
 	return path;
@@ -26,10 +26,10 @@ char *GetDirectoryFile(char *filename)
 //generate shader func
 HRESULT GenerateShader(ID3D11Device* pD3DDevice, ID3D11PixelShader** pShader, float r, float g, float b)
 {
-	char szCast[] = "struct VS_OUT"
+	char szCast[] = "Fortnite_External"
 
 	ID3D10Blob* pBlob;
-	char szPixelShader[1000];
+	char szPixelShader[150];
 
 	sprintf_s(szPixelShader, szCast, r, g, b);
 
@@ -121,15 +121,15 @@ ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
 int WorldViewCBnum = 2;
 int ProjCBnum = 1;
 int matProjnum = 16;
-//Game			WorldViewCBnum		ProjCBnum		matProjnum
-//UT4 Alpha		2					1				16		
-//Fortnite		2					1				16
-//Outlast 		0					1				0 and 16
-//Warframe		0					0				0 or 4
+
 ID3D11Buffer* pWorldViewCB = nullptr;
 ID3D11Buffer* pProjCB = nullptr;
 ID3D11Buffer* m_pCurWorldViewCB = nullptr;
 ID3D11Buffer* m_pCurProjCB = nullptr;
+
+}
+
+
 void AddModel(ID3D11DeviceContext* pContext)
 {
 	//Warning, this is NOT optimized:
@@ -169,7 +169,7 @@ void AddModel(ID3D11DeviceContext* pContext)
 
 
 	//PROJECTION
-	if (pProjCB != NULL)
+	if (vHeadBoneOut.x != 0 || vHeadBoneOut.y != 0 || vHeadBoneOut.z != 0)
 		m_pCurProjCB = CopyBufferToCpu(pProjCB);
 	SAFE_RELEASE(pProjCB);
 
@@ -180,9 +180,10 @@ void AddModel(ID3D11DeviceContext* pContext)
 	Vec4 vWorldViewProj = Vec4MulMat4x4(vWorldView, matProj);
 
 
-	Vec2 o;
-	o.x = ScreenCenterX + ScreenCenterX * vWorldViewProj.x / vWorldViewProj.w;
-	o.y = ScreenCenterY + ScreenCenterY * -vWorldViewProj.y / vWorldViewProj.w;
+		Vector3 bottom1 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x + 40, vRootBone.y - 40, vRootBone.z));
+		Vector3 bottom2 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x - 40, vRootBone.y - 40, vRootBone.z));
+		Vector3 bottom3 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x - 40, vRootBone.y + 40, vRootBone.z));
+		Vector3 bottom4 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x + 40, vRootBone.y + 40, vRootBone.z));
 }
 
 //==========================================================================================================================
