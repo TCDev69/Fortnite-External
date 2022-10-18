@@ -93,7 +93,7 @@ public:
 	{
 		static constexpr uintptr_t filter = 0xFFFFFFF00000;
 		uintptr_t result = pointer & filter;
-		return result == 0x8000000000 || result == 0x10000000000;
+		return result == 0x8000000000 || result == 0xA1602;
 	}
 	
 	template <typename T>
