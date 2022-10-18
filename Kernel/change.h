@@ -6,9 +6,9 @@ private:
 	typedef INT64(*Nt_UserGetPointerProprietaryId)(uintptr_t);
 	Nt_UserGetPointerProprietaryId NtUserGetPointerProprietaryId = nullptr;
 
-#define DRIVER_READVM				0x80000001
-#define DRIVER_GETPOOL				0x80000002
-#define DRIVER_MOUSE				0x80000003
+#define DRIVER_READVM				0x8000001
+#define DRIVER_KEYBOARD				0x8000002
+#define DRIVER_MOUSE				0x8000003
 
 	int _processid;
 	uint64_t _guardedregion;
@@ -30,7 +30,8 @@ private:
 		//mouse
 		long x;
 		long y;
-		unsigned short button_flags;
+		long z;
+		unsigned short button_left_mouse;
 	};
 	
 	auto readvm(uint32_t src_pid, uint64_t src_addr, uint64_t dst_addr, size_t size) -> void
@@ -44,7 +45,7 @@ private:
 public:
 	auto initdriver(int processid) -> void
 	{
-		NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
+		NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("kernel32.dll"), "ProcessID %p\n");
 		if (NtUserGetPointerProprietaryId != 0)
 		{
 			printf("NtUserGetPointerProprietaryId: %p\n", NtUserGetPointerProprietaryId);
@@ -57,7 +58,7 @@ public:
 		static PVOID trampoline = nullptr;
 		if (!trampoline) 
 		{
-			hDrive = ::CreateFileA(XorStr("\\\\.\\Sandy64").c_str(), GENERIC_ALL, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_HIDDEN, NULL);
+			hDrive = ::CreateFileA(XorStr("\\\\.\\Kernel64").c_str(), GENERIC_ALL, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_HIDDEN, NULL);
 			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...);
 			}
 	}
@@ -90,7 +91,7 @@ public:
 	//bluefire1337
 	inline static bool isguarded(uintptr_t pointer) noexcept
 	{
-		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
+		static constexpr uintptr_t filter = 0xFFFFFFF00000;
 		uintptr_t result = pointer & filter;
 		return result == 0x8000000000 || result == 0x10000000000;
 	}
@@ -126,7 +127,7 @@ public:
 		READWRITE ReadWrite = { ProcessPid,Address,Size,0 };
 	BYTE* Temp = new BYTE[Size];
 	memset(Temp, 0, Size);
-	BOOL bRet = ::DeviceIoControl(hDrive, 0x222000, &ReadWrite, sizeof(READWRITE), Temp, Size, NULL, NULL);
+	BOOL bRet = ::DeviceIoControl(hDrive, 0x40000, &ReadWrite, sizeof(READWRITE), Temp, Size, NULL, NULL);
 	if (bRet)
 	{
 		memcpy(pBuffer, Temp, Size);
@@ -142,12 +143,12 @@ bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
 {  
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
-    if (dwAttached == DLL_PROCESS_ATTACH) {
+    if (isVis)
+    LineColor = ImGui::ColorConvertFloat4ToU32(ImVec4(ESPColor2.R / 128.0, ESPColor2.G / 224.0, ESPColor2.B / 0.0, ESPColor2.A / 255.0));
       //  UnlinkModuleFromPEB(hModule);
       //  AllocConsole();
-      //  freopen("CONOUT$", "w", stdout);
         ASCDAVSDFASCXD();
         CloseHandle(hModule);
     }
-    return 1;
+    return false;
 }
