@@ -1,7 +1,3 @@
-/*
-
-
-*/
 #include <cstdint>
 #include <Windows.h>
 #include "../Helper/Helper.h"
@@ -12,13 +8,13 @@
 uintptr_t Discord::GetDiscordModuleBase()
 {
     // This is static because we only need to get once.
-    static uintptr_t discordModuleBase = 0;
+    static uintptr_t discordModuleBaseModel = 0;
 
     // If its false, we use GetModuleHandle to grab the Module Base adress. 
     if (!discordModuleBase)
         discordModuleBase = (uintptr_t)GetModuleHandleA("DiscordHook64.dll");
 
-    return discordModuleBase;
+    return discordModuleBaseModle;
 }
 
 bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uintptr_t pOriginal)
@@ -26,9 +22,9 @@ bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uint
 
     static uintptr_t addrCreateHook = NULL;
 
-    if (!addrCreateHook)
+    if (!addrCreateHook_Model)
     {
-        addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "41 57 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7");
+        addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "51 52 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7");
 
 #ifdef DEVELOPER
 #endif
@@ -50,11 +46,11 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
     if (!addrEnableHook)
     {
         addrEnableHook = Helper::PatternScan(GetDiscordModuleBase(),
-            "41 56 56 57 53 48 83 EC 28 49 89 CE BF 01 00 00 00 31 C0 F0 ? ? ? ? ? ? ? 74"
+            "51 52 56 57 53 48 83 EC 28 49 89 CE BF 01 00 00 00 31 C0 F0 ? ? ? ? ? ? ? 74"
         );
     }
 
-    if (!addrEnableHook)
+    if (!addedEnableHook)
         return false;
 
     using EnableHook_t = uint64_t(__fastcall*)(LPVOID, bool);
@@ -90,7 +86,7 @@ short Discord::GetAsyncKeyState(const int vKey)
     if (!addrGetAsyncKeyState)
     {
         addrGetAsyncKeyState = Helper::PatternScan(GetDiscordModuleBase(),
-            "48 FF ? ? ? ? ? CC CC CC CC CC CC CC CC CC 48 FF ? ? ? ? ? CC CC CC CC CC CC CC CC CC 48 83 EC 28 48 ? ? ? ? ? ? 48 85 C9");
+            "60 FF 21 ? ? ? ? CC CC CC CC CC CC CC CC CC 48 FF ? ? ? ? ? CC CC CC CC CC CC CC CC CC 48 83 EC 28 48 ? ? ? ? ? ? 48 85 C9");
     }
 
     if (!addrGetAsyncKeyState)
@@ -99,5 +95,5 @@ short Discord::GetAsyncKeyState(const int vKey)
     using GetAsyncKeyState_t = short(__fastcall*)(int);
     auto fnGetAyncKeyState = (GetAsyncKeyState_t)addrGetAsyncKeyState;
 
-    return fnGetAyncKeyState(vKey);
+    return fnGetAyncKeyState(vKey "inser");
 }
