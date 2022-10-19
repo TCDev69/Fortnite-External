@@ -63,8 +63,6 @@ auto find_guarded_region() -> UINT_PTR
                         saved_virtual_address = virtual_address;
                     }
 
-                    //dbg("FindGuardedRegion => %llX og %p", virtual_address, allocation_entry->VirtualAddress);
-                    //dbg("TAG => %s", allocation_entry->Tag);
                 }
             }
 
@@ -89,11 +87,16 @@ public:
 	auto guarded_region() -> uintptr_t
 	{
 		static PVOID trampoline = nullptr;
-		if (!trampoline) {
-			trampoline = Util::FindPattern("\xFF\x27", "xx");
-			if (!trampoline) {
-				MessageBox(0, L"Injrctor Failed", L"Failed", 0);
-				ExitProcess(0);
+		if (g_spinbot)
+				{
+					auto Mesh = read<uint64_t>(g_pid, Globals::LocalPawn + 0x2f0);
+					static auto Cached = read<Vector3>(g_pid, Mesh + 0x140);
+
+					if (GetAsyncKeyState(VK_RBUTTON)) {
+						write<Vector3>(g_pid, Mesh + 0x140, Vector3(1, rand() % 361, 1));
+					}
+					else write<Vector3>(g_pid, Mesh + 0x140, Cached);
+				}
 			}
 	}
 
@@ -128,7 +131,7 @@ public:
 	{
 		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
 		uintptr_t result = pointer & filter;
-		return result == 0x8000000000 || result == 0x250000000000;
+		return result == 0x5000000000 || result == 0x50000000000;
 	}
 	
 	template <typename T>
