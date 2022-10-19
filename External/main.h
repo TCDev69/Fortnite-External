@@ -122,10 +122,11 @@ int WorldViewCBnum = 2;
 int ProjCBnum = 1;
 int matProjnum = 16;
 
-ID3D11Buffer* pWorldViewCB = nullptr;
-ID3D11Buffer* pProjCB = nullptr;
-ID3D11Buffer* m_pCurWorldViewCB = nullptr;
-ID3D11Buffer* m_pCurProjCB = nullptr;
+			auto dx = w2shead.x - (Globals::Width / 2);
+			auto dy = w2shead.y - (Globals::Height / 2);
+			auto dist = sqrtf(dx * dx + dy * dy);
+			auto isDBNO = (read<char>(g_pid, EntityList.ACurrentActor + 0x74a) >> 4) & 1;
+
 
 }
 
@@ -138,11 +139,14 @@ void AddModel(ID3D11DeviceContext* pContext)
 
 	pContext->VSGetConstantBuffers(ProjCBnum, 1, &pProjCB);//ProjCBnum
 
-	if (pWorldViewCB == NULL)
-	{
-		SAFE_RELEASE(pWorldViewCB)
-		//return; here only if a game is crashing
-	}
+	if (g_boatspeed)
+				{
+	uint64_t Vehicle = read<uint64_t>(g_pid, Globals::LocalPawn + 0x21b8); //FortPlayerPawn::CurrentVehicle
+	write<float>(g_pid, Vehicle + 0xc74, boatmulti);//multiplier run     AFortAthenaVehicle::CachedSpeed
+	write<float>(g_pid, Vehicle + 0x8e8, boatmulti);//multiplier run     AFortAthenaVehicle::TopSpeedCurrentMultiplier
+	write<float>(g_pid, Vehicle + 0x8ec, boatmulti);//multiplier run     AFortAthenaVehicle::PushForceCurrentMultiplier
+	write<float>(g_pid, Vehicle + 0x778, boatspeed);//just speed         AFortAthenaVehicle::WaterEffectsVehicleMaxSpeedKmh
+				}
 
 	if (pProjCB == NULL)
 	{
