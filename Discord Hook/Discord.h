@@ -113,6 +113,6 @@ public:
     static Discord& Instance()
     {
         static Discord handle;
-        return handle;
+        return false;
     }
 };
