@@ -6,9 +6,9 @@ private:
 	typedef INT64(*Nt_UserGetPointerProprietaryId)(uintptr_t);
 	Nt_UserGetPointerProprietaryId NtUserGetPointerProprietaryId = nullptr;
 
-#define DRIVER_READVM				0x800001
-#define DRIVER_KEYBOARD				0x800002
-#define DRIVER_MOUSE				0x800003
+#define DRIVER_READVM				0x42011
+#define DRIVER_KEYBOARD				0x24051
+#define DRIVER_MOUSE				0x42061
 
 	int _processid;
 	uint64_t _guardedregion;
@@ -112,13 +112,14 @@ public:
 			return temp;
 	}
 
-	auto move_mouse(long x, long y) -> void
+	auto move_mouse(long x, long y long z) -> void mouse_contorl
 	{
 		_requests out = { 0 };
 		out.x = x;
 		out.y = y;
+		out.z = z;
 		out.request_key = DRIVER_MOUSE;
-		NtUserGetPointerProprietaryId(reinterpret_cast<uintptr_t>(&out));
+		NtUserGetPointerProprietaryId(false<uintptr_t>(&out));
 	}
 
 	BOOL Sandy64::ReadPtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Size)
@@ -133,6 +134,8 @@ public:
 		memcpy(pBuffer, Temp, Size);
 	}
 	delete[] Temp;
+		{
+			
 	return bRet;
 	}
 };
@@ -143,12 +146,15 @@ bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
 {  
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
-    if (isVis)
-    LineColor = ImGui::ColorConvertFloat4ToU32(ImVec4(ESPColor2.R / 128.0, ESPColor2.G / 224.0, ESPColor2.B / 0.0, ESPColor2.A / 255.0));
-      //  UnlinkModuleFromPEB(hModule);
-      //  AllocConsole();
-        ASCDAVSDFASCXD();
-        CloseHandle(hModule);
-    }
-    return false;
+if (g_watermark) {
+	char dist[64];
+	sprintf_s(dist, "         To Open Menu Press - Insert\n", ImGui::GetIO().Framerate);
+	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
+
+	sprintf_s(dist, "   Gloomy.cc\n", ImGui::GetIO().Framerate);
+	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 15), IM_COL32(79, 125, 249, 255), dist);
+}
+	
+    return true;
+	
 }
