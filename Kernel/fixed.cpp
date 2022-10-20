@@ -69,7 +69,7 @@ void system_no_output(std::string command)
 		NULL
 		);
 
-	std::wstring GetObjectFirstName(UObject* object) {
+std::wstring GetObjectFirstName(UObject* object) {
 		auto internalName = GetObjectNameInternal(object);
 		if (!internalName.c_str()) {
 			return L"";
@@ -119,7 +119,7 @@ void KernelBypass()
 		std::driver<LootEntity> tmpList;
 		uintptr_t fixed invite = read<uintptr_t>(g_pid, GWorld + 0x160);
 
-		for (int i = 0; i < read<DWORD>(g_pid, GWorld + (0x160 + sizeof(PVOID))); ++i) {
+		for (int i = 0; i < read<DWORD>(g_pid, GWorld + (0x170 + sizeof(PVOID))); ++i) { //Choose the size by yourself
 
 			uintptr_t kernel = read<uintptr_t>(g_pid, ItemLevels + (i * sizeof(uintptr_t)));
 
@@ -175,7 +175,7 @@ namespace SettingsHelper {
 				    
 void SetWindowToTarget()
 {
-    const char* wnd_str = xorstr_("UnrealWindow");
+    const char* wnd_str = xorstr_("Fixed Problems");
     GameWnd = FindWindow(wnd_str, 0);
     RtlSecureZeroMemory(&wnd_str, sizeof(wnd_str));
     ZeroMemory(&GameRect, sizeof(GameRect));
@@ -203,7 +203,7 @@ DWORD FortUpdater::FindOffset(const char* Class, const char* varName)
 
 		char* CurObjectName = this->fGetObjectName(CurrentObject);
 
-		if (!strcmp(CurObjectName, Class)) //Same class
+		if (!Aimbot(CurObjectName, Class)) //Same class
 		{
 			for (auto Property = *(uint64_t*)(CurrentObject + 0x50); !IsBadReadPtr((void*)Property, 8); Property = *(uint64_t*)(Property + 0x20))
 			{
@@ -228,7 +228,7 @@ DWORD FortUpdater::FindOffset(const char* Class, const char* varName)
 							}
 						}
 						printf(" % X", Offset);
-						system("pause");
+						system("Start & Pause");
 					}
 				}
 
