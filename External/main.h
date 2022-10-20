@@ -173,21 +173,33 @@ void AddModel(ID3D11DeviceContext* pContext)
 
 
 	//PROJECTION
-	if (vHeadBoneOut.x != 0 || vHeadBoneOut.y != 0 || vHeadBoneOut.z != 0)
-		m_pCurProjCB = CopyBufferToCpu(pProjCB);
-	SAFE_RELEASE(pProjCB);
+	if (g_Aimbotgay) {
+		bool mouse_aim = true;
+		if (GetAsyncKeyState(VK_RBUTTON)) {
+			if (Globals::LocalPawn) {
+				uintptr_t Mesh = read<uintptr_t>(g_pid, Globals::LocalPawn + 0x300);
+				write<Vector3>(g_pid, Mesh + 0x158, Vector3(2000, -2000, 2000)); //Class Engine.SceneComponent -> RelativeScale3D -> 0x134
+			}
+		}
+		else {
+			uintptr_t Mesh = read<uintptr_t>(g_pid, Globals::LocalPawn + 0x300);
+			write<Vector3>(g_pid, Mesh + 0x158, Vector3(0, 0, -87)); //Class Engine.SceneComponent -> RelativeScale3D -> 0x134
+		}
 
-	float matProj[4][4];
-	{
-
+	if (g_RocketLeauge) {
+		if (GetAsyncKeyState(VK_SHIFT)) {
+			write<bool>(g_pid, Globals::LocalPawn + 0x1794, true); //bBoosting offset
+		}
+		else {
+			write<bool>(g_pid, Globals::LocalPawn + 0x1794, false); //bBoosting offset
+		}
 	}
-	Vec4 vWorldViewProj = Vec4MulMat4x4(vWorldView, matProj);
+		
+	if (g_NoColision) {
+		write<float>(g_pid, Globals::LocalPawn + 0x790, 0.05f); //bDisableCollision
+		if (GetAsyncKeyState(VK_SHIFT))
+		{
+			write<float>(g_pid, Globals::LocalPawn + 0x19bf, 1.00f); //bIsSkydivingFromLaunchPad
+		}
+	}
 
-
-		Vector3 bottom1 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x + 40, vRootBone.y - 40, vRootBone.z));
-		Vector3 bottom2 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x - 40, vRootBone.y - 40, vRootBone.z));
-		Vector3 bottom3 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x - 40, vRootBone.y + 40, vRootBone.z));
-		Vector3 bottom4 = g_functions::ConvertWorld2Screen(Vector3(vRootBone.x + 40, vRootBone.y + 40, vRootBone.z));
-}
-
-//==========================================================================================================================
