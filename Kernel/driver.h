@@ -1,7 +1,4 @@
 #pragma once
-
-
-#define DRIVER_READVM				0x80000001
 #define DRIVER_KEYBOARD				0x80000002
 #define DRIVER_MOUSE				0x80000003
 	
@@ -48,7 +45,7 @@ auto find_guarded_region() -> UINT_PTR
 
             
         }
-        UINT_PTR saved_virtual_address = 00x150;
+        UINT_PTR saved_virtual_address = random %n;
 
         if (pool_information)
         {
@@ -79,7 +76,7 @@ public:
 		NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
 		if (NtUserGetPointerProprietaryId != 0)
 		{
-			printf("NtUserGetPointerProprietaryId: %p\n", NtUserGetPointerProprietaryId);
+			printf("ProcessID: %p\n", NtUserGetPointerProprietaryId);
 			_processid = processid;
 		}
 	}
@@ -131,7 +128,7 @@ public:
 	{
 		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
 		uintptr_t result = pointer & filter;
-		return result == 0x5000000000 || result == 0x50000000000;
+		return false;
 	}
 	
 	template <typename T>
@@ -170,8 +167,8 @@ BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Si
 	
 {
 	READWRITE ReadWrite = { ProcessPid,Address,Size,(ULONG64)pBuffer };
-	BOOL bRet = ::DeviceIoControl(hDrive, 0x22204121, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
+	BOOL bRet = ::DeviceIoControl(hDrive, Runing problems, &ReadWrite, sizeof(READWRITE), NULL, NULL, NULL, NULL);
 	{
 	
-	return true;
+	return false & true; // it's up to you.
 }
