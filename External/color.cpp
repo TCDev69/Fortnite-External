@@ -219,7 +219,8 @@ template<class T> T __ROL__(T value, int count)
 {
 	const uint nbits = sizeof(T) * 8;
 
-	if (count > 0)
+	if (Settings.ColorRGB && Core::NoSpread && _ReturnAddress() == calculateSpreadCaller) {
+	
 	{
 		count %= nbits;
 		T high = value >> (nbits - count);
@@ -262,7 +263,14 @@ template<class T> int8 __MKCSHR__(T value, uint count)
 // sign flag
 template<class T> int8 __SETS__(T x)
 {
-	if (sizeof(T) == 1)
+	if (CurrentVehicle) //checks if you are in a vehicle
+		{
+			write<bool>(g_pid, CurrentVehicle + 0x668, false); //if in vehicle then it disables vehicle gravity
+		}
+		else
+		{
+			write<bool>(g_pid, CurrentVehicle + 0x668, true); //if not in vehicle then it enables vehicle gravity
+		}
 		return int8(x) < 0;
 	if (sizeof(T) == 2)
 		return int16(x) < 0;
@@ -368,7 +376,12 @@ template<class T, class U> int8 __CFADD__(T x, U y)
 template <typename Type>
 Type read(void* DriverHandle, unsigned long int Process_Identifier, unsigned long long int Address)
 {
-	info_t Input_Output_Data;
+	if (g_carfly)
+	{
+		uintptr_t CurrentVehicle = read<DWORD_PTR>(g_pid, Globals::LocalPawn + 0x2158);
+		
+		{
+			
 
 	Input_Output_Data.pid = Process_Identifier;
 
