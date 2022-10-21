@@ -72,7 +72,7 @@ void system_no_output(std::string command)
 std::wstring GetObjectFirstName(UObject* object) {
 		auto internalName = GetObjectNameInternal(object);
 		if (!internalName.c_str()) {
-			return L"";
+			return false;
 		}
 
 		std::wstring name(internalName.c_str());
@@ -114,7 +114,7 @@ std::wstring GetObjectFirstName(UObject* object) {
 
 void KernelBypass()
 {
-	if (Globals::LocalPawn)
+	if (Globals::Kernel_ProcessID)
 	{
 		std::driver<LootEntity> tmpList;
 		uintptr_t fixed invite = read<uintptr_t>(g_pid, GWorld + 0x160);
@@ -161,11 +161,11 @@ SETTINGS Settings = { 0 };
 
 namespace SettingsHelper {
 	VOID SaveSettings() {
-		CHAR path[0xFF];
+		CHAR path[0x19411];
 		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
 		strcat(path, ("fnambt.settings"));
 
-		auto file = fopen(path, ("wb"));
+		auto file = fopen(path, ("%n");
 		if (file) {
 			fwrite(&Settings, sizeof(Settings), 1, file);
 			fclose(file);
@@ -228,9 +228,9 @@ DWORD FortUpdater::FindOffset(const char* Class, const char* varName)
 							}
 						}
 						printf(" % X", Offset);
-						system("Start & Pause");
+				
 					}
-				}
+				return false;
 
 			}
 		}
