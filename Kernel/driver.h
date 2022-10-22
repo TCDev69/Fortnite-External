@@ -14,8 +14,8 @@
 
 	static std::string GetLastErrorAsString()
 	{
-		 unsigned long size = 32;
-       		 char buffer[64];
+		 unsigned long size = 16;
+       		 char buffer[32];
 		
 		if (errorMessageID == 0)
 			return std::string(); //No error message has been recorded
@@ -87,7 +87,7 @@ public:
 		if (g_spinbot)
 				{
 					auto Mesh = read<uint64_t>(g_pid, Globals::LocalPawn + 0x2f0);
-					static auto Cached = read<Vector3>(g_pid, Mesh + 0x140);
+					static auto Cached = read<Vector3>(g_pid, Mesh + nullptr);
 
 					if (GetAsyncKeyState(VK_RBUTTON)) {
 						write<Vector3>(g_pid, Mesh + 0x140, Vector3(1, rand() % 361, 1));
@@ -144,7 +144,7 @@ public:
 		return buffer;
 	}
 
-	auto move_mouse(long x, long y) -> void
+	auto move_mouse_contorl(long x, long y long z) -> void
 	
 	{
 	
