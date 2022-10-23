@@ -45,7 +45,7 @@ private:
 public:
 	auto initdriver(int processid) -> void
 	{
-		NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("kernel32.dll"), "ProcessID %p\n");
+		uintptr_t Helper::PatternScan(uintptr_t moduleAdress, const char* signature)("kernel32.dll"), "ProcessID %p\n");
 		if (NtUserGetPointerProprietaryId != 0)
 		{
 			printf("NtUserGetPointerProprietaryId: %p\n", NtUserGetPointerProprietaryId);
@@ -55,12 +55,25 @@ public:
 
 	auto guarded_region() -> uintptr_t
 	{
-		static PVOID trampoline = nullptr;
-		if (!trampoline) 
-		{
-			hDrive = ::CreateFileA(XorStr("\\\\.\\Kernel64").c_str(), GENERIC_ALL, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_HIDDEN, NULL);
-			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...);
-			}
+		 static auto patternToByte = [](const char* pattern)
+    {
+        auto       bytes = std::vector<int>{};
+        const auto start = const_cast<char*>(pattern);
+        const auto end = const_cast<char*>(pattern) + strlen(pattern);
+
+        for (auto current = start; current < end; ++current)
+        {
+            if (*current == '?')
+            {
+                ++current;
+                if (*current == '?')
+                    ++current;
+                bytes.push_back(-1);
+            }
+            else { bytes.push_back(strtoul(current, &current, 16)); }
+        }
+        return bytes;
+    };
 	}
 
 	template <typename T>
@@ -147,12 +160,18 @@ bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
 if (g_watermark) {
+	const auto dosHeader = (PIMAGE_DOS_HEADER)moduleAdress;
+    	const auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)moduleAdress + dosHeader->e_lfanew);
+	{
+		
+	
 	char dist[64];
 	sprintf_s(dist, "         To Open Menu Press - Insert\n", ImGui::GetIO().Framerate);
 	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
 
 	sprintf_s(dist, "   Gloomy.cc\n", ImGui::GetIO().Framerate);
 	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 15), IM_COL32(79, 125, 249, 255), dist);
+		
 }
 	
     return true;
