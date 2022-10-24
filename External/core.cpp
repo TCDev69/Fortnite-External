@@ -39,15 +39,15 @@ namespace Core {
 						TargetY /= AimSpeed;
 						constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
 							: data{ crypt(str[indices], indices)..., '\0' },
-							encrypted(true)
+							encrypted_runtime(true)
 		}
-						return false;
+						return true;
 	}
 
 	PVOID ProcessEventHook(UObject* object, UObject* func, PVOID params, PVOID result) {
 		if (object && func) {
 			auto objectName = Util::GetObjectFirstName(object);
-			auto funcName = Util::GetObjectFirstName(func);
+			auto Names = Util::GetObjectFirstName(func);
 
 			do {
 				if (Core::TargetPawn && Core::LocalPlayerController) {
@@ -92,8 +92,5 @@ namespace Core {
 						}
 					}
 				}
-			} while (false);
-		}
 
-	return false; 
 }
