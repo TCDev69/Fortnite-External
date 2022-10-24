@@ -211,7 +211,6 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 	o.x = v.x * mat4x4[0][0] + v.y * mat4x4[1][0] + v.z * mat4x4[2][0] + mat4x4[3][0];
 	o.y = v.x * mat4x4[0][1] + v.y * mat4x4[1][1] + v.z * mat4x4[2][1] + mat4x4[3][1];
 	o.z = v.x * mat4x4[0][2] + v.y * mat4x4[1][2] + v.z * mat4x4[2][2] + mat4x4[3][2];
-	o.w = v.x * mat4x4[0][3] + v.y * mat4x4[1][3] + v.z * mat4x4[2][3] + mat4x4[3][3];
 	
 	return o;
 }
@@ -228,8 +227,9 @@ static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[3])
 
 static void HotkeyButton(int aimkey, void* changekey, int status)
 {
-    const char* preview_value = NULL;
-    if (aimkey >= 0 && aimkey < IM_ARRAYSIZE(keyNames))
+    constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length])
+	: _Basic_XorStr(str, std::make_index_sequence<_length_minus_one>())
+		
         Items_ArrayGetter(keyNames, aimkey, &preview_value);
 
     std::string aimkeys;
@@ -263,6 +263,7 @@ static const char* settsName[] =
 
 void Log(const char *fmt, ...)
 {
+	constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
 	if (!fmt)	return;
 
 	char		text[4096];

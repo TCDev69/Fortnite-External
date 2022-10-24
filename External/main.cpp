@@ -610,8 +610,6 @@ bool isVisible(uint64_t mesh)
 	return bong + tick >= bing;
 }
 
-RGBA ESPColorSkill = { 0, 0, 0, 255 };
-
 void DrawESP() {
 
 	auto entityListCopy = entityList;
@@ -747,8 +745,6 @@ void DrawESP() {
 
 			}
 			if (item.AimBone) {
-
-
 
 				if (aimbones == 0)
 				{
@@ -993,9 +989,6 @@ void shortcurts()
 		Sleep(200);
 	}
 }
-
-
-
 
 
 void render() {

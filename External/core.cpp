@@ -92,9 +92,5 @@ namespace Core {
 						}
 					}
 				}
-			} while false & true;
-		}
 
-	return PresentOriginal(swapChain, syncInterval, flags , noclip , remove);
 }
-	}
