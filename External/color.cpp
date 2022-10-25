@@ -209,12 +209,10 @@ inline void* qmemcpy(void* dst, const void* src, size_t cnt)
 	return dst;
 }
 
-// Generate a reference to pair of operands
 template<class T>  int16 __PAIR__(int8  high, T low) { return (((int16)high) << sizeof(high) * 8) | uint8(low); }
 template<class T>  int32 __PAIR__(int16 high, T low) { return (((int32)high) << sizeof(high) * 8) | uint16(low); }
 template<class T>  int64 __PAIR__(int32 high, T low) { return (((int64)high) << sizeof(high) * 8) | uint32(low); }
 
-// rotate left
 template<class T> T __ROL__(T value, int count)
 {
 	const uint nbits = sizeof(T) * 8;
@@ -383,20 +381,23 @@ Type read(void* DriverHandle, unsigned long int Process_Identifier, unsigned lon
 		{
 			
 
-	Input_Output_Data.pid = Process_Identifier;
-
-	Input_Output_Data.address = Address;
-
-	Type Return_Value;
-
-	Input_Output_Data.value = &Return_Value;
-
-	Input_Output_Data.size = sizeof(Type);
-
-	unsigned long int Readed_Bytes_Amount;
-
-	DeviceIoControl(DriverHandle, ctl_read, &Input_Output_Data, sizeof Input_Output_Data, &Input_Output_Data, sizeof Input_Output_Data, &Readed_Bytes_Amount, nullptr);
-
+	for (auto i = 0ul; i < sizeOfImage - s; ++i)
+    {
+        bool found = true;
+        for (auto j = 0ul; j < s; ++j)
+        {
+            if (scanBytes[i + j] != d[j] && d[j] != -1)
+            {
+                found = false;
+                break;
+            }
+        }
+        if (found) { return reinterpret_cast<uintptr_t>(&scanBytes[i]); }
+    }
+    return NULL;
+}
+		
+		
 	return *(Type*)&Return_Value;
 }
 
@@ -462,3 +463,28 @@ public:
 	RGBA Plum = { 221,160,221,160 };
 };
 
+		
+		
+char* FortUpdater::fGetObjectName(uintptr_t Object)
+{
+	if (Object == NULL) return (char*)"";
+
+	auto fGetObjName = reinterpret_cast<FString * (__fastcall*)(FString*, uintptr_t)>(this->GetObjectName);
+
+	FString result;
+	fGetObjName(&result, Object);
+
+	if (result.c_str() == NULL) return (char*)"";
+
+	auto tmp = result.ToString();
+
+	char return_string[1024];
+	memcpy(return_string, std::string(tmp.begin(), tmp.end()).c_str(), 1024);
+
+	this->FreeObjName((uintptr_t)result.c_str());
+
+	cFixName(return_string);
+
+	return (char*)std::string(tmp.begin(), tmp.end()).c_str();
+}
+		
