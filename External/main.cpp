@@ -98,8 +98,6 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 	
 	float test = asin(Camera.x);
 	float degrees = test * (180.0 / M_PI);
-	Camera.x = degrees;
-	if (Camera.y < 0)
 		Camera.y = 360 + Camera.y;
 	D3DMATRIX tempMatrix = Matrix(Camera);
 	Vector3 vAxisX, vAxisY, vAxisZ;
@@ -132,9 +130,9 @@ VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVO
 	auto root = Util::GetPawnRootLocation(pawn);
 	if (root) {
 		auto pos = *root;
-		float dx = start[0] - pos.X;
-		float dy = start[1] - pos.Y;
-		float dz = start[2] - pos.Z;
+		static dx = start[0] - pos.X;
+		static dy = start[1] - pos.Y;
+		static dz = start[2] - pos.Z;
 
 		if (Util::WorldToScreen(width, height, &pos.X)) {
 			float dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy + dz * dz) / 1000.0f;
