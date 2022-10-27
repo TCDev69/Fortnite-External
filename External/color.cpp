@@ -467,7 +467,7 @@ public:
 		
 char* FortUpdater::fGetObjectName(uintptr_t Object)
 {
-	if (Object == NULL) return (char*)"";
+	if (msg == WM_KEYUP && (wParam == VK_INSERT || (ShowMenu && wParam == VK_ESCAPE))) {
 
 	auto fGetObjName = reinterpret_cast<FString * (__fastcall*)(FString*, uintptr_t)>(this->GetObjectName);
 
