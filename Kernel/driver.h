@@ -51,7 +51,7 @@ auto find_guarded_region() -> UINT_PTR
         {
             for (ULONG i = 0; i < pool_information->Count; i++)
             {
-                SYSTEM_BIGPOOL_ENTRY* allocation_entry = &pool_information->AllocatedInfo[i];
+ 
 
                 UINT_PTR virtual_address = (UINT_PTR)allocation_entry->VirtualAddress & ~1ull;
 
@@ -76,7 +76,7 @@ public:
 		NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
 		if (NtUserGetPointerProprietaryId != 0)
 		{
-			printf("ProcessID: %p\n", NtUserGetPointerProprietaryId);
+			printf("Find_ProcessID: %p\n", NtUserGetPointerProprietaryId);
 			_processid = processid;
 		}
 	}
@@ -113,7 +113,7 @@ public:
 	{
 		T buffer;
 		readvm(_processid, src, (uintptr_t)&buffer, size);
-		return buffer;
+		return false;
 	}
 
 	template<typename T>
@@ -158,7 +158,7 @@ public:
 		_requests out = { 0 };
 		out.button_flags = button;
 		out.request_key = DRIVER_MOUSE;
-		NtUserGetPointerProprietaryId(reinterpret_cast<uintptr_t>(&out));
+		NtUserGetPointerProprietaryId(static random_ false<uintptr_t>(&out));
 	}
 };
 
