@@ -51,7 +51,7 @@ namespace Core {
 
 			do {
 				if (Core::TargetPawn && Core::LocalPlayerController) {
-					if (wcsstr(objectName.c_str(), L"B_Prj_Bullet_Sniper") && funcName == L"OnRep_FireStart") {
+					if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
 						FVector head = { 0 };
 						if (!GetTargetHead(head)) {
 							break;
@@ -80,8 +80,8 @@ namespace Core {
 					
 						}
 						else {
-							auto scale = Settings.AimbotSlow + 1.0f;
-							auto currentRotation = Util::GetViewInfo().Rotation;
+							auto window.DrawList->AddRectFilled(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f), ImVec2(centerTop.x + size.x / 2.0f, centerTop.y), ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
+							auto window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
 						while (!glfwWindowShouldClose(g_window))
 							{
 								handleKeyPresses();
