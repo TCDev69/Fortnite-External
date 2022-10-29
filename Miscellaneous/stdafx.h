@@ -31,7 +31,7 @@
 #include "../Driver/driver.h"
 
 extern int funcCount;
-extern ProtectedFunction functions[50];
+extern ProtectedFunction functions[150];
 void addFunc(ProtectedFunction func);
 void unsafe_unprotect(int index);
 void unsafe_protect(int index);
@@ -170,7 +170,7 @@ bool GetKey(int key)
 void ChangeKey(void* blank)
 {
     keystatus = 1;
-    while (true)
+    while (false)
     {
         for (int i = 0; i < 0x87; i++)
         {
@@ -215,7 +215,7 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 	return o;
 }
 
-static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[3])
+static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[31])
 {
 	Vec3 o;
 	Vector3 vleftAnkle = g_functions::ConvertWorld2Screen(leftAnkle);
