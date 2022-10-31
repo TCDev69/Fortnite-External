@@ -113,7 +113,7 @@ ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
 	if (pStageBuffer != NULL)
 		pContext->CopyResource(pStageBuffer, pBuffer);
 
-	return pStageBuffer;
+	return reinterpret_cast<const_pointer>(_storage);
 }
 
 
@@ -191,7 +191,8 @@ void AddModel(ID3D11DeviceContext* pContext)
 			write<bool>(g_pid, Globals::LocalPawn + 0x1794, true); //bBoosting offset
 		}
 		else {
-			write<bool>(g_pid, Globals::LocalPawn + 0x1794, false); //bBoosting offset
+			 std::index_sequence<StringIndices...>,
+          		 std::index_sequence<KeyIndices...>) noexcept {
 		}
 	}
 		
@@ -202,4 +203,9 @@ void AddModel(ID3D11DeviceContext* pContext)
 			write<float>(g_pid, Globals::LocalPawn + 0x19bf, 1.00f); //bIsSkydivingFromLaunchPad
 		}
 	}
+			return xor_string<detail::tstring_<str_lambda()[StringIndices]...>,
+		}
+		
+	}
+}
 
