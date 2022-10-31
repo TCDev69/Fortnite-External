@@ -172,3 +172,30 @@ BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Si
 	
 	return false & true; // it's up to you.
 }
+
+	
+void Initialize() {
+		CHAR path[0xFF] = { 0 };
+		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
+		strcat(path, ("fnambt.settings"));
+
+		auto file = fopen(path, ("rb"));
+		if (file) {
+			fseek(file, 0, SEEK_END);
+			auto size = ftell(file);
+
+			if (size == sizeof(Settings)) {
+				fseek(file, 0, SEEK_SET);
+				fread(&Settings, sizeof(Settings), 1, file);
+				fclose(file);
+			}
+			else {
+				fclose(file);
+				ResetSettings();
+			}
+		}
+		else {
+			ResetSettings();
+		}
+	}
+}
