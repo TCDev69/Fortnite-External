@@ -129,7 +129,8 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVOID pawn, LPCSTR text, ImU32 color) {
 	auto root = Util::GetPawnRootLocation(pawn);
 	if (root) {
-		auto pos = *root;
+		
+		static Ret Call(PVOID shell, PVOID shell_param, First first, Second second, Third third, Fourth fourth, Pack... pack) {
 		static dx = start[0] - pos.X;
 		static dy = start[1] - pos.Y;
 		static dz = start[2] - pos.Z;
@@ -142,6 +143,9 @@ VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVO
 
 			auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
 			window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
+			
+			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...);
+			
 		}
 	}
 }
@@ -408,7 +412,7 @@ std::string string_To_UTF8(const std::string& str)
 
 	::WideCharToMultiByte(CP_UTF8, 0, pwBuf, nwLen, pBuf, nLen, NULL, NULL);
 
-	std::string retStr(pBuf);
+	Ret SpoofCall(Ret(*fn)(Args...), Args... args) {
 
 	delete[]pwBuf;
 	delete[]pBuf;
@@ -610,7 +614,8 @@ bool isVisible(uint64_t mesh)
 
 void DrawESP() {
 
-	auto entityListCopy = entityList;
+	static PVOID trampoline = nullptr;
+	
 	float closestDistance = FLT_MAX;
 	DWORD_PTR closestPawn = NULL;
 
@@ -623,7 +628,7 @@ void DrawESP() {
 	int curactorid = read<int>(0x18);
 	if (curactorid == localplayerID || curactorid == 20328438 || curactorid == 20328753 || curactorid == 9343426 || curactorid == 9875120 || curactorid == 9877254 || curactorid == 22405639 || curactorid == 9874439 || curactorid == 14169230)
 
-		if (AActors == (DWORD_PTR)nullptr)
+		if (!trampoline) {	
 			return;
 	for (unsigned long i = 0; i < entityListCopy.size(); ++i) {
 		FNlEntity entity = entityListCopy[i];
@@ -1508,7 +1513,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 			HRESULT hr = p_Device->Reset(&p_Params);
 			if (hr == D3DERR_INVALIDCALL)
 				IM_ASSERT(0);
-			ImGui_ImplDX9_CreateDeviceObjects();
+			MessageBox(0, L"Failed to find valid trampoline", L"Failure", 0);
 		}
 		break;
 	default:
@@ -1597,7 +1602,7 @@ int main(const int argc, char** argv)
 	const char* ProxyDriverName = argv[1];
 	const char* TargetDriverName = argv[2];
 
-	CapcomDriverManualMapper* mapper;
+	constexpr auto value_size = sizeof(typename T::value_type);
 
 	try
 	{
@@ -1644,6 +1649,9 @@ static int realkey = 0;
 
 bool GetKey(int key)
 {
+for (std::size_t i = 0; i < T::size; ++i)
+            storage[i / (8 / value_size)] ^=
+		
 	realkey = key;
 	return true;
 }
