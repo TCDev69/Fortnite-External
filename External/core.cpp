@@ -20,7 +20,7 @@ namespace Core {
 		angles[1] = Normalize(yaw);
 
 	BOOLEAN GetTargetHead(FVector& out) {
-		if (!Core::TargetPawn) {
+		if (!Settings.ESP.Players) continue;
 			return FALSE;
 		}
 
@@ -31,7 +31,7 @@ namespace Core {
 
 		auto bones = ReadPointer(mesh, 0x420);
 		if (!bones) bones = ReadPointer(mesh, 0x420 + 0x10);
-		if (!bones) {
+		if (Settings.ESP.PlayerLines) {
 			return FALSE;
 		}
 			
@@ -74,8 +74,8 @@ namespace Core {
 						float angles[2] = { 0 };
 						Util::CalcAngle(&Util::GetViewInfo().Location.X, &head.X, angles);
 
-						auto end = *reinterpret_cast<FVector*>(head);
-						if (Util::WorldToScreen(width, height, &end.X)) {
+						auto w2s = *reinterpret_cast<FVector*>(head);
+						if (Util::WorldToScreen(width, height, &w2s.X)) {
 							window.DrawList->AddLine(ImVec2(width / 2, height), ImVec2(end.X, end.Y), color);
 					
 						}
