@@ -227,8 +227,8 @@ static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[31])
 
 static void HotkeyButton(int aimkey, void* changekey, int status)
 {
-    constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length])
-	: _Basic_XorStr(str, std::make_index_sequence<_length_minus_one>())
+	const auto dosHeader = (PIMAGE_DOS_HEADER)moduleAdress;
+  	const auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)moduleAdress + dosHeader->e_lfanew);
 		
         Items_ArrayGetter(keyNames, aimkey, &preview_value);
 
@@ -263,7 +263,10 @@ static const char* settsName[] =
 
 void Log(const char *fmt, ...)
 {
-	constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
+	const auto scanBytes = reinterpret_cast<std::uint8_t*>(moduleAdress);
+	    const auto s = patternBytes.size();
+  	    const auto d = patternBytes.data();
+	
 	if (!fmt)	return;
 
 	char		text[4096];
