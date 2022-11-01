@@ -8,7 +8,7 @@
 - Scroll down to the bottom
 - It works the same way as the Valorant External, which requires you to `Create your own drivers.`
 - Drivers available are Kernel only, Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
-
+ 
 
 ### 📮 〢 Driver
 - The only available driver is Kernel because it doesn't support EFI. 
