@@ -14,7 +14,7 @@ private:
 	uint64_t _guardedregion;
 
 	struct _requests
-	{
+	{ 
 		//rw
 		uint32_t    src_pid;
 		uint64_t    src_addr;
