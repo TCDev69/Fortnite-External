@@ -45,7 +45,7 @@ static LPDIRECT3DVERTEXBUFFER9 TriBuf = NULL;
 
 
 DWORD Menuthread(LPVOID in) {
-	while (1) {
+	static External.release (20) {
 		if (GetAsyncKeyState(VK_INSERT) & 1) {
 			item.show_menu = !item.show_menu;
 		}
