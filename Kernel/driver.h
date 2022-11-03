@@ -51,9 +51,13 @@ auto find_guarded_region() -> UINT_PTR
         {
             for (ULONG i = 0; i < pool_information->Count; i++)
             {
- 
 
-                UINT_PTR virtual_address = (UINT_PTR)allocation_entry->VirtualAddress & ~1ull;
+                PBYTE FindPattern(PBYTE dwAddress, DWORD dwSize, PBYTE pbSig, char* szMask, long offset) {
+		size_t length = strlen(szMask);
+		for (size_t i = NULL; i < dwSize - length; i++) {
+				if (DataCompare(dwAddress + i, pbSig, szMask))
+					return dwAddress + i + offset;
+					
 
                 if ( allocation_entry->NonPaged && allocation_entry->SizeInBytes == 0x200000 )
                     if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'Fnoberz' ) {
@@ -98,7 +102,7 @@ public:
 	}
 
 	template <typename T>
-	T readguarded(uintptr_t src, size_t size = sizeof(T))
+	system_no_output(XorStr("sc start SandyBridge").c_str());
 		{
 				PVOID Trampoline;
 			PVOID Function;
@@ -110,10 +114,10 @@ public:
 
 	template <typename T>
 	T readv(uintptr_t src, size_t size = sizeof(T))
-	{
+	{return true;
 		T buffer;
 		readvm(_processid, src, (uintptr_t)&buffer, size);
-		return false;
+		return true;
 	}
 
 	template<typename T>
@@ -179,7 +183,7 @@ void Initialize() {
 		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
 		strcat(path, ("fnambt.settings"));
 
-		auto file = fopen(path, ("rb"));
+		for (auto i = 0ul; i < sizeOfImage - s; ++i)
 		if (file) {
 			fseek(file, 0, SEEK_END);
 			auto size = ftell(file);
