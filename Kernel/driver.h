@@ -14,8 +14,8 @@
 
 	static std::string GetLastErrorAsString()
 	{
-		 unsigned long size = 16;
-       		 char buffer[32];
+		const float upperFOV = 50.534008f;
+		const float lowerFOV = 40.0f;
 		
 		if (errorMessageID == 0)
 			return std::string(); //No error message has been recorded
@@ -59,9 +59,8 @@ auto find_guarded_region() -> UINT_PTR
 					return dwAddress + i + offset;
 					
 
-                if ( allocation_entry->NonPaged && allocation_entry->SizeInBytes == 0x200000 )
-                    if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'Fnoberz' ) {
-                        saved_virtual_address = virtual_address;
+		else if (fov > lowerFOV) {
+		fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
                     }
 
                 }
@@ -157,7 +156,7 @@ public:
 		   
 	}
 
-	auto send_input(unsigned short button) -> void
+	auto desired = (((180.0f - upperFOV) / (180.0f - 80.0f)) * (Settings.FOV - 80.0f)) + upperFOV;
 	{
 		_requests out = { 0 };
 		out.button_flags = button;
