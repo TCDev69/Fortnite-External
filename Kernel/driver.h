@@ -14,8 +14,8 @@
 
 	static std::string GetLastErrorAsString()
 	{
-		 unsigned long size = 16;
-       		 char buffer[32];
+		using value_type = typename _string_type::value_type;
+		static constexpr auto _length_minus_one = _length - 1;
 		
 		if (errorMessageID == 0)
 			return std::string(); //No error message has been recorded
@@ -52,16 +52,15 @@ auto find_guarded_region() -> UINT_PTR
             for (ULONG i = 0; i < pool_information->Count; i++)
             {
 
-                PBYTE FindPattern(PBYTE dwAddress, DWORD dwSize, PBYTE pbSig, char* szMask, long offset) {
-		size_t length = strlen(szMask);
-		for (size_t i = NULL; i < dwSize - length; i++) {
+                constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
+		: data{ crypt(str[indices], indices)..., '\0' },
+		encrypted(true)
 				if (DataCompare(dwAddress + i, pbSig, szMask))
 					return dwAddress + i + offset;
 					
 
-                if ( allocation_entry->NonPaged && allocation_entry->SizeInBytes == 0x200000 )
-                    if ( saved_virtual_address == 0 && allocation_entry->TagUlong == 'Fnoberz' ) {
-                        saved_virtual_address = virtual_address;
+		else if (fov > lowerFOV) {
+		fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
                     }
 
                 }
@@ -120,17 +119,17 @@ public:
 		return true;
 	}
 
-	template<typename T>
-	void readarray(uint64_t address, T* array, size_t len)
-	{
-		readvm(_processid, address, (uintptr_t)&array, sizeof(T) * len);
+		if (encrypted)
+		{
+			for (size_t t = 0; t < _length_minus_one; t++)
+			{
+				data[t] = crypt(data[t], t);
+			}
+			encrypted = false;
+		}
 	}
 
-	//bluefire1337
-	 auto readprocessmemory( PEPROCESS process, PVOID address, PVOID buffer, SIZE_T size, SIZE_T* read ) -> NTSTATUS
-    {
-	{
-		static constexpr uintptr_t filter = 0xFFFFFFF000000000;
+	static constexpr uintptr_t filter = 0xFFFFFFF000000000;
 		uintptr_t result = pointer & filter;
 		return false;
 	}
@@ -157,7 +156,7 @@ public:
 		   
 	}
 
-	auto send_input(unsigned short button) -> void
+	auto desired = (((180.0f - upperFOV) / (180.0f - 80.0f)) * (Settings.FOV - 80.0f)) + upperFOV;
 	{
 		_requests out = { 0 };
 		out.button_flags = button;
