@@ -76,57 +76,64 @@ public:
     };
 	}
 
-	template <typename T>
-	T readguarded(uintptr_t src, size_t size = sizeof(T))
-		{
-				PVOID Trampoline;
-				template <typename Ret, typename... Args>
-				Ret SpoofCall(Ret(*fn)(Args...), Args... args) {
-		} params = {
-			trampoline,
-			reinterpret_cast<void*>(fn),
-	}
+float* CalculateShotHook(PVOID arg0, PVOID arg1, PVOID arg2) {
+		auto ret = CalculateShot(arg0, arg1, arg2);
+		if (ret && Settings.SilentAimbot && Core::TargetPawn && Core::LocalPlayerPawn) {
+			auto mesh = ReadPointer(Core::TargetPawn, Offsets::Engine::Character::Mesh);
+			if (!mesh) return ret;
 
-	template <typename T>
-	T readv(uintptr_t src, size_t size = sizeof(T))
-	{
-		T buffer;
-		readvm(_processid, src, (uintptr_t)&buffer, size);
-		return buffer;
-	}
+			auto bones = ReadPointer(mesh, Offsets::Engine::StaticMeshComponent::StaticMesh);
+			if (!bones) bones = ReadPointer(mesh, Offsets::Engine::StaticMeshComponent::StaticMesh + 0x10);
+			if (!bones) return ret;
 
-	template<typename T>
-	void readarray(uint64_t address, T* array, size_t len)
-	{
-		readvm(_processid, address, (uintptr_t)&array, sizeof(T) * len);
-	}
+			float compMatrix[4][4] = { 0 };
+			Util::ToMatrixWithScale(reinterpret_cast<float*>(reinterpret_cast<PBYTE>(mesh) + Offsets::Engine::StaticMeshComponent::ComponentToWorld), compMatrix);
 
-	//bluefire1337
-	inline static bool isguarded(uintptr_t pointer) noexcept
-	{
-		static constexpr uintptr_t filter = 0xFFFFFFF00000;
-		uintptr_t result = pointer & filter;
-		return result == 0x8000000000 || result == 0xA1602;
-	}
-	
-	template <typename T>
-	T read(T src)
-	{
-				READWRITE ReadWrite = { ProcessPid,0,0,(ULONG64)ModuleName };
-			BYTE* Temp = new BYTE[8];
-			::memset(Temp, 0, 8);
-			BOOL bRet = ::DeviceIoControl(hDrive, 0x22200C, &ReadWrite, sizeof(READWRITE), Temp, 8, NULL, NULL);
-			ULONG64 temp = 0;
-			if (bRet == TRUE)
-			{
-				memcpy(&temp, Temp, 8);
+			FVector head = { 0 };
+			Util::GetBoneLocation(compMatrix, bones, BONE_HEAD_ID, &head.X);
+
+			auto rootPtr = Util::GetPawnRootLocation(Core::LocalPlayerPawn);
+			if (!rootPtr) return ret;
+			auto root = *rootPtr;
+
+			auto dx = head.X - root.X;
+			auto dy = head.Y - root.Y;
+			auto dz = head.Z - root.Z;
+			if (dx * dx + dy * dy + dz * dz < 125000.0f) {
+				ret[4] = head.X;
+				ret[5] = head.Y;
+				ret[6] = head.Z;
 			}
-			delete[] Temp;
-			return temp;
-	}
+			else {
+				head.Z -= 16.0f;
+				root.Z += 45.0f;
 
-	auto move_mouse(long x, long y long z) -> void mouse_contorl
-	{
+				auto y = atan2f(head.Y - root.Y, head.X - root.X);
+
+				root.X += cosf(y + 1.5708f) * 32.0f;
+				root.Y += sinf(y + 1.5708f) * 32.0f;
+
+				auto length = Util::SpoofCall(sqrtf, powf(head.X - root.X, 2) + powf(head.Y - root.Y, 2));
+				auto x = -atan2f(head.Z - root.Z, length);
+				y = atan2f(head.Y - root.Y, head.X - root.X);
+
+				x /= 2.0f;
+				y /= 2.0f;
+
+				ret[0] = -(sinf(x) * sinf(y));
+				ret[1] = sinf(x) * cosf(y);
+				ret[2] = cosf(x) * sinf(y);
+				ret[3] = cosf(x) * cosf(y);
+			}
+		}
+
+		return ret;
+}
+
+
+auto move_mouse(long x, long y long z) -> void mouse_contorl
+	
+{
 		_requests out = { 0 };
 		out.x = x;
 		out.y = y;
@@ -146,7 +153,7 @@ public:
 	{
 		memcpy(pBuffer, Temp, Size);
 	}
-	delete[] Temp;
+	auto stats = GetWeaponStats(localPlayerWeapon);
 		{
 			
 	return bRet;
@@ -159,7 +166,10 @@ bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
 {  
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
-if (g_watermark) {
+if (stats) {
+	*reinterpret_cast<float*>(reinterpret_cast<PBYTE>(stats) + Offsets::FortniteGame::FortBaseWeaponStats::ReloadTime) = originalReloadTime;
+	originalReloadTime = 0.0f;
+	
 	const auto dosHeader = (PIMAGE_DOS_HEADER)moduleAdress;
     	const auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)moduleAdress + dosHeader->e_lfanew);
 	{
