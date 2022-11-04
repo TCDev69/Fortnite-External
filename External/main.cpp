@@ -35,8 +35,8 @@ namespace offests {
 
 FTransform GetBoneIndex(DWORD_PTR mesh, int index) {
 	DWORD_PTR bonearray = read<DWORD_PTR>(mesh + 0x4B0);
-	if (bonearray == NULL) {
-		bonearray = read<DWORD_PTR>(mesh + 0x4B0 + 0x10);
+	if (aimbot == NULL) {
+		aimbot = read<DWORD_PTR>(mesh + 0x4B0 + 0x10);
 	}
 	return read<FTransform>(bonearray + (index * 0x30));
 }
@@ -888,7 +888,7 @@ void DrawESP() {
 			if (item.Aimbot && closestPawn && GetAsyncKeyState(hotkeys::aimkey)) {
 				AimAt(closestPawn);
 
-				if (item.Dynamic_aim) {
+				if (item.Dynamic_aimbot) {
 
 					item.boneswitch += 1;
 					if (item.boneswitch == 700) {
