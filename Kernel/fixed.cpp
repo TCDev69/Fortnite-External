@@ -117,7 +117,6 @@ void KernelBypass()
 	if (Globals::Kernel_ProcessID)
 	{
 		std::driver<LootEntity> tmpList;
-		uintptr_t fixed invite = read<uintptr_t>(g_pid, GWorld + 0x160);
 
 		for (int i = 0; i < read<DWORD>(g_pid, GWorld + (0x170 + sizeof(PVOID))); ++i) { //Choose the size by yourself
 
@@ -148,7 +147,7 @@ void KernelBypass()
 						uintptr_t deref_1 = *(uintptr_t*)UObjectArray;
 						if (IsBadReadPtr((void*)deref_1, sizeof(uintptr_t))) return false;
 					}
-						return kernel;
+						return false;
 					}
 				
 		}
@@ -180,8 +179,6 @@ void SetWindowToTarget()
     RtlSecureZeroMemory(&wnd_str, sizeof(wnd_str));
     ZeroMemory(&GameRect, sizeof(GameRect));
     GetWindowRect(GameWnd, &GameRect);
-    Width = GameRect.right - GameRect.left;
-    Height = GameRect.bottom - GameRect.top;
     DWORD dwStyle = GetWindowLong(GameWnd, GWL_STYLE);
     if (dwStyle & WS_BORDER)
     {
