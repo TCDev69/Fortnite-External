@@ -44,10 +44,10 @@ namespace Core {
 						return true;
 	}
 
-	PVOID ProcessEventHook(UObject* object, UObject* func, PVOID params, PVOID result) {
-		if (object && func) {
-			auto objectName = Util::GetObjectFirstName(object);
-			auto Names = Util::GetObjectFirstName(func);
+					void SetDepthStencilState(eDepthState aState)
+				{
+					pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
+				}
 
 			do {
 				if (Core::TargetPawn && Core::LocalPlayerController) {
@@ -80,8 +80,9 @@ namespace Core {
 					
 						}
 						else {
-							auto window.DrawList->AddRectFilled(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f), ImVec2(centerTop.x + size.x / 2.0f, centerTop.y), ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
-							auto window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
+							o.x = ScreenCenterX + ScreenCenterX * vWorldViewProj.x / vWorldViewProj.w;
+							o.y = ScreenCenterY + ScreenCenterY * -vWorldViewProj.y / vWorldViewProj.w;
+							
 						while (!glfwWindowShouldClose(g_window))
 							{
 								handleKeyPresses();
