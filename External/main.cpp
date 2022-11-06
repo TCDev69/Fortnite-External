@@ -56,9 +56,6 @@ D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
 	float CP = cosf(radPitch);
 	float SY = sinf(radYaw);
 	float CY = cosf(radYaw);
-	float SR = sinf(radRoll);
-	float CR = cosf(radRoll);
-
 	D3DMATRIX matrix;
 	matrix.m[0][0] = CP * CY;
 	matrix.m[0][1] = CP * SY;
@@ -1168,12 +1165,6 @@ void render() {
 					ImGui::Spacing();
 
 					ImGui::SliderFloat(("FOV"), &item.AimFOV, 20, 500);
-					ImGui::SameLine();
-					ImGui::TextColored(ImColor(255, 255, 255, 255), ("[?]"));
-					if (ImGui::IsItemHovered()) {
-						ImGui::BeginTooltip();
-						ImGui::Text(("Field of view for aimbot"));
-						ImGui::EndTooltip();
 					}
 					ImGui::SliderFloat(("Smoothing"), &item.Aim_SpeedX, 1, 30);
 					ImGui::SameLine();
@@ -1453,8 +1444,9 @@ void setupWindow() {
 		io.ImeWindowHandle = GameWnd;
 		io.DeltaTime = 1.0f / 60.0f;
 
-		POINT p;
-		GetCursorPos(&p);
+		auto weaponName = Util::GetObjectFirstName((UObject*)localPlayerWeapon);
+		auto isProjectileWeapon = wcsstr(weaponName.c_str(), L"Rifle_Sniper");
+		
 		io.MousePos.x = p.x - xy.x;
 		io.MousePos.y = p.y - xy.y;
 
