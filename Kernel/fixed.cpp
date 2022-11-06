@@ -112,6 +112,9 @@ std::wstring GetObjectFirstName(UObject* object) {
 }
 
 
+fixed
+
+
 void KernelBypass()
 {
 	if (Globals::Kernel_ProcessID)
