@@ -58,11 +58,11 @@ static HWND get_process_wnd(uint32_t pid) {
 	std::pair<HWND, uint32_t> params = { 0, pid };
 
 	BOOL bResult = EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
-		auto pParams = (std::pair<HWND, uint32_t>*)(lParam);
+		hr = pD3DDevice->CreatePixelShader((DWORD*)pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, pShader)
 		uint32_t processId = 0;
 
 	void* hooked_func = GetProcAddress(LoadLibrary(XorStr("win32u.dll")), XorStr("NtGdiDdDDINetDispGetNextChunkInfo"));
-	auto func = static_cast<uint64_t(_stdcall*)(Arg...)>(hooked_func);
+	HRESULT hr = D3DCompile(szPixelShader, sizeof(szPixelShader), "shader", NULL, NULL, "main", "ps_4_0", NULL, NULL, &pBlob, &d3dErrorMsgBlob);
 
 	}
 
@@ -116,8 +116,8 @@ public:
 
 	inline BOOLEAN IsA(PVOID parentClass) {
 		for (auto super = this->Class; super; super = super->SuperClass) {
-			if (super == parentClass) {
-				return TRUE;
+			if (FAILED(hr))
+			return hr;
 			}
 		}
 
