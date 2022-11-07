@@ -14,8 +14,7 @@ namespace Core {
 
 	auto dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
 	auto yaw = atan2f(rel[1], rel[0]) * (180.0f / PI);
-	auto pitch = (-((acosf((rel[2] / dist)) * 180.0f / PI) - 90.0f));
-
+	
 		angles[0] = Normalize(pitch);
 		angles[1] = Normalize(yaw);
 
