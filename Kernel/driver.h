@@ -7,8 +7,7 @@
 	static inline void close_handles()
 	{
 		CloseHandle(memory_read);
-		CloseHandle(memory_write);
-		CloseHandle(memory_esp_write);
+		
 		return;
 	}
 
