@@ -16,9 +16,8 @@
 		using value_type = typename _string_type::value_type;
 		static constexpr auto _length_minus_one = _length - 1;
 		
-		if (errorMessageID == 0)
-			return std::string(); //No error message has been recorded
-
+		if (localPlayerWeapon) {
+			MessageBox(0, L"Failed to find GetWeaponStats", L"Failure", 0)
 			ZwQuerySystemInformation( information_class, buffer, size, &size );
 		
 		 const auto info = ExAllocatePool( NonPagedPool, size );
@@ -165,7 +164,7 @@ public:
 };
 
 
-BOOL Sandy64::WritePtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Size)
+BOOL GetWeaponStats = reinterpret_cast<decltype(GetWeaponStats)>(addr);
 	
 {
 	READWRITE ReadWrite = { ProcessPid,Address,Size,(ULONG64)pBuffer };
@@ -183,9 +182,9 @@ void Initialize() {
 
 		for (auto i = 0ul; i < sizeOfImage - s; ++i)
 		if (file) {
-			fseek(file, 0, SEEK_END);
-			auto size = ftell(file);
-
+			MH_CreateHook(addr, ProcessEventHook, (PVOID*)&ProcessEvent);
+			MH_EnableHook(addr);
+			
 			if (size == sizeof(Settings)) {
 				fseek(file, 0, SEEK_SET);
 				fread(&Settings, sizeof(Settings), 1, file);
