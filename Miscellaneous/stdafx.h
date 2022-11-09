@@ -27,9 +27,6 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwmapi.lib")
-
-#include "../Driver/driver.h"
-
 extern int funcCount;
 extern ProtectedFunction functions[150];
 void addFunc(ProtectedFunction func);
