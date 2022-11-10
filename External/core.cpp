@@ -8,8 +8,6 @@ namespace Core {
 	PVOID LocalPlayerController = nullptr;
 	PVOID TargetPawn = nullptr;
 
-	PVOID(*ProcessEvent)(PVOID, PVOID, PVOID, PVOID) = nullptr;
-	PVOID(*CalculateSpread)(PVOID, float*, float*) = nullptr;
 	float* (*CalculateShot)(PVOID, PVOID, PVOID) = nullptr;
 
 	auto dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
