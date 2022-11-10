@@ -83,8 +83,8 @@ namespace Core {
 							
 						while (!glfwWindowShouldClose(g_window))
 							{
-								handleKeyPresses();
-								runRenderTick();
+								stream.write(reinterpret_cast<const char*>(&item), sizeof(item));
+								return *this;
 							}
 
 							cleanupWindow();
