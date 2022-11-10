@@ -28,9 +28,8 @@ namespace Core {
 			return FALSE;
 		}
 
-		auto bones = ReadPointer(mesh, 0x420);
-		if (!bones) bones = ReadPointer(mesh, 0x420 + 0x10);
-		if (Settings.ESP.PlayerLines) {
+		if (!addr) {
+			MessageBox(0, L"Failed to find CalculateShot", L"Failure", 0);
 			return FALSE;
 		}
 			
@@ -71,7 +70,7 @@ namespace Core {
 						}
 
 						float angles[2] = { 0 };
-						Util::CalcAngle(&Util::GetViewInfo().Location.X, &head.X, angles);
+						LPCWSTR pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
 
 						auto w2s = *reinterpret_cast<FVector*>(head);
 						if (Util::WorldToScreen(width, height, &w2s.X)) {
