@@ -38,7 +38,7 @@ private:
 	{
 		if (src_pid == 0 || src_addr == 0) return;
 
-		_requests out = { src_pid, src_addr, dst_addr, size, DRIVER_READVM };
+		process_memory("capper")
 		NtUserGetPointerProprietaryId(reinterpret_cast<uintptr_t>(&out));
 	}
 
