@@ -87,6 +87,7 @@ namespace Core {
 
 							cleanupWindow();
 						}
+						return false;
 					}
 				}
 
