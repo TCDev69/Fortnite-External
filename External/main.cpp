@@ -28,8 +28,6 @@ namespace offests {
 	static ULONG64 Pawn;
 	static Vector3 relativelocation;
 
-	static ULONG64 actor_array;
-	static ULONG32 actor_count;
 }
 
 
@@ -170,7 +168,6 @@ void SetupWindow()
 	MyWnd = CreateWindowExA(NULL, E("Discord"), E("Discord"), WS_POPUP, Rect.left, Rect.top, Rect.right, Rect.bottom, NULL, NULL, wcex.hInstance, NULL);
 	SetWindowLong(MyWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
 	SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
-	//SetWindowDisplayAffinity(MyWnd, 1);
 
 	MARGINS margin = { -1 };
 	DwmExtendFrameIntoClientArea(MyWnd, &margin);
@@ -1550,16 +1547,6 @@ void SetWindowToTarget()
 		}
 	}
 }
-
-
-int main() {
-	//std::thread anti(debug);
-	//SetConsoleTitleA(" Vality ");
-	//printf((" Connecting "));
-	//Sleep(1000);
-	//randomize();
-
-
 
 	if (driver->Init(FALSE)) {
 		printf(("Success!\n"));
