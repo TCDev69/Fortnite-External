@@ -1,7 +1,3 @@
-#pragma once
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #define TopWindowGame 11
 #define TopWindowMvoe 22
 #include <Windows.h>
@@ -27,16 +23,8 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwmapi.lib")
-extern int funcCount;
-extern ProtectedFunction functions[150];
-void addFunc(ProtectedFunction func);
-void unsafe_unprotect(int index);
-void unsafe_protect(int index);
-int GetFunctionIndex(void* FunctionAddress);
-void Unprotect(void* FunctionAddress);
-void Protect(void* FunctionAddress);
-void XOR(BYTE* data, size_t size, BYTE XOR_KEY = STRING_XOR_KEY);
-void ProtectedSleep(int ms);
+
+
 
 
 using namespace std;
@@ -73,22 +61,10 @@ namespace sdk {
     DWORD process;
     DWORD64 module_base;
 }
+	return false;
+}
 
 
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-#define TopWindowGame 11
-#define TopWindowMvoe 22
-
-HRESULT DirectXInit(HWND hWnd);
-LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
-void SetupWindow();
-WPARAM MainLoop();
-void CleanuoD3D(); void ChangeClickability(bool canclick, HWND ownd);
-
-int isTopwin();
-void Render(int Topwin, bool showimgui);
-void SetWindowToTarget();
 namespace menu
 {
 		"{"
