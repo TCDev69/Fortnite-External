@@ -9,8 +9,6 @@
 #include <d3d9.h>
 #include <xmmintrin.h>
 
-#pragma comment(lib, "ntdll.lib")
-#pragma comment(lib, "dwmapi.lib")
 
 typedef enum _KEY_VALUE_INFORMATION_CLASS {
 	KeyValueBasicInformation,
