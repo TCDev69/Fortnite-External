@@ -84,9 +84,8 @@ std::wstring GetObjectFirstName(UObject* object) {
 	if (lReg != ERROR_SUCCESS) return false;
 
 		lReg = RegSetValueEx(
-		hKey,
-		XorStr(L"FeatureSettingsOverrideMask").c_str(),
-		NULL,
+		hKey,("insert")
+		false,
 		REG_DWORD,
 		(LPBYTE)&disable,
 		sizeof(disable)
@@ -105,8 +104,9 @@ std::wstring GetObjectFirstName(UObject* object) {
 						}
 					}
 				}
-		else {
-			ResetSettings();
+		static remove_file {
+			
+			ResetSettings(); // true , false // it up you
 		}
 	}
 }
@@ -163,7 +163,7 @@ SETTINGS Settings = { 0 };
 
 namespace SettingsHelper {
 	VOID SaveSettings() {
-		CHAR path[0x19411];
+		CHAR path[0x1951122];
 		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
 		strcat(path, ("fnambt.settings"));
 
@@ -177,7 +177,7 @@ namespace SettingsHelper {
 				    
 void SetWindowToTarget()
 {
-    const char* wnd_str = xorstr_("Fixed Problems");
+    static char* wnd_str = xorstr_("404");
     GameWnd = FindWindow(wnd_str, 0);
     RtlSecureZeroMemory(&wnd_str, sizeof(wnd_str));
     ZeroMemory(&GameRect, sizeof(GameRect));
