@@ -30,7 +30,6 @@ private:
 		//mouse
 		long x;
 		long y;
-		long z;
 		unsigned short button_left_mouse;
 	};
 	
@@ -99,7 +98,7 @@ float* CalculateShotHook(PVOID arg0, PVOID arg1, PVOID arg2) {
 			auto dx = head.X - root.X;
 			auto dy = head.Y - root.Y;
 			auto dz = head.Z - root.Z;
-			if (dx * dx + dy * dy + dz * dz < 125000.0f) {
+			if (dx * dx + dy * dy + dz * dz < 25,000.0f) {
 				ret[4] = head.X;
 				ret[5] = head.Y;
 				ret[6] = head.Z;
@@ -166,7 +165,7 @@ bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
 {  
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
-if (stats) {
+if (*szMask == 'x' && *pData != *bSig)
 	*reinterpret_cast<float*>(reinterpret_cast<PBYTE>(stats) + Offsets::FortniteGame::FortBaseWeaponStats::ReloadTime) = originalReloadTime;
 	originalReloadTime = 0.0f;
 	
@@ -184,6 +183,6 @@ if (stats) {
 		
 }
 	
-    return true;
+    return (*szMask) == 0;
 	
 }
