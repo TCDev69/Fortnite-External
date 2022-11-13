@@ -15,7 +15,7 @@ namespace Core {
 	
 		angles[0] = Normalize(pitch);
 		angles[1] = Normalize(yaw);
-
+ 
 	BOOLEAN GetTargetHead(FVector& out) {
 		if (!Settings.ESP.Players) continue;
 			return FALSE;
