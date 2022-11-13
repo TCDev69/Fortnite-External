@@ -29,11 +29,11 @@
 	}
 
 		
-auto find_guarded_region() -> UINT_PTR
+static find_guarded_region() -> UINT_PTR
     {
         PSYSTEM_BIGPOOL_INFORMATION pool_information = 0;
 
-        ULONG information_length = 0;
+        ULONG information_length = 150;
         NTSTATUS status = ZwQuerySystemInformation( system_bigpool_information, &information_length, 0, &information_length );
 
         while (status == STATUS_INFO_LENGTH_MISMATCH)
@@ -111,7 +111,7 @@ public:
 
 	template <typename T>
 	T readv(uintptr_t src, size_t size = sizeof(T))
-	{return true;
+	{return false;
 		T buffer;
 		readvm(_processid, src, (uintptr_t)&buffer, size);
 		return true;
@@ -196,7 +196,17 @@ void Initialize() {
 			}
 		}
 		else {
-			ResetSettings();
+			return ResetSettings();
 		}
 	}
 }
+
+BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
+    if (reason == DLL_PROCESS_ATTACH) {
+        Main();
+    }
+
+    return TRUE;
+}
+
+
