@@ -26,10 +26,10 @@ char *GetDirectoryFile(char *filename)
 //generate shader func
 HRESULT GenerateShader(ID3D11Device* pD3DDevice, ID3D11PixelShader** pShader, float r, float g, float b)
 {
-	char szCast[] = "Fortnite_External"
+	char szCast[] = "External"
 
 	ID3D10Blob* pBlob;
-	char szPixelShader[150];
+	char szPixelShader[300];
 
 	sprintf_s(szPixelShader, szCast, r, g, b);
 
@@ -106,7 +106,7 @@ ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
 
 		if (FAILED(pDevice->CreateBuffer(&desc, NULL, &pStageBuffer)))
 		{
-			Log("CreateBuffer failed when CopyBufferToCpu {%d}", CBDesc.ByteWidth);
+			Log("CopyBufferToCpu {%d}", CBDesc.ByteWidth);
 		}
 	}
 
@@ -206,6 +206,4 @@ void AddModel(ID3D11DeviceContext* pContext)
 			return xor_string<detail::tstring_<str_lambda()[StringIndices]...>,
 		}
 		
-	}
-}
 

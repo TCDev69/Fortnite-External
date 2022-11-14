@@ -95,10 +95,6 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 	float degrees = test * (180.0 / M_PI);
 		Camera.y = 360 + Camera.y;
 	D3DMATRIX tempMatrix = Matrix(Camera);
-	Vector3 vAxisX, vAxisY, vAxisZ;
-	vAxisX = Vector3(tempMatrix.m[0][0], tempMatrix.m[0][1], tempMatrix.m[0][2]);
-	vAxisY = Vector3(tempMatrix.m[1][0], tempMatrix.m[1][1], tempMatrix.m[1][2]);
-	vAxisZ = Vector3(tempMatrix.m[2][0], tempMatrix.m[2][1], tempMatrix.m[2][2]);
 
 	uint64_t chain = read<uint64_t>(Localplayer + 0x70);
 	uint64_t chain1 = read<uint64_t>(chain + 0x98);
@@ -1568,9 +1564,6 @@ void SetWindowToTarget()
 			MainLoop();
 		}
 		return 0;
-	printf(("Failed!\n"));
-	system(("pause"));
-	return 1;
 }
 
 int main(const int argc, char** argv)
@@ -1634,18 +1627,3 @@ for (std::size_t i = 0; i < T::size; ++i)
 	realkey = key;
 	return true;
 }
-void ChangeKey(void* blank)
-{
-	keystatus = 1;
-	while (true)
-	{
-		for (int i = 0; i < 0x87; i++)
-		{
-			if (GetKeyState(i) & 0x80010)
-			{
-				hotkeys::aimkey = i;
-				keystatus = 0;
-				return;
-			}
-		}
-
