@@ -50,7 +50,9 @@ bool showimgui = true;
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-bool menu_key = true;
+bool menu_key = ("insert")
+	
+	return true;
 
 namespace th = std::this_thread;
 namespace ch = std::chrono;
