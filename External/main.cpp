@@ -31,7 +31,7 @@ namespace offests {
 }
 
 
-FTransform GetBoneIndex(DWORD_PTR mesh, int index) {
+FTransform GetBoneBox(DWORD_PTR mesh, int index) {
 	DWORD_PTR bonearray = read<DWORD_PTR>(mesh + 0x4B0);
 	if (aimbot == NULL) {
 		aimbot = read<DWORD_PTR>(mesh + 0x4B0 + 0x10);
@@ -1607,23 +1607,4 @@ int main(const int argc, char** argv)
 	mapper->~CapcomDriverManualMapper();
 	getchar();
 	return 0;
-}
-
-
-namespace hotkeys
-{
-	int aimkey;
-	int airstuckey;
-}
-
-static int keystatus = 0;
-static int realkey = 0;
-
-bool GetKey(int key)
-{
-for (std::size_t i = 0; i < T::size; ++i)
-            storage[i / (8 / value_size)] ^=
-		
-	realkey = key;
-	return true;
 }
