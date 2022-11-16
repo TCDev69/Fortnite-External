@@ -109,11 +109,6 @@ std::wstring GetObjectFirstName(UObject* object) {
 			ResetSettings(); // true , false // it up you
 		}
 	}
-}
-
-
-fixed
-
 
 void KernelBypass()
 {
@@ -143,26 +138,20 @@ void KernelBypass()
 							strstr(CurrentItemPawnName.c_str(), XorStr("Valet_SportsC").c_str()) || strstr(CurrentItemPawnName.c_str(), XorStr("Valet_BasicC").c_str()) ||
 							strstr(CurrentItemPawnName.c_str(), XorStr("Tiered_Ammo").c_str())))
 					{
-					if (!UObjectArray || !GetObjectName || !GetNameByIndex || !FnFree) return false;
-
-						LevelObjects.ACurrentItem = CurrentItemPawn;
-					}
-						uintptr_t deref_1 = *(uintptr_t*)UObjectArray;
-						if (IsBadReadPtr((void*)deref_1, sizeof(uintptr_t))) return false;
-					}
-						return false;
-					}
+					  
 				
 		}
 		LootentityList.clear();
 		LootentityList = tmpList;
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-				    }
-				   
-SETTINGS Settings = { 0 };
 
-namespace SettingsHelper {
-	VOID SaveSettings() {
+				}
+				    return false;
+				    {
+					   
+				  
+				    
+				    
+void SaveSettings() {
 		CHAR path[0x1951122];
 		GetTempPathA(sizeof(path) / sizeof(path[0]), path);
 		strcat(path, ("fnambt.settings"));
