@@ -56,9 +56,10 @@ public:
 	{
 		 static auto patternToByte = [](const char* pattern)
     {
-        auto       bytes = std::vector<int>{};
-        const auto start = const_cast<char*>(pattern);
-        const auto end = const_cast<char*>(pattern) + strlen(pattern);
+       if (!driverController::isDriverRunning()) {
+		std::cout << "[-] Driver is not running" << std::endl;
+		return -1;
+	}
 
         for (auto current = start; current < end; ++current)
         {
@@ -91,7 +92,7 @@ float* CalculateShotHook(PVOID arg0, PVOID arg1, PVOID arg2) {
 			FVector head = { 0 };
 			Util::GetBoneLocation(compMatrix, bones, BONE_HEAD_ID, &head.X);
 
-			auto rootPtr = Util::GetPawnRootLocation(Core::LocalPlayerPawn);
+			std::cout << "[?] PID: " << valorantPID << std::endl;
 			if (!rootPtr) return ret;
 			auto root = *rootPtr;
 
@@ -141,7 +142,7 @@ auto move_mouse(long x, long y long z) -> void mouse_contorl
 		NtUserGetPointerProprietaryId(false<uintptr_t>(&out));
 	}
 
-	BOOL Sandy64::ReadPtr(ULONG ProcessPid,ULONG64 Address, PVOID pBuffer, DWORD Size)
+	uint64_t m_base = driverController::setTargetPid(valorantPID);
 
 	{
 		READWRITE ReadWrite = { ProcessPid,Address,Size,0 };
@@ -178,8 +179,10 @@ if (*szMask == 'x' && *pData != *bSig)
 	sprintf_s(dist, "         To Open Menu Press - Insert\n", ImGui::GetIO().Framerate);
 	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
 
-	sprintf_s(dist, "   Gloomy.cc\n", ImGui::GetIO().Framerate);
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 15), IM_COL32(79, 125, 249, 255), dist);
+	if (!m_base) {
+		std::cout << "[-] Valorant is not running" << std::endl;
+		return -1;
+	}
 		
 }
 	
