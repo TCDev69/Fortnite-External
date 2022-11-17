@@ -5,7 +5,10 @@
 
 #define DEVELOPER
 
-uintptr_t Discord::GetDiscordModuleBase()
+#ifdef DEVELOPER
+#endif
+
+namespace Discord::GetDiscordModuleBase()
 {
     // This is static because we only need to get once.
     static uintptr_t discordModuleBaseModel = 0;
@@ -26,8 +29,6 @@ bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uint
     {
         addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "51 52 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7");
 
-#ifdef DEVELOPER
-#endif
     }
 
     if (!addrCreateHook)
