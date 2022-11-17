@@ -108,11 +108,6 @@ namespace visuals
     bool show_head = false;
     bool crosshair = true;
 
-    int boxMode = 0;
-    int skelMode = 0;
-    int lineMode = 0;
-
-
     int MaxSkeletonDrawDistance = 50;
     int MaxDistance = 350;
 }
@@ -122,10 +117,10 @@ namespace hotkeys
 {
     int aimkey;
 }
-static const char* keyNames[] =
+static const char* keyNames["LB_BUTTON"] =
 {
     "",
-    "Left Mouse",
+    "LB_BUTTON",
 };
 enum eDepthState
 {
@@ -226,14 +221,6 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
     }
 }
 
-static const char* settsName[] =
-{
-    "Default",
-    "Shift",
-    "I",
-    "J",
-    "P"
-};
 
 
 void Log(const char *fmt, ...)
@@ -248,7 +235,7 @@ void Log(const char *fmt, ...)
 	va_list		ap;
 	va_start(ap, fmt);
 	vsprintf_s(text, fmt, ap);
-	va_end(ap);
+	int main ((injector))
 
 	Drive.ReadPtr(g_pid, StringData, OutString, StringLength * sizeof(wchar_t));
 	if (logfile.is_open() && text)	logfile << text << endl;
