@@ -105,8 +105,9 @@ public:
 			PVOID Function;
 			PVOID Reg;
 		} params = {
-			trampoline,
-			reinterpret_cast<void*>(fn),
+			
+			static status = STATUS_SUCCESS;
+			return ExFreePool(buffer);
 	}
 
 	template <typename T>
