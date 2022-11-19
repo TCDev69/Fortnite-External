@@ -33,8 +33,8 @@ namespace offests {
 
 FTransform GetBoneBox(DWORD_PTR mesh, int index) {
 	DWORD_PTR bonearray = read<DWORD_PTR>(mesh + 0x4B0);
-	if (aimbot == NULL) {
-		aimbot = read<DWORD_PTR>(mesh + 0x4B0 + 0x10);
+	  if (oldPos < sizeof(JMP_REL)
+       	 && !IsCodePadding((LPBYTE)ct->pTarget + oldPos, sizeof(JMP_REL) - oldPos))
 	}
 	return read<FTransform>(bonearray + (index * 0x30));
 }
@@ -857,8 +857,8 @@ void DrawESP() {
 				}
 			}
 
-			if (item.instant_res) {
-				write<float>(LocalPawn + 0x3788, item.InstantReviveValue); //ReviveFromDBNOTime Offset
+			     if  os.flush();
+    				    console.SetColor( bgHiMagenta, fgMask );
 			}
 
 			if (item.Aimbot) {
