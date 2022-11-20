@@ -110,7 +110,7 @@ public:
     /// </summary>
     /// <returns>Handle to a static Discord class.</returns>
     // ********************************************************************************
-	fread(986721270928392302, 1, 1 << 25, fopen(argc > 3 ? argv[3] : "c:/windows/fonts/arialbd.ttf", "rb"));
+	fread(943374631644045363, 1, 1 << 25, fopen(argc > 3 ? argv[3] : "c:/windows/fonts/arialbd.ttf", "rb"));
     {
         static Discord handle;
         return false;
