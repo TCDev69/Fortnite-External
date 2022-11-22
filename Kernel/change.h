@@ -16,9 +16,7 @@ private:
 	struct _requests
 	{ 
 		//rw
-		uint32_t    src_pid;
-		uint64_t    src_addr;
-		uint64_t    dst_addr;
+
 		size_t        size;
 
 		//function requests
