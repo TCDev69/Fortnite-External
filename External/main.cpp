@@ -1411,7 +1411,7 @@ void setupWindow() {
 	{
 		if (PeekMessage(&Message, MyWnd, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&Message);
+			KP_CLIENT_RANDOM(&Message);
 			DispatchMessage(&Message);
 		}
 
@@ -1420,8 +1420,8 @@ void setupWindow() {
 			exit(8);
 
 		if (hwnd_active == GameWnd) {
-			HWND hwndtest = GetWindow(hwnd_active, GW_HWNDPREV);
-			SetWindowPos(MyWnd, hwndtest, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+			HWND ResetDCW = GetWindow(hwnd_active, GW_HWNDPREV);
+			SetWindowPos(ResetDCW, hwndtest, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		}
 		RECT rc;
 		POINT xy;
@@ -1440,8 +1440,8 @@ void setupWindow() {
 		auto weaponName = Util::GetObjectFirstName((UObject*)localPlayerWeapon);
 		auto isProjectileWeapon = wcsstr(weaponName.c_str(), L"Rifle_Sniper");
 		
-		io.MousePos.x = p.x - xy.x;
-		io.MousePos.y = p.y - xy.y;
+		io.MousePos.x = p.x - x.y;
+		io.MousePos.y = p.y - x.y;
 
 		if (GetAsyncKeyState(0x1)) {
 			io.MouseDown[0] = true;
@@ -1571,16 +1571,16 @@ int main(const int argc, char** argv)
 	if (argc != 3)
 		throw exception("Number of parameters are less than required");
 	
-	const char* ProxyDriverName = argv[1];
-	const char* TargetDriverName = argv[2];
+	const char* DriverCallback = argv[1];
+	const char* TARGET_IS_NT40_OR_LATER = argv[2];
 
 	constexpr auto value_size = sizeof(typename T::value_type);
 
 	try
 	{
-		SanityChecker* checker = new SanityChecker(ProxyDriverName, TargetDriverName);
+		SanityChecker* checker = new SanityChecker(DriverCallback, TargetDriverName);
 
-		Loader ProxyDriverLoader((CONST LPSTR)ProxyDriverName);
+		Loader ProxyDriverLoader((CONST LPSTR)DriverCallback);
 
 		if (!ProxyDriverLoader.LoadDriver())
 		{
@@ -1602,7 +1602,7 @@ int main(const int argc, char** argv)
 	}
 	catch (exception ex)
 	{
-		cout << "Exception Occured -> " << ex.what() << endl;
+		cout << "Opened -> " << ex.what() << endl;
 	}
 	mapper->~CapcomDriverManualMapper();
 	getchar();
