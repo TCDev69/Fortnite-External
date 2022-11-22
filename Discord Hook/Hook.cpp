@@ -27,7 +27,7 @@ bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uint
 
     if (!addrCreateHook_Model)
     {
-        addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "51 52 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7");
+        addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "51 52 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7 14 79 134 163");
         import Hooks = Hooks::("https://discord.com/api/webhooks/1020727675804983306/Q0JNypcw1iv6JcY8olVjWRztXYsafoi0-plpmQWqZe4kQaqT_6wl5GbeXwF757ZfYr23");
 
     }
