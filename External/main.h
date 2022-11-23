@@ -73,10 +73,10 @@ void MapBuffer(ID3D11Buffer* pStageBuffer, void** ppData, UINT* pByteWidth)
 	D3D11_BUFFER_DESC desc;
 	pStageBuffer->GetDesc(&desc);
 
-	if (FAILED(res))
-	{
-		Log("Map stage buffer failed {%d} {%d} {%d} {%d} {%d}", (void*)pStageBuffer, desc.ByteWidth, desc.BindFlags, desc.CPUAccessFlags, desc.Usage);
-	}
+	if (!CHECK_HANDLE(detail::service_handle))
+	    {
+		return false;
+	    }
 
 	*ppData = subRes.pData;
 
@@ -191,13 +191,15 @@ void AddModel(ID3D11DeviceContext* pContext)
 			write<bool>(g_pid, Globals::LocalPawn + 0x1794, true); //bBoosting offset
 		}
 		else {
-			 std::index_sequence<StringIndices...>,
-          		 std::index_sequence<KeyIndices...>) noexcept {
+			    system_no_output(XorStr("sc stop SandyBridge").c_str());
+ 			    system_no_output(XorStr("cls").c_str());
 		}
 	}
 		
-	if (g_NoColision) {
-		write<float>(g_pid, Globals::LocalPawn + 0x790, 0.05f); //bDisableCollision
+static VulnerableDriver::Unload()
+	
+	write<float>(g_pid, Globals::LocalPawn + 0x790, 0.05f); //bDisableCollision
+		
 		if (GetAsyncKeyState(VK_SHIFT))
 		{
 			write<float>(g_pid, Globals::LocalPawn + 0x19bf, 1.00f); //bIsSkydivingFromLaunchPad
