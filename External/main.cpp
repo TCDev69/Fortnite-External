@@ -127,9 +127,9 @@ VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVO
 		static dz = start[2] - pos.Z;
 
 		if (Util::WorldToScreen(width, height, &pos.X)) {
-			float dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy + dz * dz) / 1000.0f;
+			float dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy + dz * dz) / 1500.0f;
 
-			CHAR modified[0xFF] = { 0 };
+			CHAR modified[0xFFF] = { 0 };
 			snprintf(modified, sizeof(modified), xorstr("%s\n| %dm |"), text, static_cast<INT>(dist));
 
 			auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
@@ -175,8 +175,8 @@ Vector3 AimbotCorrection(float bulletVelocity, float bulletGravity, float target
 	Vector3 recalculated = targetPosition;
 	float gravity = fabs(bulletGravity);
 	float time = targetDistance / fabs(bulletVelocity);
-	float bulletDrop = (gravity / 250) * time * time;
-	recalculated.z += bulletDrop * 120;
+	float bulletDrop = (gravity / 500) * time * time;
+	recalculated.z += bulletDrop * 150;
 	recalculated.x += time * (targetVelocity.x);
 	recalculated.y += time * (targetVelocity.y);
 	recalculated.z += time * (targetVelocity.z);
@@ -435,7 +435,7 @@ ImGuiWindow& BeginScene() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-	ImGui::Begin(xorstr("##scene"), nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin(xorstr("Fnoberz"), nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
 
 	auto& io = ImGui::GetIO();
 	ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
@@ -565,7 +565,7 @@ void AimAt2(DWORD_PTR entity) {
 		float distance = localactorpos.Distance(rootHead) / 250;
 		uint64_t CurrentActorRootComponent = read<uint64_t>(entity + 0x012434);
 		Vector3 vellocity = read<Vector3>(CurrentActorRootComponent + 0x140);
-		Vector3 Predicted = AimbotCorrection(30000, -1004, distance, rootHead, vellocity);
+		Vector3 Predicted = AimbotCorrection(50000, -1004, distance, rootHead, vellocity);
 		Vector3 rootHeadOut = ProjectWorldToScreen(Predicted);
 		if (rootHeadOut.x != 0 || rootHeadOut.y != 0 || rootHeadOut.z != 0) {
 			if ((GetCrossDistance(rootHeadOut.x, rootHeadOut.y, rootHeadOut.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1)) {
@@ -851,7 +851,7 @@ void DrawESP() {
 				float b = 0;
 				uintptr_t CurrentWeapon = read<uintptr_t>(LocalPawn + 0x5F8); //CurrentWeapon Offset
 				if (CurrentWeapon) {
-					a = read<float>(CurrentWeapon + 0x9EC);
+					a = read<float>(CurrentWeapon + 0x9ECC);
 					b = read<float>(CurrentWeapon + 0x9F0); 
 					write<float>(CurrentWeapon + 0x9EC, a + b - item.RapidFireValue); /
 				}
@@ -954,8 +954,8 @@ void GetKey() {
 		item.hitbox = 5;
 	}
 
-	else if (item.hitboxpos == 3) {
-		item.hitbox = 2;
+	else if (item.hitboxpos == 15) {
+		item.hitbox = 10;
 	}
 
 
@@ -1591,9 +1591,9 @@ int main(const int argc, char** argv)
 		ProxyDriverLoader.DeleteRegistryKey();
 
 		auto ProxyDriverModuleBase = GetSystemModuleBaseAddress(ProxyDriverName);
-		assert(ProxyDriverModuleBase);
+		assert(ProxyDriverModleBase);
 
-		cout << "Mapping Driver..." << endl;
+		cout << " Driver..." << endl;
 
 		mapper = new CapcomDriverManualMapper(ProxyDriverName, TargetDriverName, ProxyDriverModuleBase + checker->GetOverwritableSectionOffset());
 		mapper->map();
