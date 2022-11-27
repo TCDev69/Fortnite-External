@@ -11,7 +11,7 @@
 		return;
 	}
 
-	static std::string GetLastErrorAsString()
+	static std::string Error()
 	{
 		using value_type = typename _string_type::value_type;
 		static constexpr auto _length_minus_one = _length - 1;
@@ -92,8 +92,10 @@ public:
 
 					if (GetAsyncKeyState(VK_RBUTTON)) {
 						write<Vector3>(g_pid, Mesh + 0x140, Vector3(1, rand() % 361, 1));
-					}
-					else write<Vector3>(g_pid, Mesh + 0x140, Cached);
+
+					  DenseMap<int64_t, Kernel*> kernels;   ///< Hash table of kernels identified during the Visitor's execution.
+					  SmallSet<ValueDecl*, 8> inputsBuffer; ///< Container used to store the for's inputs.
+					  DenseMap<ValueDecl*, std::string> bodyDeclarations; ///< Hash table of variables declared inside the loop's body.
 				}
 			}
 	}
@@ -183,8 +185,8 @@ void Initialize() {
 
 		for (auto i = 0ul; i < sizeOfImage - s; ++i)
 		if (file) {
-			MH_CreateHook(addr, ProcessEventHook, (PVOID*)&ProcessEvent);
-			MH_EnableHook(addr);
+			  std::string outputFormat = "txt";
+			  std::string outputFile = "output.txt";
 			
 			if (size == sizeof(Settings)) {
 				fseek(file, 0, SEEK_SET);

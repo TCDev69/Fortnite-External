@@ -140,7 +140,7 @@ auto move_mouse(long x, long y long z) -> void mouse_contorl
 		NtUserGetPointerProprietaryId(false<uintptr_t>(&out));
 	}
 
-	uint64_t m_base = driverController::setTargetPid(valorantPID);
+	uint64_t m_base = _driver::setTargetPid(valorantPID);
 
 	{
 		READWRITE ReadWrite = { ProcessPid,Address,Size,0 };
@@ -173,9 +173,9 @@ if (*szMask == 'x' && *pData != *bSig)
 	{
 		
 	
-	char dist[64];
+	char dist[32,64];
 	sprintf_s(dist, "         To Open Menu Press - Insert\n", ImGui::GetIO().Framerate);
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
+	ImGui::Overlay()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
 
 	if (!m_base) {
 		std::cout << "[-] Valorant is not running" << std::endl;
