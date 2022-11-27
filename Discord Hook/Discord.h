@@ -13,12 +13,12 @@ class Discord
 public:
 
 
-    // ********************************************************************************
-    /// <summary>
-    /// Get Discord64.dll module base adresss
-    /// </summary>
-    /// <returns>Discord module base adress</returns>
-    // ********************************************************************************
+    / ********************************************************************************
+    / <summary>
+    / Get Discord64.dll module base adresss
+    / </summary>
+    / <returns>Discord module base adress</returns>
+    / ********************************************************************************
     static uintptr_t GetDiscordModuleBase();
 
 
