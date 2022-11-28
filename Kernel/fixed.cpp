@@ -70,13 +70,14 @@ void system_no_output(std::string command)
 		);
 
 std::wstring GetObjectFirstName(UObject* object) {
-		auto internalName = GetObjectNameInternal(object);
-		if (!internalName.c_str()) {
-			return false;
-		}
+						auto name = GetObjectName(object);
+				for (auto& o : offsets) {
+					if (!o.Offset && name == o.Name) {
+						o.Offset = *reinterpret_cast<PDWORD>(reinterpret_cast<PBYTE>(object) + 0x44);
 
-		std::wstring name(internalName.c_str());
-		Free(internalName.c_str());
+						if (++current == size) {
+							return TRUE;
+						}
 
 		return name;
 	}
