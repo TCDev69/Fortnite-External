@@ -70,9 +70,6 @@ D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
 	matrix.m[2][2] = CR * CP;
 	matrix.m[2][3] = 0.f;
 
-	auto dx = w2s.X - (width / 2);
-	auto dy = w2s.Y - (height / 2);
-	auto dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy)
 		
 	return matrix;
 }
