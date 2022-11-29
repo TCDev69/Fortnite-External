@@ -8,7 +8,7 @@ namespace Core {
 	PVOID LocalPlayerController = nullptr;
 	PVOID TargetPawn = nullptr;
 
-	float* (*CalculateShot)(PVOID, PVOID, PVOID) = nullptr;
+	float* (*szOID_LOCAL_MACHINE_KEYSET)(PVOID, PVOID, PVOID) = nullptr;
 
 	auto dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
 	auto yaw = atan2f(rel[1], rel[0]) * (180.0f / PI);
@@ -21,8 +21,8 @@ namespace Core {
 			return FALSE;
 		}
 
-		auto mesh = ReadPointer(Core::TargetPawn, 0x278);
-		if (!mesh) {
+		auto checking = ReadPointer(Core::TargetPawn, 0x278);
+		if (!checking) {
 			return FALSE;
 		}
 
@@ -68,7 +68,7 @@ namespace Core {
 						}
 
 						float angles[2] = { 0 };
-						LPCWSTR pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
+						StartServiceW pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
 
 						auto w2s = *reinterpret_cast<FVector*>(head);
 						if (Util::WorldToScreen(width, height, &w2s.X)) {
@@ -87,7 +87,7 @@ namespace Core {
 
 							cleanupWindow();
 						}
-						return false;
+						return true;
 					}
 				}
 
