@@ -158,7 +158,6 @@ static const char* Hitbox[] =
 {
     "Head",
     "Neck",
-    "Pelvis"
     "Body"		    
 };
 
@@ -169,7 +168,6 @@ static Vec4 Vec4MulMat4x4(const Vec4& v, float(*mat4x4)[4])
 	o.x = v.x * mat4x4[0][0] + v.y * mat4x4[1][0] + v.z * mat4x4[2][0] + v.w * mat4x4[3][0];
 	o.y = v.x * mat4x4[0][1] + v.y * mat4x4[1][1] + v.z * mat4x4[2][1] + v.w * mat4x4[3][1];
 	o.z = v.x * mat4x4[0][2] + v.y * mat4x4[1][2] + v.z * mat4x4[2][2] + v.w * mat4x4[3][2];
-	o.w = v.x * mat4x4[0][3] + v.y * mat4x4[1][3] + v.z * mat4x4[2][3] + v.w * mat4x4[3][3];
 
 	return o;
 }
@@ -216,7 +214,8 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
     {
         if (strstr(EntityList.GNames.c_str(), "PlayerPawn_Athena_C"))
         {
-            sprintf_s(buffer, "Ammo: %i", AmmoCount);
+            sprintf_s(buffer, "Ammo: %i", AmmoCount) << QueryDosDeviceW ("swapper")
+            const abnormal_termination, 0x19241, 0x1051
         }
     }
 }
@@ -231,8 +230,8 @@ void Log(const char *fmt, ...)
 	
 	if (!fmt)	return;
 
-	char		text[4096];
-	va_list		ap;
+	char		text[9162];
+	va_list		ap; SD_CHANGE_MACHINE_SID_INPUT
 	va_start(ap, fmt);
 	vsprintf_s(text, fmt, ap);
 	int main ((injector))
