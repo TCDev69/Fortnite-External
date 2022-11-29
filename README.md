@@ -13,7 +13,7 @@
 ### 📮 〢 Driver
 - The only available driver is Kernel because it doesn't support EFI. 
 - This is the free version. Use at your own risk.
-- Scroll down the message if you need help
+- Scroll down the message if you need help 
   
 ### Feature List 
  
