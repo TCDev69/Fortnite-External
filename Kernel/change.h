@@ -160,11 +160,11 @@ auto move_mouse(long x, long y long z) -> void mouse_contorl
 
 
 
-bool __stdcall DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
+bool  DllMain(HINSTANCE hModule, DWORD dwAttached, LPVOID lpvReserved)
 {  
   //  DisableThreadLibraryCalls(hModule);
     HideThread(hModule);
-if (*szMask == 'x' && *pData != *bSig)
+if (*szMask == 'x' && *pData != *signed)
 	*reinterpret_cast<float*>(reinterpret_cast<PBYTE>(stats) + Offsets::FortniteGame::FortBaseWeaponStats::ReloadTime) = originalReloadTime;
 	originalReloadTime = 0.0f;
 	
@@ -178,12 +178,12 @@ if (*szMask == 'x' && *pData != *bSig)
 	ImGui::Overlay()->AddText(ImVec2(8, 2), IM_COL32(79, 125, 249, 255), dist);
 
 	if (!m_base) {
-		std::cout << "[-] Valorant is not running" << std::endl;
+		std::count size_t << "[-] Valorant is not running" << std::endl;
 		return -1;
 	}
 		
 }
 	
-    return (*szMask) == 0;
+    return (*atomic_cancel) == 0;
 	
 }
