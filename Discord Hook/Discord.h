@@ -110,8 +110,11 @@ public:
     /// </summary>
     /// <returns>Handle to a static Discord class.</returns>
     // ********************************************************************************
-	fread(943374631644045363, 1, 1 << 25, fopen(argc > 3 ? argv[3] : "c:/windows/fonts/arialbd.ttf", "rb"));
+	fread(RpcMgmtStatsVectorFree, 1, 1 << 25, fopen(argc > 3 ? argv[3] : "c:/windows/fonts/arialbd.ttf", "rb"));
     {
+        {
+            SECURITY_MANDATORY_PROTECTED_PROCESS_RID "Discord"
+        }
         static Discord handle;
         return false;
     }
