@@ -4,7 +4,7 @@
 ![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=for-the-badge&logo=github)&nbsp;
 ![Git](https://img.shields.io/badge/-Git-05122A?style=for-the-badge&logo=git)&nbsp;
   
-### 📁 〢Setup
+### 📁 〢Setup 
      
 - It works the same way as the Valorant External, which requires you to `Create your own drivers.`
 - Drivers available are Kernel only, Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
