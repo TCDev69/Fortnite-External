@@ -136,3 +136,12 @@ namespace W2S {
     uintptr_t vDelta = 0x20;
     uintptr_t zoom = 0x690;
 }
+
+	DWORD_PTR bonearray;
+	bonearray = read<DWORD_PTR>(mesh + 0x5b0);
+ 
+	if (bonearray == NULL)
+	{
+		bonearray = read<DWORD_PTR>(mesh + 0x5b0);
+	}
+

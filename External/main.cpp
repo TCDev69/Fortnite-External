@@ -139,7 +139,6 @@ VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVO
 }
 
 
-
 void SetupWindow()
 {
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);

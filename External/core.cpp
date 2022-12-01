@@ -48,8 +48,10 @@ namespace Core {
 			do {
 				if (Core::TargetPawn && Core::LocalPlayerController) {
 					if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
-						FVector head = { 0 };
-						if (!GetTargetHead(head)) {
+						
+						window.DrawList->AddRectFilled(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f), ImVec2(centerTop.x + size.x / 2.0f, centerTop.y), ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
+						window.DrawList->AddText(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy); {
+							
 							break;
 						}
 
@@ -71,8 +73,11 @@ namespace Core {
 						StartServiceW pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
 
 						auto w2s = *reinterpret_cast<FVector*>(head);
-						if (Util::WorldToScreen(width, height, &w2s.X)) {
-							window.DrawList->AddLine(ImVec2(width / 2, height), ImVec2(end.X, end.Y), color);
+						if (Settings.Aimbot && closestPawn && Util::SpoofCall(GetAsyncKeyState, VK_RBUTTON) < 0 && Util::SpoofCall(GetForegroundWindow) == hWnd) {
+						Core::TargetPawn = closestPawn;
+						Core::NoSpread = FALSE;
+						//printf("\nworked?");
+					}
 					
 						}
 						else {
