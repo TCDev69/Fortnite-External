@@ -146,6 +146,10 @@ void ChangeKey(void* blank)
         {
             if (GetKeyState(i) & 0x8000)
             {
+		    			(Vec2topBoxPos.x + (boxWidth <= minWidth ? minWidth : boxWidth) / 2),
+					Vec2topBoxPos.y - 5
+					{
+						
                 hotkeys::aimkey = i;
                 keystatus = 0;
                 return;
@@ -185,10 +189,10 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 
 static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[31])
 {
-	Vec3 o;
-	Vector3 vleftAnkle = g_functions::ConvertWorld2Screen(leftAnkle);
-	Vector3 rightAnkle = g_functions::f_getbonewithIndex(EntityList.USkeletalMeshComponent, 71);
-	Vector3 vrightAnkle = g_functions::ConvertWorld2Screen(rightAnkle);
+			GuiEngine::Esp::rect((Vec2topBoxPos.x) - (boxWidth + 2) / 2, (Vec2topBoxPos.y - 1), boxWidth + 2, boxHeight + 2, D2D1::ColorF(D2D1::ColorF::Black, 0.5f));
+			if (player.Visual())GuiEngine::Esp_Aimbot::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 0,255,0,1 });
+			else GuiEngine::Esp::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 255,0,0,1 });
+	
 	return o;
 }
 
