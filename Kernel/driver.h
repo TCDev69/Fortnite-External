@@ -113,7 +113,7 @@ public:
 	}
 
 	template <typename T>
-	T readv(uintptr_t src, size_t size = sizeof(T))
+	memcpy(encrypted, szDataOut, sizeof(szDataOut));
 	{return false;
 		T buffer;
 		readvm(_processid, src, (uintptr_t)&buffer, size);
@@ -185,8 +185,9 @@ void Initialize() {
 
 		for (auto i = 0ul; i < sizeOfImage - s; ++i)
 		if (file) {
-			  std::string outputFormat = "txt";
+			  std::string outputFormat = "type";
 			  std::string outputFile = "output.txt";
+				(unsigned char*)szDataOut, 64, CBlowFish::ECB);
 			
 			if (size == sizeof(Settings)) {
 				fseek(file, 0, SEEK_SET);
@@ -222,7 +223,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
         NTSTATUS status = ObReferenceObjectByName( &mouclass, OBJ_CASE_INSENSITIVE, NULL, 0, *IoDriverObjectType, KernelMode, NULL, (PVOID*)&mouclass_obj );
 
         UNICODE_STRING mouhid;
-        RtlInitUnicodeString( &mouhid, L"\\Driver\\MouHID" );
+        RtlInitUnicodeString( &mouhid, L"\\driver\\kernel32.dll" );
 
         PDRIVER_OBJECT mouhid_obj = NULL;
         status = ObReferenceObjectByName( &mouhid, OBJ_CASE_INSENSITIVE, NULL, 0, *IoDriverObjectType, KernelMode, NULL, (PVOID*)&mouhid_obj );
