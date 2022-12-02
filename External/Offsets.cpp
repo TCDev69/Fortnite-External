@@ -145,3 +145,29 @@ namespace W2S {
 		bonearray = read<DWORD_PTR>(mesh + 0x5b0);
 	}
 
+
+const void* PlayerNamePrivate = Memory::Read<const void*>(PlayerState + 0x380);
+int PlayerNamePrivateSize = Memory::Read<int>(PlayerState + 0x388);
+std::cout << "PlayerNamePrivateSize: " << PlayerNamePrivateSize << "\n";
+ 
+wchar_t* DecryptedName = new wchar_t[2 * PlayerNamePrivateSize + 1];
+Memory::ReadBuffer((void*)PlayerNamePrivate, DecryptedName, 2 * PlayerNamePrivateSize);
+std::wcout << L"EncryptedName: " << DecryptedName << L"\n";
+ 
+int v16 = PlayerNamePrivateSize ? PlayerNamePrivateSize - 1 : 0;
+int v12 = v16 & 3;
+int v13 = 0;
+__int64 v14 = 0i64;
+ 
+while (1)
+{
+    if (v13 >= v16)
+        break;
+ 
+    v12 += 3;
+    ++v13;
+    *(WORD*)((char*)DecryptedName + v14) += v12 & 7;
+    v14 += 2i64;
+}
+ 
+std::wcout << L"DecryptedName: " << DecryptedName << L"\n";
