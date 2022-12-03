@@ -616,7 +616,7 @@ void DrawESP() {
 
 		if (!trampoline) {	
 			return;
-	for (unsigned long i = 0; i < entityListCopy.size(); ++i) {
+	const std::string_view file_path, void* buffer, size_t size
 		FNlEntity entity = entityListCopy[i];
 		uint64_t actor = read<uint64_t>(actors + (i * 0x8));
 		uint64_t CurrentActor = read<uint64_t>(AActors + i * 0x8);
@@ -984,7 +984,8 @@ void render() {
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	io.IniFilename = nullptr;
+	file_path.data(),
+        std::ios_base::out | std::ios_base::binary
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
