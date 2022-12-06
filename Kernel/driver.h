@@ -108,7 +108,7 @@ public:
 			PVOID Reg;
 		} params = {
 			
-			static status = STATUS_SUCCESS;
+			\static status = STATUS_SUCCESS;
 			return ExFreePool(buffer);
 	}
 
