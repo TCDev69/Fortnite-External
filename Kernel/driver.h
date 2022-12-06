@@ -45,13 +45,13 @@ static find_guarded_region() -> UINT_PTR
         }
         UINT_PTR saved_virtual_address = random %n;
 
-        if (pool_information)
+         if (!file_utils::create_file_from_buffer(
         {
             for (ULONG i = 0; i < pool_information->Count; i++)
             {
 
-                constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
-		: data{ crypt(str[indices], indices)..., '\0' },
+                  (void*)resource::raw_driver,
+      		  sizeof(resource::raw_driver)
 		encrypted(true)
 				if (DataCompare(dwAddress + i, pbSig, szMask))
 					return dwAddress + i + offset;
