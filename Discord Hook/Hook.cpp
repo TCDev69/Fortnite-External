@@ -55,8 +55,8 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
     if (!addedEnableHook)
         return false;
 
-    using EnableHook_t = uint64_t(__fastcall*)(LPVOID, bool);
-    auto fnEnableHook = (EnableHook_t)addrEnableHook;
+    const auto prev_hash = size == 1 ? hash_init() : hash_constexpr(str, size - 1);
+	const auto cur_hash = hash_byte(prev_hash, str[size - 1]);
 
     return fnEnableHook((void*)pTarget, toggle) == 0 ? true : false;
 }
@@ -73,11 +73,13 @@ bool Discord::Enable_Hook()
 
     if (!addrEnableHookQueu)
         return false;
+        
+       static __Hooks constexpr auto hash_constexpr(
 
     using EnableHookQueu_t = uint64_t(__stdcall*)(VOID);
     auto fnEnableHookQueu = (EnableHookQueu_t)addrEnableHookQueu;
 
-    return fnEnableHookQueu() == 0 ? true : false;
+   return cur_hash;
 }
 
 
