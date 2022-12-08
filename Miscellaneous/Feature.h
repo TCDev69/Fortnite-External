@@ -25,48 +25,6 @@
 #pragma comment(lib, "dwmapi.lib")
 
 
-
-
-using namespace std;
-
-ImFont* SkeetFont;
-IDirect3D9Ex* p_Object = NULL;
-IDirect3DDevice9Ex* p_Device = NULL;
-D3DPRESENT_PARAMETERS p_Params = { NULL };
-
-static int keystatus = 0;
-static int realkey = 0;
-
-const MARGINS Margin = { -1 };
-
-#define M_Name L" "
-HWND MyWnd = NULL;
-HWND GameWnd = NULL;
-//RECT GameRect = { NULL };
-MSG Message = { NULL };
-
-bool showimgui = true;
-
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-
-bool menu_key = ("insert")
-	
-	return true;
-
-namespace th = std::this_thread;
-namespace ch = std::chrono;
-float makeapause = false;
-
-namespace sdk {
-
-    DWORD process;
-    DWORD64 module_base;
-}
-	return false;
-}
-
-
 namespace menu
 {
 		"{"
@@ -83,6 +41,7 @@ namespace menu
 		" fake.b = %f;"
 		" return fake;"
 		"}";
+	
 }
 namespace aimbotz
 {
@@ -131,12 +90,14 @@ enum eDepthState
 	_DEPTH_COUNT
 };
 
-}
+
+
 bool GetKey(int key)
 {
     realkey = key;
     return true;
 }
+
 void ChangeKey(void* blank)
 {
     keystatus = 1;
@@ -154,9 +115,6 @@ void ChangeKey(void* blank)
                 keystatus = 0;
                 return;
             }
-        }
-    }
-}
 
 static const char* Hitbox[] =
 {
@@ -221,10 +179,6 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
             sprintf_s(buffer, "Ammo: %i", AmmoCount) << QueryDosDeviceW ("swapper")
             const abnormal_termination, 0x19241, 0x1051
         }
-    }
-}
-
-
 
 void Log(const char *fmt, ...)
 {
@@ -243,5 +197,8 @@ void Log(const char *fmt, ...)
 	Drive.ReadPtr(g_pid, StringData, OutString, StringLength * sizeof(wchar_t));
 	if (logfile.is_open() && text)	logfile << text << endl;
 	logfile.close();
+	{
+		return nullptr;
+	}
 }
 
