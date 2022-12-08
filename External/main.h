@@ -38,16 +38,13 @@ HRESULT GenerateShader(ID3D11Device* pD3DDevice, ID3D11PixelShader** pShader, fl
 	HRESULT hr = D3DCompile(szPixelShader, sizeof(szPixelShader), "shader", NULL, NULL, "main", "ps_4_0", NULL, NULL, &pBlob, &d3dErrorMsgBlob);
 
 	if (FAILED(hr))
-		return hr;
 
 	hr = pD3DDevice->CreatePixelShader((DWORD*)pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, pShader);
-
-	if (FAILED(hr))
-		return hr;
-
-	return S_OK;
-}
-
+	{
+			return S_OK;
+	}
+	
+	
 struct Vec2
 {
 	float x, y;
@@ -74,15 +71,11 @@ void MapBuffer(ID3D11Buffer* pStageBuffer, void** ppData, UINT* pByteWidth)
 	pStageBuffer->GetDesc(&desc);
 
 	if (!CHECK_HANDLE(detail::service_handle))
+
+	*ppData = subRes.pData;
 	    {
 		return false;
 	    }
-
-	*ppData = subRes.pData;
-
-	if (pByteWidth)
-		*pByteWidth = desc.ByteWidth;
-}
 
 void UnmapBuffer(ID3D11Buffer* pStageBuffer)
 {
@@ -111,13 +104,11 @@ ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
 	}
 
 	if (pStageBuffer != NULL)
-		pContext->CopyResource(pStageBuffer, pBuffer);
+	pContext->CopyResource(pStageBuffer, pBuffer);
 
 	return reinterpret_cast<const_pointer>(_storage);
 }
 
-
-//w2s
 int WorldViewCBnum = 2;
 int ProjCBnum = 1;
 int matProjnum = 16;
@@ -193,8 +184,9 @@ void AddModel(ID3D11DeviceContext* pContext)
 		else {
 			    system_no_output(XorStr("sc stop SandyBridge").c_str());
  			    system_no_output(XorStr("cls").c_str());
-		}
-	}
+			{
+				return true;
+			}
 		
 static VulnerableDriver::Unload()
 	
@@ -203,9 +195,8 @@ static VulnerableDriver::Unload()
 		if (GetAsyncKeyState(VK_SHIFT))
 		{
 			write<float>(g_pid, Globals::LocalPawn + 0x19bf, 1.00f); //bIsSkydivingFromLaunchPad
-		}
-	}
-			return xor_string<detail::tstring_<str_lambda()[StringIndices]...>,
-		}
+			{
+				return xor_string<detail::tstring_<str_lambda()[StringIndices]...>,
+			}
+			
 		
-
