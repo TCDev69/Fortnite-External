@@ -38,6 +38,7 @@ FTransform GetBoneBox(DWORD_PTR mesh, int index) {
 	}
 	return read<FTransform>(bonearray + (index * 0x30));
 }
+
 Vector3 GetBoneWithRotation(DWORD_PTR mesh, int id) {
 	FTransform bone = GetBoneIndex(mesh, id);
 	FTransform ComponentToWorld = read<FTransform>(mesh + 0x1C0);
@@ -45,6 +46,7 @@ Vector3 GetBoneWithRotation(DWORD_PTR mesh, int id) {
 	Matrix = MatrixMultiplication(bone.ToMatrixWithScale(), ComponentToWorld.ToMatrixWithScale());
 	return Vector3(Matrix._41, Matrix._42, Matrix._43);
 }
+
 D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
 		float height = 16.0f;
 		float width = height * 1.60f;
@@ -69,13 +71,10 @@ D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
 	matrix.m[2][1] = CY * SR - CR * SP * SY;
 	matrix.m[2][2] = CR * CP;
 	matrix.m[2][3] = 0.f;
-
-		
+	
 	return matrix;
 }
 
-extern Vector3 CameraEXT(0, 0, 0);
-float FovAngle;
 
 Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 	Vector3 Screenlocation = Vector3(0, 0, 0);
@@ -85,13 +84,14 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 			SDK::FVector2D vector{ 0, 0 };
 			vector.X = point1.X - point2.X;
 			vector.Y = point1.Y - point2.Y;
+	{
 			return vector;
+	}
 	
 	
-	float test = asin(Camera.x);
-	float degrees = test * (180.0 / M_PI);
-		Camera.y = 360 + Camera.y;
-	D3DMATRIX tempMatrix = Matrix(Camera);
+	
+
+D3DMATRIX tempMatrix = Matrix(Camera);
 
 	uint64_t chain = read<uint64_t>(Localplayer + 0x70);
 	uint64_t chain1 = read<uint64_t>(chain + 0x98);
@@ -110,6 +110,8 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
 			SDK::FMatrix vMatrix;
 			SDK::FMatrix *vTempMatrix = GetBoneMatrix(mesh, &vMatrix, boneid);
 			*result = vMatrix.WPlane;
+	{
+		
 	return Screenlocation;
 }
 
@@ -131,13 +133,10 @@ VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVO
 
 			auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
 			window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
-			
-			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...);
-			
-		}
-	}
-}
-
+			{
+				
+			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...)
+			}
 
 void SetupWindow()
 {
@@ -245,16 +244,6 @@ static auto move_to(float x, float y) -> void {
 double GetCrossDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
 	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
 }
-
-#define PI 3.14159265358979323846f
-
-typedef struct
-{
-	DWORD R;
-	DWORD G;
-	DWORD B;
-	DWORD A;
-}RGBA;
 
 class Color
 {
@@ -1603,5 +1592,7 @@ int main(const int argc, char** argv)
 	}
 	mapper->~CapcomDriverManualMapper();
 	getchar();
+	{
+		
 	return 0;
 }

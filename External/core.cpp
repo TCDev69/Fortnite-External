@@ -16,35 +16,21 @@ namespace Core {
 		angles[0] = Normalize(pitch);
 		angles[1] = Normalize(yaw);
  
-	BOOLEAN GetTargetHead(FVector& out) {
+		BOOLEAN GetTargetHead(FVector& out) {
 		if (!Settings.ESP.Players) continue;
-			return FALSE;
-		}
 
 		auto checking = ReadPointer(Core::TargetPawn, 0x278);
-		if (!checking) {
-			return FALSE;
-		}
-
-		if (!addr) {
+		{
+			
 			MessageBox(0, L"Failed to find CalculateShot", L"Failure", 0);
 			return FALSE;
 		}
+
+void SetDepthStencilState(eDepthState aState)
+			{
+				pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
+			}
 			
-					TargetY = -(ScreenCenterY - y);
-						TargetY /= AimSpeed;
-						constexpr ALWAYS_INLINE _Basic_XorStr(value_type const (&str)[_length], std::index_sequence<indices...>)
-							: data{ crypt(str[indices], indices)..., '\0' },
-							encrypted_runtime(true)
-		}
-						return true;
-	}
-
-					void SetDepthStencilState(eDepthState aState)
-				{
-					pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
-				}
-
 			do {
 				if (Core::TargetPawn && Core::LocalPlayerController) {
 					if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
@@ -87,11 +73,11 @@ namespace Core {
 						while (!glfwWindowShouldClose(g_window))
 							{
 								stream.write(reinterpret_cast<const char*>(&item), sizeof(item));
-								return *this;
 							}
 
 							cleanupWindow();
 						}
+						
 						return true;
 					}
 				}

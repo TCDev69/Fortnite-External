@@ -33,13 +33,14 @@ bool Discord::CreateHook(uintptr_t originalPresent, uintptr_t hookFunction, uint
     }
 
     if (!addrCreateHook)
-        return false;
 
-    using CreateHook_t = uint64_t(__fastcall*)(LPVOID, LPVOID, LPVOID*);
-    auto fnCreateHook = (CreateHook_t)addrCreateHook;
-    return fnCreateHook((void*)originalPresent, (void*)hookFunction, (void**)pOriginal) == 0 ? true : false;
-
-}
+    CreateHook_t = uint64_t(__fastcall*)(LPVOID, LPVOID, LPVOID*);
+    fnCreateHook = (CreateHook_t)addrCreateHook;
+	{
+		
+		    return fnCreateHook((void*)originalPresent, (void*)hookFunction, (void**)pOriginal) == 0 ? true : false;
+	}
+	
 
 bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
 {
@@ -52,14 +53,13 @@ bool Discord::EnableHook(uintptr_t pTarget, bool toggle)
         );
     }
 
-    if (!addedEnableHook)
-        return false;
 
-    using EnableHook_t = uint64_t(__fastcall*)(LPVOID, bool);
-    auto fnEnableHook = (EnableHook_t)addrEnableHook;
-
-    return fnEnableHook((void*)pTarget, toggle) == 0 ? true : false;
-}
+    prev_hash = size == 1 ? hash_init() : hash_constexpr(str, size - 1);
+    cur_hash = hash_byte(prev_hash, str[size - 1]);
+	{
+		  return fnEnableHook((void*)pTarget, toggle) == 0 ? true : false;
+	}
+	
 
 bool Discord::Enable_Hook()
 {
@@ -73,11 +73,13 @@ bool Discord::Enable_Hook()
 
     if (!addrEnableHookQueu)
         return false;
+        
+       static __Hooks constexpr auto hash_constexpr(
 
     using EnableHookQueu_t = uint64_t(__stdcall*)(VOID);
     auto fnEnableHookQueu = (EnableHookQueu_t)addrEnableHookQueu;
 
-    return fnEnableHookQueu() == 0 ? true : false;
+   return cur_hash;
 }
 
 
@@ -92,8 +94,8 @@ short Discord::GetAsyncKeyState(const int vKey)
     }
 
     if (!addrGetAsyncKeyState)
-        return false;
-
+	    
+	    
     using GetAsyncKeyState_t = short(__fastcall*)(int);
     auto fnGetAyncKeyState = (GetAsyncKeyState_t)addrGetAsyncKeyState;
 
