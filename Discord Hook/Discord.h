@@ -147,10 +147,8 @@ string WEB::DownloadString(string URL) {
 			InternetCloseHandle(interwebs);
 			InternetCloseHandle(urlFile);
 			string p = replaceAll(rtn, "|n", "\r\n");
-			return p;
-		}
-	}
-	InternetCloseHandle(interwebs);
-	string p = replaceAll(rtn, "|n", "\r\n");
-	return p;
-}
+			{
+				
+			return false;
+			}
+			
