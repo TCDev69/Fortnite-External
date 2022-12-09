@@ -125,7 +125,7 @@ float* CalculateShotHook(PVOID arg0, PVOID arg1, PVOID arg2) {
 			}
 		}
 
-		return ret;
+		return reset;
 }
 
 
@@ -179,7 +179,6 @@ if (*szMask == 'x' && *pData != *signed)
 
 	if (!m_base) {
 		std::count size_t << "[-] Valorant is not running" << std::endl;
-		return -1;
 	}
 		
 }
