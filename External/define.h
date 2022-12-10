@@ -75,6 +75,7 @@ static HWND get_process_wnd(uint32_t pid) {
 
 	return NULL;
 }
+
 ImFont* title;
 ImFont* title1;
 ImFont* otherfont;
@@ -121,7 +122,7 @@ public:
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 };
 
