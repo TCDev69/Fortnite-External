@@ -241,7 +241,8 @@ static auto move_to(float x, float y) -> void {
 
 	SetMouseAbsPosition(static_cast<DWORD>(target_x), static_cast<DWORD>(target_y));
 }
-double GetCrossDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
+double GetCrossDistance(double x1, double y1, double z1, double x2, double y2, double z2) 
+{
 	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
 }
 
@@ -363,12 +364,10 @@ public:
 		if (y > 1530.0f)
 			y = 0.0f;
 
-
 		return RGBA{ (DWORD)r, (DWORD)g, (DWORD)b, 255 };
 	}
 
 };
-Color Col;
 
 std::string string_To_UTF8(const std::string& str)
 {
@@ -412,6 +411,8 @@ std::wstring MBytesToWString(const char* lpcszString)
 {
 	printf("null at pos 01\n\n\n\n");
 	delete[] pUnicode;
+	{
+		
 	return wString;
 }
 
@@ -424,7 +425,9 @@ ImGuiWindow& BeginScene() {
 
 	auto& io = ImGui::GetIO();
 	ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-	ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
+	ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always); 
+	{
+		
 
 	return *ImGui::GetCurrentWindow();
 }
@@ -509,12 +512,9 @@ bool isRage = config_system.item.AutoAimbot;
 			}
 			if (config_system.item.AutoAimbot) {
 				isRage = false;
-			}
-		}
-
-
-
-
+}
+			
+	
 void AimAt(DWORD_PTR entity) {
 	uint64_t currentactormesh = read<uint64_t>(entity + 0x288);
 	auto rootHead = GetBoneWithRotation(currentactormesh, 98);
