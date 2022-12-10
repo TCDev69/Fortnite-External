@@ -213,12 +213,6 @@ namespace RegistryUtils
 }
 
 
-//d3d11 w2s for ut4 engine games by n7
-
-//==========================================================================================================================
-
-//globals
-
 DWORD Daimkey = VK_RBUTTON;		//aimkey
 int aimheight = 46;				//aim height value
 unsigned int asdelay = 90;		//use x-999 (shoot for xx millisecs, looks more legit)
@@ -273,7 +267,6 @@ UINT psStartSlot;
 UINT vsStartSlot;
 
 
-
 	const auto pcall_present_discord = Helper::PatternScan(Discord::GetDiscordModuleBase(), xorstr("FF 15 ? ? ? ? 8B D8 E8 ? ? ? ? E8 ? ? ? ? EB 10"));
 	auto presentSceneAdress = Helper::PatternScan(Discord::GetDiscordModuleBase(),
 		xorstr("56 57 53 48 83 EC 30 44 89 C6"));
@@ -281,5 +274,7 @@ UINT vsStartSlot;
 	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)PresentHook, (uintptr_t)&PresentOriginal);
 
 	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)ResizeHook, (uintptr_t)&PresentOriginal);
-	return TRUE;
-}
+	{
+		
+	return true;
+};
