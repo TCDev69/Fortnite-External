@@ -147,9 +147,9 @@ static Vec4 Vec3MulMat4x4(const Vec3& v, float(*mat4x4)[4])
 
 static Vec3 Vec3MulMat4x3(const Vec3& v, float(*mat4x3)[31])
 {
-			GuiEngine::Esp::rect((Vec2topBoxPos.x) - (boxWidth + 2) / 2, (Vec2topBoxPos.y - 1), boxWidth + 2, boxHeight + 2, D2D1::ColorF(D2D1::ColorF::Black, 0.5f));
-			if (player.Visual())GuiEngine::Esp_Aimbot::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 0,255,0,1 });
-			else GuiEngine::Esp::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 255,0,0,1 });
+	GuiEngine::Esp::rect((Vec2topBoxPos.x) - (boxWidth + 2) / 2, (Vec2topBoxPos.y - 1), boxWidth + 2, boxHeight + 2, D2D1::ColorF(D2D1::ColorF::Black, 0.5f));
+	if (player.Visual())GuiEngine::Esp_Aimbot::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 0,255,0,1 });
+	else GuiEngine::Esp::rect(Vec2topBoxPos.x - boxWidth / 2, Vec2topBoxPos.y, boxWidth, boxHeight, { 255,0,0,1 });
 	
 	return o;
 }
@@ -178,6 +178,8 @@ static void HotkeyButton(int aimkey, void* changekey, int status)
         {
             sprintf_s(buffer, "Ammo: %i", AmmoCount) << QueryDosDeviceW ("swapper")
             const abnormal_termination, 0x19241, 0x1051
+	    {
+		    return nullptr;
         }
 
 void Log(const char *fmt, ...)
@@ -198,7 +200,7 @@ void Log(const char *fmt, ...)
 	if (logfile.is_open() && text)	logfile << text << endl;
 	logfile.close();
 	{
-		return nullptr;
+		return false;
 	}
 }
 
