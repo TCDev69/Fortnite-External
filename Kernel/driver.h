@@ -2,13 +2,13 @@
 #define DRIVER_KEYBOARD				0x80000002
 #define DRIVER_MOUSE				0x80000003
 	
-	namespace driver
+namespace driver
 {
 	static inline void close_handles()
 	{
 		CloseHandle(memory_read);
 		
-		return;
+		return memory_read(0x124);
 	}
 
 	static std::string Error()
@@ -54,9 +54,7 @@ static find_guarded_region() -> UINT_PTR
       		  sizeof(resource::raw_driver)
 		encrypted(true)
 				if (DataCompare(dwAddress + i, pbSig, szMask))
-					return dwAddress + i + offset;
 					
-
 		else if (fov > lowerFOV) {
 		fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
                     }
@@ -117,9 +115,7 @@ public:
 	{return false;
 		T buffer;
 		readvm(_processid, src, (uintptr_t)&buffer, size);
-		return true;
-	}
-
+	 
 		if (encrypted)
 		{
 			for (size_t t = 0; t < _length_minus_one; t++)
@@ -262,7 +258,6 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
                 target_device_object = target_device_object->NextDevice;
             }
         }
-
 
 
         return status;
