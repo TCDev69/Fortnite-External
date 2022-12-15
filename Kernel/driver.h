@@ -4,83 +4,80 @@
 
 namespace driver
 {
-static inline void close_handles()
-{
-CloseHandle(memory_read);
-return memory_read(0x124);
-}
-	
-static std::string Error()
-{
-    using value_type = typename _string_type::value_type;
-    static constexpr auto _length_minus_one = _length - 1;
-
-    if (localPlayerWeapon)
+    static inline void close_handles()
     {
-        MessageBox(0, L"Failed to find GetWeaponStats", L"Failure", 0);
-        ZwQuerySystemInformation( information_class, buffer, size, &size );
-
-        const auto info = ExAllocatePool( NonPagedPool, size );
-
-        //Free the buffer.
-        LocalFree(messageBuffer);
-
-        return message;
+        CloseHandle(memory_read);
+        return memory_read(0x124);
     }
-}
 
-
-static find_guarded_region() -> UINT_PTR
-{
-    PSYSTEM_BIGPOOL_INFORMATION pool_information = 0;
-
-    ULONG information_length = 150;
-    NTSTATUS status = ZwQuerySystemInformation( system_bigpool_information, &information_length, 0, &information_length );
-
-    while (status == STATUS_INFO_LENGTH_MISMATCH)
+    static std::string Error()
     {
-        if (ItemDist < bLootRendering)
+        if (localPlayerWeapon)
         {
-            Vector3 ChestPosition;
+            MessageBox(0, L"Failed to find GetWeaponStats", L"Failure", 0);
+            ZwQuerySystemInformation(information_class, buffer, size, &size);
+
+            const auto info = ExAllocatePool(NonPagedPool, size);
+
+            //Free the buffer.
+            LocalFree(messageBuffer);
+
+            return message;
         }
     }
 
-    UINT_PTR saved_virtual_address = random %n;
-
-    if (!file_utils::create_file_from_buffer(
+    static find_guarded_region() -> UINT_PTR
     {
-        for (ULONG i = 0; i < pool_information->Count; i++)
-        {
-            (void*)resource::raw_driver,
-            sizeof(resource::raw_driver)
-            encrypted(true)
+        PSYSTEM_BIGPOOL_INFORMATION pool_information = 0;
 
-            if (DataCompare(dwAddress + i, pbSig, szMask))
+        ULONG information_length = 150;
+        NTSTATUS status = ZwQuerySystemInformation(system_bigpool_information, &information_length, 0, &information_length);
+
+        while (status == STATUS_INFO_LENGTH_MISMATCH)
+        {
+            if (ItemDist < bLootRendering)
             {
-            }
-            else if (fov > lowerFOV)
-            {
-                fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
+                Vector3 ChestPosition;
             }
         }
-    }
 
-    ExFreePool(pool_information);
-}
+        UINT_PTR saved_virtual_address = random %n;
 
-
-public:
-    auto initdriver(int processid) -> void
-    {
-        NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
-        if (NtUserGetPointerProprietaryId != 0)
+        if (!file_utils::create_file_from_buffer(
         {
-            printf("Find_ProcessID: %p\n", NtUserGetPointerProprietaryId);
-            _processid = processid;
+            for (ULONG i = 0; i < pool_information->Count; i++)
+            {
+                (void*)resource::raw_driver,
+                sizeof(resource::raw_driver)
+                encrypted(true)
+
+                if (DataCompare(dwAddress + i, pbSig, szMask))
+                {
+                }
+                else if (fov > lowerFOV)
+                {
+                    fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
+                }
+            }
         }
+
+        ExFreePool(pool_information);
     }
 
-    auto guarded_region() -> uintptr_t
-    {
-        static PVOID trampoline = nullptr;
-        if (g_spin
+    public:
+        auto initdriver(int processid) -> void
+        {
+            NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
+            if (NtUserGetPointerProprietaryId != 0)
+            {
+                printf("Find_ProcessID: %p\n", NtUserGetPointerProprietaryId);
+                _processid = processid;
+            }
+        }
+
+        auto guarded_region() -> uintptr_t
+        {
+            static PVOID trampoline = nullptr;
+            if (g_spin
+        }
+}
