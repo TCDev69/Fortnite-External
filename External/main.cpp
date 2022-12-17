@@ -47,32 +47,27 @@ Vector3 GetBoneWithRotation(DWORD_PTR mesh, int id) {
 	return Vector3(Matrix._41, Matrix._42, Matrix._43);
 }
 
-D3DMATRIX Matrix(Vector3 rot, Vector3 origin = Vector3(0, 0, 0)) {
-		float height = 16.0f;
-		float width = height * 1.60f;
-		float radius = height * 0.50f;
 
-	float SP = sinf(radPitch);
-	float CP = cosf(radPitch);
-	float SY = sinf(radYaw);
-	float CY = cosf(radYaw);
-	D3DMATRIX matrix;
-	matrix.m[0][0] = CP * CY;
-	matrix.m[0][1] = CP * SY;
-	matrix.m[0][2] = SP;
-	matrix.m[0][3] = 0.f;
+D3DXMATRIX Matrix(float radPitch, float radYaw, Vector3 origin = Vector3(0, 0, 0)) {
+    // Compute sines and cosines of pitch and yaw angles
+    float sp, cp, sy, cy;
+    sincos(radPitch, &sp, &cp);
+    sincos(radYaw, &sy, &cy);
 
-	matrix.m[1][0] = SR * SP * CY - CR * SY;
-	matrix.m[1][1] = SR * SP * SY + CR * CY;
-	matrix.m[1][2] = -SR * CP;
-	matrix.m[1][3] = 0.f;
+    // Compute quaternion from pitch, yaw, and roll angles
+    D3DXQUATERNION quat;
+    D3DXQuaternionRotationYawPitchRoll(&quat, radYaw, radPitch, 0.0f);
 
-	matrix.m[2][0] = -(CR * SP * CY + SR * SY);
-	matrix.m[2][1] = CY * SR - CR * SP * SY;
-	matrix.m[2][2] = CR * CP;
-	matrix.m[2][3] = 0.f;
-	
-	return matrix;
+    // Compute transformation matrix from quaternion
+    D3DXMATRIX matrix;
+    D3DXMatrixRotationQuaternion(&matrix, &quat);
+
+    // Translate matrix by origin
+    matrix._41 = origin.x;
+    matrix._42 = origin.y;
+    matrix._43 = origin.z;
+
+    return matrix;
 }
 
 
