@@ -55,8 +55,6 @@ struct Vec4
 };
 
 
-
-
 void MapBuffer(ID3D11Buffer* pStageBuffer, void** ppData, UINT* pByteWidth)
 {
 	D3D11_MAPPED_SUBRESOURCE subRes;
