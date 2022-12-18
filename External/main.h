@@ -1,64 +1,59 @@
-//used for logging/cycling through values
-bool logger = true;
-int countnum = 1;
-char szString[64];
+#include <string>
+#include <D3Dcompiler.h>
 
-#define SAFE_RELEASE(p) { if (p) { (p)->Release(); (p) = nullptr; } }
+std::string dlldir;
 
-//==========================================================================================================================
-
-//get dir
-using namespace std;
-#include <fstream>
-char dlldir[320];
-char *GetDirectoryFile(char *filename)
+std::string GetDirectoryFile(const std::string& filename)
 {
-	static char path[250];
-	strcpy_s(path, dlldir);
-	strcat_s(path, filename);
-	return path;
+    return dlldir + filename;
 }
 
-//log
-
-//==========================================================================================================================
-
-//generate shader func
 HRESULT GenerateShader(ID3D11Device* pD3DDevice, ID3D11PixelShader** pShader, float r, float g, float b)
 {
-	char szCast[] = "External"
+    static const char szPixelShader[] =
+        "float4 main(float4 pos : SV_POSITION) : SV_TARGET"
+        "{"
+        "    return float4(%f, %f, %f, 1.0);"
+        "}";
 
-	ID3D10Blob* pBlob;
-	char szPixelShader[300];
+    std::string strPixelShader;
+    strPixelShader.resize(sizeof(szPixelShader));
+    sprintf_s(&strPixelShader[0], strPixelShader.size(), szPixelShader, r, g, b);
 
-	sprintf_s(szPixelShader, szCast, r, g, b);
+    ID3DBlob* pBlob;
+    ID3DBlob* pErrorBlob;
+    HRESULT hr = D3DCompile(strPixelShader.c_str(), strPixelShader.size(), "shader", NULL, NULL, "main", "ps_4_0", NULL, NULL, &pBlob, &pErrorBlob);
 
-	ID3DBlob* d3dErrorMsgBlob;
+    if (FAILED(hr))
+    {
+        if (pErrorBlob)
+        {
+            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+            pErrorBlob->Release();
+        }
+        return hr;
+    }
 
-	HRESULT hr = D3DCompile(szPixelShader, sizeof(szPixelShader), "shader", NULL, NULL, "main", "ps_4_0", NULL, NULL, &pBlob, &d3dErrorMsgBlob);
+    hr = pD3DDevice->CreatePixelShader((DWORD*)pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, pShader);
+    pBlob->Release();
+    return hr;
+}
 
-	if (FAILED(hr))
-
-	hr = pD3DDevice->CreatePixelShader((DWORD*)pBlob->GetBufferPointer(), pBlob->GetBufferSize(), NULL, pShader);
-	{
-			return S_OK;
-	}
-	
-	
 struct Vec2
 {
-	float x, y;
+    float x, y;
 };
 
 struct Vec3
 {
-	float x, y, z;
+    float x, y, z;
 };
 
 struct Vec4
 {
-	float x, y, z, w;
+    float x, y, z, w;
 };
+
 
 
 
