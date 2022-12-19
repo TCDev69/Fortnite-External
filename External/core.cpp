@@ -80,6 +80,14 @@ void SetDepthStencilState(eDepthState aState)
 						
 						return true;
 					}
-				}
-
+					
+			
+void no_cheat::pawns_loop::add_pawn(const char* pwn, bool(*func)(), bool(*func2)())
+{
+	const size_t len = strlen(pwn) + 1;
+	wchar_t* wc = new wchar_t[len];
+	size_t tmp = 0;
+	mbstowcs_s(&tmp, wc, len, pwn, len);
+	menu.add(wc, func, func2);
+	delete[] wc;
 }
