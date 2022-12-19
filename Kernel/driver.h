@@ -1,83 +1,104 @@
-#pragma once
-#define DRIVER_KEYBOARD 0x80000002
-#define DRIVER_MOUSE 0x80000003
+#include "std_include.hpp"
+#include "logging.hpp"
+#include "sleep_callback.hpp"
+#include "irp.hpp"
+#include "exception.hpp"
+#include "hypervisor.hpp"
 
-namespace driver
+#define DOS_DEV_NAME L"\\DosDevices\\HelloDev"
+#define DEV_NAME L"\\Device\\HelloDev"
+
+class global_driver
 {
-    static inline void close_handles()
-    {
-        CloseHandle(memory_read);
-        return memory_read(0x124);
-    }
+public:
+	global_driver(const PDRIVER_OBJECT driver_object)
+		: sleep_callback_([this](const sleep_callback::type type)
+		  {
+			  this->sleep_notification(type);
+		  })
+		, irp_(driver_object, DEV_NAME, DOS_DEV_NAME)
+	{
+		debug_log("Driver started\n");
+	}
 
-    static std::string Error()
-    {
-        if (localPlayerWeapon)
-        {
-            MessageBox(0, L"Failed to find GetWeaponStats", L"Failure", 0);
-            ZwQuerySystemInformation(information_class, buffer, size, &size);
+	~global_driver()
+	{
+		debug_log("Unloading driver\n");
+		this->hypervisor_.disable_all_ept_hooks();
+	}
 
-            const auto info = ExAllocatePool(NonPagedPool, size);
+	global_driver(global_driver&&) noexcept = delete;
+	global_driver& operator=(global_driver&&) noexcept = delete;
 
-            //Free the buffer.
-            LocalFree(messageBuffer);
+	global_driver(const global_driver&) = delete;
+	global_driver& operator=(const global_driver&) = delete;
 
-            return message;
-        }
-    }
+	void pre_destroy(const PDRIVER_OBJECT /*driver_object*/)
+	{
+	}
 
-    static find_guarded_region() -> UINT_PTR
-    {
-        PSYSTEM_BIGPOOL_INFORMATION pool_information = 0;
+private:
+	bool hypervisor_was_enabled_{false};
+	hypervisor hypervisor_{};
+	sleep_callback sleep_callback_{};
+	irp irp_{};
 
-        ULONG information_length = 150;
-        NTSTATUS status = ZwQuerySystemInformation(system_bigpool_information, &information_length, 0, &information_length);
+	void sleep_notification(const sleep_callback::type type)
+	{
+		if (type == sleep_callback::type::sleep)
+		{
+			debug_log("Going to sleep...\n");
+			this->hypervisor_was_enabled_ = this->hypervisor_.is_enabled();
+			this->hypervisor_.disable();
+		}
 
-        while (status == STATUS_INFO_LENGTH_MISMATCH)
-        {
-            if (ItemDist < bLootRendering)
-            {
-                Vector3 ChestPosition;
-            }
-        }
+		if (type == sleep_callback::type::wakeup && this->hypervisor_was_enabled_)
+		{
+			debug_log("Waking up...\n");
+			this->hypervisor_.enable();
+		}
+	}
+};
 
-        UINT_PTR saved_virtual_address = random %n;
+global_driver* global_driver_instance{nullptr};
 
-        if (!file_utils::create_file_from_buffer(
-        {
-            for (ULONG i = 0; i < pool_information->Count; i++)
-            {
-                (void*)resource::raw_driver,
-                sizeof(resource::raw_driver)
-                encrypted(true)
+_Function_class_(DRIVER_UNLOAD) void unload(const PDRIVER_OBJECT driver_object)
+{
+	try
+	{
+		if (global_driver_instance)
+		{
+			global_driver_instance->pre_destroy(driver_object);
+			delete global_driver_instance;
+		}
+	}
+	catch (std::exception& e)
+	{
+		debug_log("Destruction error occured: %s\n", e.what());
+	}
+	catch (...)
+	{
+		debug_log("Unknown destruction error occured. This should not happen!");
+	}
+}
 
-                if (DataCompare(dwAddress + i, pbSig, szMask))
-                {
-                }
-                else if (fov > lowerFOV)
-                {
-                    fov = (((fov - lowerFOV) / (upperFOV - lowerFOV)) * (desired - lowerFOV)) + lowerFOV;
-                }
-            }
-        }
+extern "C" NTSTATUS DriverEntry(const PDRIVER_OBJECT driver_object, PUNICODE_STRING /*registry_path*/)
+{
+	try
+	{
+		driver_object->DriverUnload = unload;
+		global_driver_instance = new global_driver(driver_object);
+	}
+	catch (std::exception& e)
+	{
+		debug_log("Error: %s\n", e.what());
+		return STATUS_INTERNAL_ERROR;
+	}
+	catch (...)
+	{
+		debug_log("Unknown initialization error occured");
+		return STATUS_INTERNAL_ERROR;
+	}
 
-        ExFreePool(pool_information);
-    }
-
-    public:
-        auto initdriver(int processid) -> void
-        {
-            NtUserGetPointerProprietaryId = (Nt_UserGetPointerProprietaryId)GetProcAddress(LoadLibraryA("win32u.dll"), "NtUserGetPointerProprietaryId");
-            if (NtUserGetPointerProprietaryId != 0)
-            {
-                printf("Find_ProcessID: %p\n", NtUserGetPointerProprietaryId);
-                _processid = processid;
-            }
-        }
-
-        auto guarded_region() -> uintptr_t
-        {
-            static PVOID trampoline = nullptr;
-            if (g_spin
-        }
+	return STATUS_SUCCESS;
 }
