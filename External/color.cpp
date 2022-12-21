@@ -1,33 +1,22 @@
-#pragma warning(push, 0)        
+#pragma warning(push, 0) 
 #ifndef HEXRAYS_DEFS_H
 #define HEXRAYS_DEFS_H
 
-#if defined(__GNUC__)
-typedef          long long ll;
-typedef unsigned long long ull;
-#define __int64 long long
-#define __int32 int
-#define __int16 short
-#define __int8  char
-#define MAKELL(num) num ## LL
-#define FMT_64 "ll"
-#elif defined(_MSC_VER)
-typedef          __int64 ll;
-typedef unsigned __int64 ull;
-#define MAKELL(num) num ## i64
-#define FMT_64 "I64"
-#elif defined (__BORLANDC__)
-typedef          __int64 ll;
-typedef unsigned __int64 ull;
-#define MAKELL(num) num ## i64
-#define FMT_64 "L"
-#else
-#error "unknown compiler"
-#endif
-typedef unsigned int uint;
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned long ulong;
+#include <stdint.h>
+
+// Use standard integer types from stdint.h
+typedef int8_t   int8;
+typedef int16_t  int16;
+typedef int32_t  int32;
+typedef int64_t  int64;
+typedef uint8_t  uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
+
+#endif  // HEXRAYS_DEFS_H
+#pragma warning(pop)
+
 
 typedef          char   int8;
 typedef   signed char   sint8;
