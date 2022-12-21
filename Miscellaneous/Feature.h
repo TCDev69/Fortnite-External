@@ -27,67 +27,70 @@
 
 namespace menu
 {
-		"{"
-		" float4 Position : SV_Position;"
-		" float4 Color : COLOR0;"
-		"};"
-
-		"float4 main( VS_OUT input ) : SV_Target"
-		"{"
-		" float4 fake;"
-		" fake.a = 1.0f;"
-		" fake.r = %f;"
-		" fake.g = %f;"
-		" fake.b = %f;"
-		" return fake;"
-		"}";
-	
+    const char* vertexShader =
+        "struct VS_IN {"
+        "   float4 Position : SV_Position;"
+        "   float4 Color : COLOR0;"
+        "};"
+        "struct VS_OUT {"
+        "   float4 Position : SV_Position;"
+        "   float4 Color : COLOR0;"
+        "};"
+        "VS_OUT main(VS_IN input) {"
+        "   VS_OUT output; "
+        "   output.Position = input.Position;"
+        "   output.Color = input.Color;"
+        "   return output;"
+        "}";
 }
+
 namespace aimbotz
 {
-    bool aimbot = true;
-    bool smooth = false;
-    bool fovcircle = true;
-    bool prediction = false;
+    const bool aimbot = true;
+    const bool smooth = false;
+    const bool fovcircle = true;
+    const bool prediction = false;
 
-    float aimspeed = 1x100, 2104;
-    float aimfov = 100.0f;
-    float lock = 0.0f;
+    const float aimspeed = 1.0f;
+    const float aimfov = 100.0f;
+    const float lock = 0.0f;
 
-    int hitbox = 0;
+    const int hitbox = 0;
 }
+
 namespace visuals
 {
-    bool box = false;
-    bool boxcor = false;
-    bool skel = true;
-    bool name = false;
-    bool lines = true;
-    bool outline = true;
-    bool show_head = false;
-    bool crosshair = true;
+    constexpr bool box = false;
+    constexpr bool boxcor = false;
+    constexpr bool skel = true;
+    constexpr bool name = false;
+    constexpr bool lines = true;
+    constexpr bool outline = true;
+    constexpr bool show_head = false;
+    constexpr bool crosshair = true;
 
-    int MaxSkeletonDrawDistance = 50;
-    int MaxDistance = 350;
+    constexpr int MaxSkeletonDrawDistance = 50;
+    constexpr int MaxDistance = 350;
 }
-
 
 namespace hotkeys
 {
     int aimkey;
 }
-static const char* keyNames["LB_BUTTON"] =
+
+enum class DepthState
+{
+    ENABLED,
+    DISABLED,
+    READ_NO_WRITE,
+    NO_READ_NO_WRITE,
+    COUNT
+};
+
+constexpr std::array<const char*, 2> keyNames =
 {
     "",
-    "LB_BUTTON",
-};
-enum eDepthState
-{
-	ENABLED,
-	DISABLED,
-	READ_NO_WRITE,
-	NO_READ_NO_WRITE,
-	_DEPTH_COUNT
+    "LB_BUTTON"
 };
 
 
