@@ -45,42 +45,24 @@ Vector3 GetBoneLocationWithRotation(DWORD_PTR mesh, int index) {
 }
 
 
-D3DXMATRIX Matrix(float radPitch, float radYaw, Vector3 origin = Vector3(0, 0, 0)) {
-    // Compute sines and cosines of pitch and yaw angles
-    float sp, cp, sy, cy;
-    sincos(radPitch, &sp, &cp);
-    sincos(radYaw, &sy, &cy);
+Vector3 ProjectWorldToScreen(Vector3 WorldLocation, D3DXMATRIX ViewMatrix, D3DXMATRIX ProjectionMatrix, int ScreenWidth, int ScreenHeight)
+{
+    // Transform point from world space to view space
+    D3DXVECTOR3 ViewSpacePoint;
+    D3DXVec3TransformCoord(&ViewSpacePoint, &WorldLocation, &ViewMatrix);
 
-    // Compute quaternion from pitch, yaw, and roll angles
-    D3DXQUATERNION quat;
-    D3DXQuaternionRotationYawPitchRoll(&quat, radYaw, radPitch, 0.0f);
+    // Transform point from view space to projection space
+    D3DXVECTOR3 ProjectionSpacePoint;
+    D3DXVec3TransformCoord(&ProjectionSpacePoint, &ViewSpacePoint, &ProjectionMatrix);
 
-    // Compute transformation matrix from quaternion
-    D3DXMATRIX matrix;
-    D3DXMatrixRotationQuaternion(&matrix, &quat);
+    // Transform point from projection space to screen space
+    Vector3 ScreenSpacePoint;
+    ScreenSpacePoint.x = (ProjectionSpacePoint.x / ProjectionSpacePoint.z) * (ScreenWidth / 2) + (ScreenWidth / 2);
+    ScreenSpacePoint.y = -(ProjectionSpacePoint.y / ProjectionSpacePoint.z) * (ScreenHeight / 2) + (ScreenHeight / 2);
+    ScreenSpacePoint.z = ProjectionSpacePoint.z;
 
-    // Translate matrix by origin
-    matrix._41 = origin.x;
-    matrix._42 = origin.y;
-    matrix._43 = origin.z;
-
-    return matrix;
+    return ScreenSpacePoint;
 }
-
-
-Vector3 ProjectWorldToScreen(Vector3 WorldLocation) {
-	Vector3 Screenlocation = Vector3(0, 0, 0);
-	Vector3 Camera;
-	
-	auto chain69 = read<uintptr_t>(Localplayer + 0xa8);
-			SDK::FVector2D vector{ 0, 0 };
-			vector.X = point1.X - point2.X;
-			vector.Y = point1.Y - point2.Y;
-	{
-			return vector;
-	}
-	
-	
 	
 
 D3DMATRIX tempMatrix = Matrix(Camera);
@@ -108,27 +90,34 @@ D3DMATRIX tempMatrix = Matrix(Camera);
 }
 
 
-VOID AddMarker(ImGuiWindow& window, float width, float height, float* start, PVOID pawn, LPCSTR text, ImU32 color) {
-	auto root = Util::GetPawnRootLocation(pawn);
-	if (root) {
-		
-		static Ret Call(PVOID shell, PVOID shell_param, First first, Second second, Third third, Fourth fourth, Pack... pack) {
-		static dx = start[0] - pos.X;
-		static dy = start[1] - pos.Y;
-		static dz = start[2] - pos.Z;
+void AddMarker(ImGuiWindow& window, float width, float height, const float* start, void* pawn, const char* text, ImU32 color)
+{
+    // Get the root location of the pawn object
+    auto root = Util::GetPawnRootLocation(pawn);
+    if (root)
+    {
+        // Calculate the distance from the start position to the pawn's location
+        float dx = start[0] - root.X;
+        float dy = start[1] - root.Y;
+        float dz = start[2] - root.Z;
+        float dist = std::sqrt(dx * dx + dy * dy + dz * dz) / 1500.0f;
 
-		if (Util::WorldToScreen(width, height, &pos.X)) {
-			float dist = Util::SpoofCall(sqrtf, dx * dx + dy * dy + dz * dz) / 1500.0f;
+        // Convert the pawn's location to screen coordinates
+        if (Util::WorldToScreen(width, height, &root.X))
+        {
+            // Format the marker text to include the distance
+            char modified[0xFFF] = { 0 };
+            std::snprintf(modified, sizeof(modified), "%s\n| %dm |", text, static_cast<int>(dist));
 
-			CHAR modified[0xFFF] = { 0 };
-			snprintf(modified, sizeof(modified), xorstr("%s\n| %dm |"), text, static_cast<INT>(dist));
+            // Calculate the size of the marker text
+            auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
 
-			auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
-			window.DrawList->AddText(ImVec2(pos.X - size.x / 2.0f, pos.Y - size.y / 2.0f), color, modified);
-			{
-				
-			return Wrapper<Ret, First, Second, Third, Fourth, PVOID, PVOID, Pack...>(shell, first, second, third, fourth, shell_param, nullptr, pack...)
-			}
+            // Add the marker text to the draw list
+            window.DrawList->AddText(ImVec2(root.X - size.x / 2.0f, root.Y - size.y / 2.0f), color, modified);
+        }
+    }
+}
+
 
 void SetupWindow()
 {
