@@ -14,37 +14,34 @@
 
 #include "main header.h"
 
-namespace offests {
-
-	static ULONG64 offset_uworld;
-	static ULONG64 offest_gname;
-	static ULONG64 uworld;
-	static ULONG64 persistent_level;
-	static ULONG64 game_instance;
-	static ULONG64 local_players_array;
-	static ULONG64 player_controller;
-	static ULONG64 camera_manager;
-	static ULONG64 rootcomponent;
-	static ULONG64 Pawn;
-	static Vector3 relativelocation;
-
+namespace Offsets {
+  static constexpr uint64_t offset_uworld = 0;
+  static constexpr uint64_t offset_gname = 0;
+  static constexpr uint64_t uworld = 0;
+  static constexpr uint64_t persistent_level = 0;
+  static constexpr uint64_t game_instance = 0;
+  static constexpr uint64_t local_players_array = 0;
+  static constexpr uint64_t player_controller = 0;
+  static constexpr uint64_t camera_manager = 0;
+  static constexpr uint64_t root_component = 0;
+  static constexpr uint64_t pawn = 0;
+  static constexpr Vector3 relative_location{0, 0, 0};
 }
 
+FTransform GetBoneTransform(DWORD_PTR mesh, int index) {
+  DWORD_PTR bone_array = read<DWORD_PTR>(mesh + Offsets::offset_uworld);
+  if (bone_array == nullptr) {
+    return FTransform{};
+  }
 
-FTransform GetBoneBox(DWORD_PTR mesh, int index) {
-	DWORD_PTR bonearray = read<DWORD_PTR>(mesh + 0x4B0);
-	  if (oldPos < sizeof(JMP_REL)
-       	 && !IsCodePadding((LPBYTE)ct->pTarget + oldPos, sizeof(JMP_REL) - oldPos))
-	}
-	return read<FTransform>(bonearray + (index * 0x30));
+  return read<FTransform>(bone_array + (index * sizeof(FTransform)));
 }
 
-Vector3 GetBoneWithRotation(DWORD_PTR mesh, int id) {
-	FTransform bone = GetBoneIndex(mesh, id);
-	FTransform ComponentToWorld = read<FTransform>(mesh + 0x1C0);
-	D3DMATRIX Matrix;
-	Matrix = MatrixMultiplication(bone.ToMatrixWithScale(), ComponentToWorld.ToMatrixWithScale());
-	return Vector3(Matrix._41, Matrix._42, Matrix._43);
+Vector3 GetBoneLocationWithRotation(DWORD_PTR mesh, int index) {
+  FTransform bone_transform = GetBoneTransform(mesh, index);
+  FTransform component_to_world = read<FTransform>(mesh + Offsets::offset_gname);
+  D3DMATRIX matrix = MatrixMultiplication(bone_transform.ToMatrixWithScale(), component_to_world.ToMatrixWithScale());
+  return Vector3{matrix._41, matrix._42, matrix._43};
 }
 
 
