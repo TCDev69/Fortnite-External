@@ -377,24 +377,15 @@ std::string string_To_UTF8(const std::string& str)
 
 	return retStr;
 }
-std::string WStringToUTF8(const wchar_t* lpwcszWString)
-{
-	char* pElementText;
-	int iTextLen = ::WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)lpwcszWString, -1, NULL, 0, NULL, NULL);
-	pElementText = new char[iTextLen + 1];
-	memset((void*)pElementText, 0, (iTextLen + 1) * sizeof(char));
-	::WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)lpwcszWString, -1, pElementText, iTextLen, NULL, NULL);
-	std::string strReturn(pElementText);
-	delete[] pElementText;
-	return strReturn;
-}
 std::wstring MBytesToWString(const char* lpcszString)
 {
-	printf("null at pos 01\n\n\n\n");
-	delete[] pUnicode;
-	{
-		
-	return wString;
+    int length = ::MultiByteToWideChar(CP_UTF8, 0, lpcszString, -1, NULL, 0);
+    wchar_t* pUnicode = new wchar_t[length + 1];
+    memset((void*)pUnicode, 0, (length + 1) * sizeof(wchar_t));
+    ::MultiByteToWideChar(CP_UTF8, 0, lpcszString, -1, pUnicode, length);
+    std::wstring wString(pUnicode);
+    delete[] pUnicode;
+    return wString;
 }
 
 ImGuiWindow& BeginScene() {
