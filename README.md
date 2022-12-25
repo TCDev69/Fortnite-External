@@ -6,16 +6,18 @@
    
 ### 📁 〢Setup  
      
-- It works the same way as the Valorant External, which requires you to `Create your own drivers.`
-- Drivers available are Kernel only, Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
+- External both, you have to create it yourself. `CREATE DRIVER`
+- Kernel driver only 
+- Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
+- Use it at your own risk.
  
-     
-### 📮 〢 Driver
-- The only available driver is Kernel because it doesn't support EFI. 
-- This is the free version. Use at your own risk.
-- Scroll down the message if you need help 
-  
-### Feature List 
+## Kernel
+
+- Currently it only supports only kennel
+
+---
+
+## Feature 
  
 ### Aimbot
 - Head , Body , etc
@@ -48,19 +50,17 @@ https://user-images.githubusercontent.com/94861415/207121186-1b740f9e-e7f7-429a-
 
 
 
----
+--- 
 
   <p align="center">
-    <a href="https://discord.com/users/943374631644045363">
-        <img title="Fnoberz server discord" alt="Fnoberz's discord" src="https://discord.c99.nl/widget/theme-4/943374631644045363.png"/>
+    <a href="https://discord.gg/MBTkVcJefp">
+        <img title="Slackes server discord" alt="Slackes discord" src="https://discordapp.com/api/guilds/880135738077896764/widget.png?style=banner2"/>
     </a>
 </p> 
  
-### 💬 ・HELP & SUPPORT | [Discord](https://discord.gg/MBTkVcJefp) 
+## 💬 ・[Discord](https://discord.gg/MBTkVcJefp) 
 
-
- ### 🛒〢 `PRIVATE CHEAT`
- More Here [Information](https://github.com/Club-CC/Detail)
+ ### 🛒〢 `PRODUCT`
  
 <table>
 <tr>
@@ -70,22 +70,22 @@ https://user-images.githubusercontent.com/94861415/207121186-1b740f9e-e7f7-429a-
 </table>
 
   
-### 🎯 〢 Product Cheat
+### 🥊 〢 Private Cheat
 
-- Lifetime + Update Free
+- Lifetime 
+- Free Updates 
+- Undetected
 - Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers)`
-- Undetected and can be played on the main account.
 
+### ⚓〢 Warranty
 
-### 💯〢 Warranty Product.
-
-- Support 24 Hr + Update Free
-- IF Banned = REFUND
+- Support 24 Hr
+- Update Free
+- If banned = `REFUND`
 
 A website that I created to introduce myself from start to finish. hope you like it [Slackes.me](http://slackes.me/)
 
 ---
-
 
 
 <h2 align="center"> Copyright © 2021 - 2022
