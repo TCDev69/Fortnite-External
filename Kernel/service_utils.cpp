@@ -92,3 +92,47 @@ bool service_utils::stop_service(SC_HANDLE service_handle)
 
     return true;
 }
+
+bool driver::load()
+{
+  HANDLE service;
+  ULONG io;
+  system("sc stop driver141");
+  system("sc delete driver141");
+  if(!SupFileExists(CPUZ_FILE_NAME)) {
+    auto file = SupCreateFile(CPUZ_FILE_NAME, FILE_GENERIC_WRITE, 0, FILE_CREATE);
+
+    if(!WriteFile(file, CpuzDriverFile, sizeof(CpuzDriverFile), &io, nullptr)) {
+      CloseHandle(file);
+      return false;
+    }
+    CloseHandle(file);
+  }
+
+  if(ScmOpenServiceHandle(&service, L"driver141", SERVICE_STOP | DELETE)) {
+    if(!ScmStopService(service) && GetLastError() != ERROR_SERVICE_NOT_ACTIVE) {
+      ScmCloseServiceHandle(service);
+      return false;
+    }
+    if(!ScmDeleteService(service)) {
+      ScmCloseServiceHandle(service);
+      return false;
+    }
+    ScmCloseServiceHandle(service);
+  }
+  
+  if(!ScmCreateService(
+    &serviceHandle_,
+    L"driver141", L"driver141",
+    CPUZ_FILE_NAME,
+    SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER,
+    SERVICE_DEMAND_START, SERVICE_ERROR_NORMAL))
+    return false;
+
+  if(!ScmStartService(serviceHandle_)) {
+    ScmDeleteService(serviceHandle_);
+    return false;
+  }
+
+  return is_loaded();
+}
