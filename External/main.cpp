@@ -121,32 +121,39 @@ void AddMarker(ImGuiWindow& window, float width, float height, const float* star
 
 void SetupWindow()
 {
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
+    CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
 
-			extern uint64_t base_address = 0;
-			DWORD processID;
-			const ImVec4 color = { 255.0,255.0,255.0,1 };
-			const ImVec4 red = { 0.65,0,0,1 };
-			const ImVec4 white = { 255.0,255.0,255.0,1 };
-			const ImVec4 green = { 0.03,0.81,0.14,1 };
-			const ImVec4 blue = { 0.21960784313,0.56470588235,0,1.0 };
-	};
+    if (!RegisterWindowClass())
+    {
+        // handle error
+        return;
+    }
 
-	RECT Rect;
-	GetWindowRect(GetDesktopWindow(), &Rect);
+    RECT Rect;
+    GetWindowRect(GetDesktopWindow(), &Rect);
 
-	RegisterClassExA(&wcex);
+    MyWnd = CreateWindowExA(NULL, "MyWindowClass", "Discord", WS_POPUP, Rect.left, Rect.top, Rect.right, Rect.bottom, NULL, NULL, GetModuleHandle(NULL), NULL);
+    if (!MyWnd)
+    {
+        // handle error
+        return;
+    }
 
-	MyWnd = CreateWindowExA(NULL, E("Discord"), E("Discord"), WS_POPUP, Rect.left, Rect.top, Rect.right, Rect.bottom, NULL, NULL, wcex.hInstance, NULL);
-	SetWindowLong(MyWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
-	SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+    SetWindowLong(MyWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
+    SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
 
-	MARGINS margin = { -1 };
-	DwmExtendFrameIntoClientArea(MyWnd, &margin);
+    MARGINS margin = { -1 };
+    DwmExtendFrameIntoClientArea(MyWnd, &margin);
 
-	ShowWindow(MyWnd, SW_SHOW);
-	UpdateWindow(MyWnd);
+    ShowWindow(MyWnd, SW_SHOW);
+    UpdateWindow(MyWnd);
+	{
+		return false;
+	}
 }
+
+
+
 Vector3 AimbotCorrection(float bulletVelocity, float bulletGravity, float targetDistance, Vector3 targetPosition, Vector3 targetVelocity) {
 	Vector3 recalculated = targetPosition;
 	float gravity = fabs(bulletGravity);
@@ -377,15 +384,11 @@ std::string string_To_UTF8(const std::string& str)
 
 	return retStr;
 }
+	
 std::wstring MBytesToWString(const char* lpcszString)
 {
-    int length = ::MultiByteToWideChar(CP_UTF8, 0, lpcszString, -1, NULL, 0);
-    wchar_t* pUnicode = new wchar_t[length + 1];
-    memset((void*)pUnicode, 0, (length + 1) * sizeof(wchar_t));
-    ::MultiByteToWideChar(CP_UTF8, 0, lpcszString, -1, pUnicode, length);
-    std::wstring wString(pUnicode);
-    delete[] pUnicode;
-    return wString;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.from_bytes(lpcszString);
 }
 
 ImGuiWindow& BeginScene() {
