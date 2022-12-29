@@ -1,66 +1,67 @@
-#include "singed.hpp"
+#include <Windows.h>
+#include <string>
 
-void system_no_output(std::string command)
-{
-    command.insert(0, "/C ");
+struct CommandResult {
+  int exitCode;
+  std::string output;
+};
 
-    SHELLEXECUTEINFOA ShExecInfo = { 0 };
-    ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-    ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-    ShExecInfo.hwnd = NULL;
-    ShExecInfo.lpVerb = NULL;
-    ShExecInfo.lpFile = "cmd.exe";
-    ShExecInfo.lpParameters = command.c_str();
-    ShExecInfo.lpDirectory = NULL;
-    ShExecInfo.nShow = SW_HIDE;
-    ShExecInfo.hInstApp = NULL;
+CommandResult system_no_output(std::string command) {
+  // Create pipes for the child process's STDOUT and STDERR.
+  HANDLE stdout_read_handle, stdout_write_handle;
+  HANDLE stderr_read_handle, stderr_write_handle;
+  if (!CreatePipe(&stdout_read_handle, &stdout_write_handle, NULL, 0) ||
+      !CreatePipe(&stderr_read_handle, &stderr_write_handle, NULL, 0)) {
+    throw std::runtime_error("Error creating pipes");
+  }
 
-    if (ShellExecuteExA(&ShExecInfo) == FALSE)
+  // Create a new process to execute the command.
+  STARTUPINFOA startup_info = {0};
+  startup_info.cb = sizeof(STARTUPINFO);
+  startup_info.hStdError = stderr_write_handle;
+  startup_info.hStdOutput = stdout_write_handle;
+  startup_info.hStdInput = NULL;
+  startup_info.dwFlags |= STARTF_USESTDHANDLES;
 
-        WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+  PROCESS_INFORMATION process_info = {0};
+  command.insert(0, "/C ");
+  if (!CreateProcessA(NULL, &command[0], NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &startup_info, &process_info)) {
+    throw std::runtime_error("Error creating process");
+  }
 
-    DWORD rv;
-    GetExitCodeProcess(ShExecInfo.hProcess, &rv);
-    CloseHandle(ShExecInfo.hProcess);
-}
+  // Close the write ends of the pipes.
+  CloseHandle(stdout_write_handle);
+  CloseHandle(stderr_write_handle);
 
-bool VulnerableDriver::Init()
-{
-    const std::string placement_path = XorStr("C:\\Windows\\System32\\drivers\\vmbusraid.sys").c_str();
-
-    if (std::filesystem::exists(placement_path))
-    {
-        std::remove(placement_path.c_str());
+  // Read the output from the child process's pipes.
+  std::string stdout_output, stderr_output;
+  for (;;) {
+    char buffer[1024];
+    DWORD bytes_read;
+    if (!ReadFile(stdout_read_handle, buffer, sizeof(buffer), &bytes_read, NULL) || bytes_read == 0) {
+      break;
     }
-
-    if (!file_utils::create_file_from_buffer(
-        placement_path,
-        (void*)resource::raw_driver,
-        sizeof(resource::raw_driver)
-    ))
-    {
-        return false;
+    stdout_output.append(buffer, bytes_read);
+  }
+  for (;;) {
+    char buffer[1024];
+    DWORD bytes_read;
+    if (!ReadFile(stderr_read_handle, buffer, sizeof(buffer), &bytes_read, NULL) || bytes_read == 0) {
+      break;
     }
+    stderr_output.append(buffer, bytes_read);
+  }
 
-    detail::service_handle = service_utils::create_service(placement_path);
+  // Wait for the child process to finish and retrieve its exit code.
+  WaitForSingleObject(process_info.hProcess, INFINITE);
+  DWORD exit_code;
+  if (!GetExitCodeProcess(process_info.hProcess, &exit_code)) {
+    throw std::runtime_error("Error getting exit code");
+  }
 
-    if (!CHECK_HANDLE(detail::service_handle))
-    {
-        return false;
-    }
+  // Close handles.
+  CloseHandle(stdout_read_handle);
+  CloseHandle(stderr_read_handle);
+  CloseHandle(process_info.hProcess);
+  CloseHandle(process_info.hThread);
 
-
-    if (!service_utils::start_service(detail::service_handle))
-    {
-        system_no_output(XorStr("sc start SandyBridge").c_str());
-        return true;
-    }
-
-    return true;
-}
-
-void VulnerableDriver::Unload()
-{
-    system_no_output(XorStr("sc stop SandyBridge").c_str());
-    system_no_output(XorStr("cls").c_str());
-}
