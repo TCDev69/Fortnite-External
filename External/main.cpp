@@ -37,10 +37,15 @@ FTransform GetBoneTransform(DWORD_PTR mesh, int index) {
   return read<FTransform>(bone_array + (index * sizeof(FTransform)));
 }
 
-Vector3 GetBoneLocationWithRotation(DWORD_PTR mesh, int index) {
-  FTransform bone_transform = GetBoneTransform(mesh, index);
-  FTransform component_to_world = read<FTransform>(mesh + Offsets::offset_gname);
-  D3DMATRIX matrix = MatrixMultiplication(bone_transform.ToMatrixWithScale(), component_to_world.ToMatrixWithScale());
+Vector3 GetBoneLocationWithRotation(const Mesh& mesh, int bone_index) {
+  // Get the bone transform and component-to-world transform
+  const FTransform bone_transform = GetBoneTransform(mesh, bone_index);
+  const FTransform component_to_world = mesh.GetComponentToWorldTransform();
+
+  // Multiply the transforms to get the bone transform in world space
+  const D3DMATRIX matrix = MatrixMultiplication(bone_transform.ToMatrixWithScale(), component_to_world.ToMatrixWithScale());
+
+  // Extract the location from the matrix and return it as a Vector3
   return Vector3{matrix._41, matrix._42, matrix._43};
 }
 
