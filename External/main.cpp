@@ -97,6 +97,12 @@ D3DMATRIX tempMatrix = Matrix(Camera);
 
 void AddMarker(ImGuiWindow& window, float width, float height, const float* start, void* pawn, const char* text, ImU32 color)
 {
+    // Check if start position and pawn pointer are valid
+    if (!start || !pawn)
+    {
+        return;
+    }
+
     // Get the root location of the pawn object
     auto root = Util::GetPawnRootLocation(pawn);
     if (root)
@@ -122,6 +128,7 @@ void AddMarker(ImGuiWindow& window, float width, float height, const float* star
         }
     }
 }
+
 
 
 void SetupWindow()
