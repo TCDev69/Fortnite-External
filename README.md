@@ -44,10 +44,6 @@
 
 
 
-https://user-images.githubusercontent.com/94861415/207121186-1b740f9e-e7f7-429a-94dc-397d951a13ea.mp4
-
-
-
 
 
 --- 
