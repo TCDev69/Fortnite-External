@@ -77,30 +77,37 @@ void UnmapBuffer(ID3D11Buffer* pStageBuffer)
 
 ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
 {
-	D3D11_BUFFER_DESC CBDesc;
-	pBuffer->GetDesc(&CBDesc);
+    if (pBuffer == nullptr)
+    {
+        return nullptr;
+    }
 
-	ID3D11Buffer* pStageBuffer = NULL;
-	{ // create shadow buffer.
-		D3D11_BUFFER_DESC desc;
-		desc.BindFlags = 0;
-		desc.ByteWidth = CBDesc.ByteWidth;
-		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-		desc.MiscFlags = 0;
-		desc.StructureByteStride = 0;
-		desc.Usage = D3D11_USAGE_STAGING;
+    ID3D11Buffer* pStageBuffer = nullptr;
+    HRESULT hr;
 
-		if (FAILED(pDevice->CreateBuffer(&desc, NULL, &pStageBuffer)))
-		{
-			Log("CopyBufferToCpu {%d}", CBDesc.ByteWidth);
-		}
-	}
+    D3D11_BUFFER_DESC CBDesc;
+    pBuffer->GetDesc(&CBDesc);
 
-	if (pStageBuffer != NULL)
-	pContext->CopyResource(pStageBuffer, pBuffer);
+    D3D11_BUFFER_DESC desc;
+    desc.BindFlags = 0;
+    desc.ByteWidth = CBDesc.ByteWidth;
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    desc.MiscFlags = 0;
+    desc.StructureByteStride = 0;
+    desc.Usage = D3D11_USAGE_STAGING;
 
-	return reinterpret_cast<const_pointer>(_storage);
+    hr = pDevice->CreateBuffer(&desc, nullptr, &pStageBuffer);
+    if (FAILED(hr))
+    {
+        Log("CopyBufferToCpu: failed to create staging buffer (hr=0x%08lx)", hr);
+        return nullptr;
+    }
+
+    pContext->CopyResource(pStageBuffer, pBuffer);
+
+    return pStageBuffer;
 }
+
 
 int WorldViewCBnum = 2;
 int ProjCBnum = 1;
