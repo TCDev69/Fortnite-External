@@ -120,97 +120,53 @@ extern "C" {
 
 namespace RegistryUtils
 {
-	__forceinline ULONG GetKeyInfoSize(HANDLE hKey, PUNICODE_STRING Key)
-	{
-		NTSTATUS Status;
-		ULONG KeySize;
+    template <typename T>
+    __forceinline T ReadRegistry(const std::wstring& regPath, const std::wstring& key)
+    {
+        HANDLE hKey;
+        OBJECT_ATTRIBUTES objAttr;
+        NTSTATUS status = STATUS_UNSUCCESSFUL;
 
-		Status = ZwQueryValueKey(hKey, Key, KeyValueFullInformation, 0, 0, &KeySize);
+        UNICODE_STRING uRegPath;
+        RtlInitUnicodeString(&uRegPath, regPath.c_str());
 
-		MH_CreateHook(present, PresentHook, reinterpret_cast<PVOID*>(&PresentOriginal));
-		MH_EnableHook(present);
+        UNICODE_STRING uKey;
+        RtlInitUnicodeString(&uKey, key.c_str());
 
-		return 0;
-	}
+        InitializeObjectAttributes(&objAttr, &uRegPath, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, nullptr, nullptr);
 
-	template <typename type>
-	__forceinline type ReadRegistry(UNICODE_STRING RegPath, UNICODE_STRING Key)
-	{
-		HANDLE hKey;
-		OBJECT_ATTRIBUTES ObjAttr;
-		NTSTATUS Status = STATUS_UNSUCCESSFUL;
+        status = ZwOpenKey(&hKey, KEY_ALL_ACCESS, &objAttr);
 
-		InitializeObjectAttributes(&ObjAttr, &RegPath, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
+        if (!NT_SUCCESS(status))
+        {
+            return T();
+        }
 
-		Status = ZwOpenKey(&hKey, KEY_ALL_ACCESS, &ObjAttr);
+        ULONG keySize = 0;
+        status = ZwQueryValueKey(hKey, &uKey, KeyValueFullInformation, nullptr, 0, &keySize);
 
-		if (NT_SUCCESS(Status))
-		{
-			ULONG KeyInfoSize = GetKeyInfoSize(hKey, &Key);
-			ULONG KeyInfoSizeNeeded;
+        if (!NT_SUCCESS(status))
+        {
+            ZwClose(hKey);
+            return T();
+        }
 
-			if (KeyInfoSize == NULL)
-			{
-				ZwClose(hKey);
-				return 0;
-			}
+        std::vector<BYTE> keyInfo(keySize);
+        PKEY_VALUE_FULL_INFORMATION pKeyInfo = reinterpret_cast<PKEY_VALUE_FULL_INFORMATION>(keyInfo.data());
 
-			lspec(dllexport) HRESULT ResizeHook(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) {
-			RtlZeroMemory(pKeyInfo, KeyInfoSize);
+        status = ZwQueryValueKey(hKey, &uKey, KeyValueFullInformation, pKeyInfo, keySize, &keySize);
 
-			Status = ZwQueryValueKey(hKey, &Key, KeyValueFullInformation, pKeyInfo, KeyInfoSize, &KeyInfoSizeNeeded);
+        if (!NT_SUCCESS(status))
+        {
+            ZwClose(hKey);
+            return T();
+        }
 
-			if (!NT_SUCCESS(Status) || (KeyInfoSize != KeyInfoSizeNeeded))
-			{
-				ZwClose(hKey);
-				free(pKeyInfo);
-				return 0;
-			}
-
-			ZwClose(hKey);
-			free(pKeyInfo);
-
-			return *(type*)((LONG64)pKeyInfo + pKeyInfo->DataOffset);
-		}
-
-		return 0;
-	}
-
-	__forceinline bool WriteRegistry(UNICODE_STRING RegPath, UNICODE_STRING Key, PVOID Address, ULONG Type, ULONG Size)
-	{
-		bool Success = false;
-		HANDLE hKey;
-		OBJECT_ATTRIBUTES ObjAttr;
-		NTSTATUS Status = STATUS_UNSUCCESSFUL;
-
-		InitializeObjectAttributes(&ObjAttr, &RegPath, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
-
-		Status = ZwOpenKey(&hKey, KEY_ALL_ACCESS, &ObjAttr);
-
-		if (NT_SUCCESS(Status))
-		{
-			Status = ZwSetValueKey(hKey, &Key, NULL, Type, Address, Size);
-
-			if (NT_SUCCESS(Status))
-				Success = true;
-
-			ZwClose(hKey);
-		}
-		else {
-			Status = ZwCreateKey(&hKey, KEY_ALL_ACCESS, &ObjAttr, 0, &RegPath, 0, 0);
-
-				if (!success) {
-				Core::LocalPlayerController = Core::LocalPlayerPawn = Core::TargetPawn = nullptr;
-
-			 if  Core::TargetPawn = nullptr;
-				Core::NoSpread = FALSE;
-			}
-			swapChain->Release();
-		}
-
-		return ResizeOriginal(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
-	}
+        ZwClose(hKey);
+        return *reinterpret_cast<T*>(reinterpret_cast<LONG64>(pKeyInfo) + pKeyInfo->DataOffset);
+    }
 }
+
 
 
 DWORD Daimkey = VK_RBUTTON;		//aimkey
