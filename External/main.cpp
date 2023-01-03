@@ -1469,6 +1469,8 @@ void setupWindow() {
 
 	return Message.wParam;
 }
+
+
 LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
@@ -1558,47 +1560,51 @@ void SetWindowToTarget()
 		return 0;
 }
 
-int main(const int argc, char** argv)
+int main(int argc, char** argv)
 {
-	if (argc != 3)
-		throw exception("Number of parameters are less than required");
-	
-	const char* DriverCallback = argv[1];
-	const char* TARGET_IS_NT40_OR_LATER = argv[2];
+    if (argc != 3)
+    {
+        std::cerr << "Error: Incorrect number of parameters. 2 arguments are required." << std::endl;
+        return 1;
+    }
 
-	constexpr auto value_size = sizeof(typename T::value_type);
+    const char* driver_callback = argv[1];
+    const char* target_is_nt40_or_later = argv[2];
 
-	try
-	{
-		SanityChecker* checker = new SanityChecker(DriverCallback, TargetDriverName);
+    try
+    {
+        SanityChecker checker(driver_callback, TargetDriverName);
 
-		Loader ProxyDriverLoader((CONST LPSTR)DriverCallback);
+        Loader proxy_driver_loader((const char*)driver_callback);
 
-		if (!ProxyDriverLoader.LoadDriver())
-		{
-			string error = "Loading "; error += ProxyDriverName; error += " failed";
-			throw exception(error.c_str());
-		}
+        if (!proxy_driver_loader.LoadDriver())
+        {
+            std::string error = "Error: Loading " + std::string(ProxyDriverName) + " failed";
+            throw std::exception(error.c_str());
+        }
 
-		ProxyDriverLoader.DeleteRegistryKey();
+        proxy_driver_loader.DeleteRegistryKey();
 
-		auto ProxyDriverModuleBase = GetSystemModuleBaseAddress(ProxyDriverName);
-		assert(ProxyDriverModleBase);
+        auto proxy_driver_module_base = GetSystemModuleBaseAddress(ProxyDriverName);
+        if (!proxy_driver_module_base)
+        {
+            std::string error = "Error: Failed to get base address of module for " + std::string(ProxyDriverName);
+            throw std::exception(error.c_str());
+        }
 
-		cout << " Driver..." << endl;
+        CapcomDriverManualMapper mapper(ProxyDriverName, TargetDriverName, proxy_driver_module_base + checker.GetOverwritableSectionOffset());
+        mapper.map();
 
-		mapper = new CapcomDriverManualMapper(ProxyDriverName, TargetDriverName, ProxyDriverModuleBase + checker->GetOverwritableSectionOffset());
-		mapper->map();
+        std::cout << TargetDriverName << " was successfully mapped" << std::endl;
+    }
+    catch (std::exception& ex)
+    {
+        std::cerr << "Error: " << ex.what() << std::endl;
+        return 1;
+    }
 
-		cout << TargetDriverName << " successfully was mapped" << endl;
-	}
-	catch (exception ex)
-	{
-		cout << "Opened -> " << ex.what() << endl;
-	}
-	mapper->~CapcomDriverManualMapper();
-	getchar();
-	{
-		
-	return 0;
+    std::cout << "Press any key to exit" << std::endl;
+    std::getchar();
+
+    return 0;
 }
