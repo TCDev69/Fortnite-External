@@ -248,73 +248,92 @@ double GetCrossDistance(double x1, double y1, double z1, double x2, double y2, d
 
 class Color
 {
+class Color
+{
 public:
-	RGBA red = { 255,0,0,255 };
-	RGBA Magenta = { 255,0,255,255 };
-	RGBA yellow = { 255,255,0,255 };
-	RGBA grayblue = { 128,128,255,255 };
-	RGBA green = { 128,224,0,255 };
-	RGBA darkgreen = { 0,224,128,255 };
-	RGBA brown = { 192,96,0,255 };
-	RGBA pink = { 255,168,255,255 };
-	RGBA DarkYellow = { 216,216,0,255 };
-	RGBA SilverWhite = { 236,236,236,255 };
-	RGBA purple = { 144,0,255,255 };
-	RGBA Navy = { 88,48,224,255 };
-	RGBA skyblue = { 0,136,255,255 };
-	RGBA graygreen = { 128,160,128,255 };
-	RGBA blue = { 0,96,192,255 };
-	RGBA orange = { 255,128,0,255 };
-	RGBA peachred = { 255,80,128,255 };
-	RGBA reds = { 255,128,192,255 };
-	RGBA darkgray = { 96,96,96,255 };
-	RGBA Navys = { 0,0,128,255 };
-	RGBA darkgreens = { 0,128,0,255 };
-	RGBA darkblue = { 0,128,128,255 };
-	RGBA redbrown = { 128,0,0,255 };
-	RGBA purplered = { 128,0,128,255 };
-	RGBA greens = { 0,255,0,255 };
-	RGBA envy = { 0,255,255,255 };
-	RGBA black = { 0,0,0,255 };
-	RGBA gray = { 128,128,128,255 };
-	RGBA white = { 255,255,255,255 };
-	RGBA blues = { 30,144,255,255 };
-	RGBA lightblue = { 135,206,250,160 };
-	RGBA Scarlet = { 220, 20, 60, 160 };
-	RGBA white_ = { 255,255,255,200 };
-	RGBA gray_ = { 128,128,128,200 };
-	RGBA black_ = { 0,0,0,200 };
-	RGBA red_ = { 255,0,0,200 };
-	RGBA Magenta_ = { 255,0,255,200 };
-	RGBA yellow_ = { 255,255,0,200 };
-	RGBA grayblue_ = { 128,128,255,200 };
-	RGBA green_ = { 128,224,0,200 };
-	RGBA darkgreen_ = { 0,224,128,200 };
-	RGBA brown_ = { 192,96,0,200 };
-	RGBA pink_ = { 255,168,255,200 };
-	RGBA darkyellow_ = { 216,216,0,200 };
-	RGBA silverwhite_ = { 236,236,236,200 };
-	RGBA purple_ = { 144,0,255,200 };
-	RGBA Blue_ = { 88,48,224,200 };
-	RGBA skyblue_ = { 0,136,255,200 };
-	RGBA graygreen_ = { 128,160,128,200 };
-	RGBA blue_ = { 0,96,192,200 };
-	RGBA orange_ = { 255,128,0,200 };
-	RGBA pinks_ = { 255,80,128,200 };
-	RGBA Fuhong_ = { 255,128,192,200 };
-	RGBA darkgray_ = { 96,96,96,200 };
-	RGBA Navy_ = { 0,0,128,200 };
-	RGBA darkgreens_ = { 0,128,0,200 };
-	RGBA darkblue_ = { 0,128,128,200 };
-	RGBA redbrown_ = { 128,0,0,200 };
-	RGBA purplered_ = { 128,0,128,200 };
-	RGBA greens_ = { 0,255,0,200 };
-	RGBA envy_ = { 0,255,255,200 };
+    // Construct a color with the given RGBA values
+    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) : r(r), g(g), b(b), a(a) {}
 
-	RGBA glassblack = { 0, 0, 0, 160 };
-	RGBA GlassBlue = { 65,105,225,80 };
-	RGBA glassyellow = { 255,255,0,160 };
-	RGBA glass = { 200,200,200,60 };
+    // Construct a color with the given RGB values and full opacity (alpha = 255)
+    Color(uint8_t r, uint8_t g, uint8_t b) : Color(r, g, b, 255) {}
+
+    // Predefined colors
+    static const Color red;
+    static const Color Magenta;
+    static const Color yellow;
+    static const Color grayblue;
+    static const Color green;
+    static const Color darkgreen;
+    static const Color brown;
+    static const Color pink;
+    static const Color DarkYellow;
+    static const Color SilverWhite;
+    static const Color purple;
+    static const Color Navy;
+    static const Color skyblue;
+    static const Color graygreen;
+    static const Color blue;
+    static const Color orange;
+    static const Color peachred;
+    static const Color reds;
+    static const Color darkgray;
+    static const Color Navys;
+    static const Color darkgreens;
+    static const Color darkblue;
+    static const Color redbrown;
+    static const Color purplered;
+    static const Color greens;
+    static const Color envy;
+    static const Color black;
+    static const Color gray;
+    static const Color white;
+    static const Color blues;
+    static const Color lightblue;
+    static const Color Scarlet;
+    static const Color white_;
+    static const Color gray_;
+    static const Color black_;
+    static const Color red_;
+    static const Color Magenta_;
+    static const Color yellow_;
+    static const Color grayblue_;
+    static const Color green_;
+    static const Color darkgreen_;
+    static const Color brown_;
+    static const Color pink_;
+    static const Color darkyellow_;
+    static const Color silverwhite_;
+    static const Color purple_;
+    static const Color Blue_;
+    static const Color skyblue_;
+    static const Color graygreen_;
+    static const Color blue_;
+    static const Color orange_;
+    static const Color pinks_;
+    static const Color Fuhong_;
+    static const Color darkgray_;
+    static const Color Navy_;
+    static const Color darkgreens_;
+    static const Color darkblue_;
+    static const Color redbrown_;
+    static const Color purplered_;
+    static const Color greens_;
+    static const Color envy_;
+    static const Color glassblack;
+    static const Color GlassBlue;
+    static const Color glassdarkblue;
+    static const Color glassgreen;
+    static const Color glassdarkgreen;
+    static const Color glassgray;
+    static const Color glassred;
+    static const Color glassdarkred;
+    static const Color glassyellow;
+    static const Color glassorange;
+    static const Color glasspurple;
+    static const Color glasspink;
+    static const Color glassskyblue;
+    static const Color glasssilverwhite;
+    static const Color glass
 
 	RGBA filled = { 0, 0, 0, 150 };
 
