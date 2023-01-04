@@ -1540,7 +1540,7 @@ void SetWindowToTarget()
 
 	if (driver->Init(FALSE)) {
 		printf(("Success!\n"));
-		Sleep(1000);
+		Sleep(1500);
 		driver->Attach((L"FortniteClient-Win64-Shipping.exe"));
 		
 			SetupWindow();
@@ -1553,58 +1553,8 @@ void SetWindowToTarget()
 			printf(("FortniteClient-Win64-Shipping.exe :0x%llX\n"), sdk::module_base);
 			std::cout << GetNameFromFName;
 			HANDLE handle = CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(cache), nullptr, NULL, nullptr);
-			//CloseHandle(handle);
-
-			MainLoop();
+		
 		}
 		return 0;
 }
 
-int main(int argc, char** argv)
-{
-    if (argc != 3)
-    {
-        std::cerr << "Error: Incorrect number of parameters. 2 arguments are required." << std::endl;
-        return 1;
-    }
-
-    const char* driver_callback = argv[1];
-    const char* target_is_nt40_or_later = argv[2];
-
-    try
-    {
-        SanityChecker checker(driver_callback, TargetDriverName);
-
-        Loader proxy_driver_loader((const char*)driver_callback);
-
-        if (!proxy_driver_loader.LoadDriver())
-        {
-            std::string error = "Error: Loading " + std::string(ProxyDriverName) + " failed";
-            throw std::exception(error.c_str());
-        }
-
-        proxy_driver_loader.DeleteRegistryKey();
-
-        auto proxy_driver_module_base = GetSystemModuleBaseAddress(ProxyDriverName);
-        if (!proxy_driver_module_base)
-        {
-            std::string error = "Error: Failed to get base address of module for " + std::string(ProxyDriverName);
-            throw std::exception(error.c_str());
-        }
-
-        CapcomDriverManualMapper mapper(ProxyDriverName, TargetDriverName, proxy_driver_module_base + checker.GetOverwritableSectionOffset());
-        mapper.map();
-
-        std::cout << TargetDriverName << " was successfully mapped" << std::endl;
-    }
-    catch (std::exception& ex)
-    {
-        std::cerr << "Error: " << ex.what() << std::endl;
-        return 1;
-    }
-
-    std::cout << "Press any key to exit" << std::endl;
-    std::getchar();
-
-    return 0;
-}
