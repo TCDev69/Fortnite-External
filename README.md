@@ -1,31 +1,38 @@
- ## Fortnite External
-![CSS](https://img.shields.io/badge/-CSS-05122A?style=for-the-badge&logo=CSS3&logoColor=1572B6)&nbsp;
-![VSCode](https://img.shields.io/badge/-Visual_Studio_Code-05122A?style=for-the-badge&logo=VisualStudioCode)&nbsp;
-![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=for-the-badge&logo=github)&nbsp;
-![Git](https://img.shields.io/badge/-Git-05122A?style=for-the-badge&logo=git)&nbsp;
-   
-### 📁 〢Setup  
-     
-- External both, you have to create it yourself. `CREATE DRIVER`
-- Kernel driver only 
-- Ask me other Question [Discord Server](https://discord.gg/MBTkVcJefp)
-- Use it at your own risk.
- 
-## Kernel
+<h1 align="center">
+  Fortnite External ➰
+</h1>
 
-- Currently it only supports only kennel
+<p align="center">
+  External Cheat Fortnite Bypass
+</p>
+
+
+
+<p align="center">
+  <img src="https://img.shields.io/github/languages/top/Slackes/Fortnite-External?style=flat-square"/>
+  <img src="https://img.shields.io/github/last-commit/Slackes/Fortnite-External?style=flat-square"/>
+  <img src="https://sonarcloud.io/api/project_badges/measure?project=Slackes_Fortnite-External&metric=ncloc"/>
+  <img src="https://img.shields.io/github/stars/Slackes/Fortnite-External?color=5ac18e&label=Stars&style=flat-square"/>
+
+</p>
 
 ---
 
+## <a id="content"></a>🌐 〢 Read
+- Free and free version You just need to create a driver for it to work. and use it at your own risk, If you don't want to create a driver, please contact Discord for a safer alternative.
+
+## <a id="features"></a>🔰 〢 Features
+
+```
 ## Feature 
  
-### Aimbot
+AIMBOT
 - Head , Body , etc
 - Custom Hotkey 
 - Aim Smooth 
 - Silent Aim (70% not safe)
 
-### ESP 
+ESP
 - 3D Bounding Box  
 - Corner Box
 - Basic Box
@@ -36,20 +43,46 @@
 - Platform (in progress)
 - Max Distance
 
-### Misc
+MISC
 - Save & Load Config
+```
+
+
 
 ---
 
+## <a id="setup"></a> 📁 〢 Using
+
+Before starting to use You will want to read the manual carefully to avoid confusion.
+
+1. External both, you have to create it yourself. `CREATE DRIVER`
+- - Video Create Drivers [Make Kernel Driver](https://www.youtube.com/playlistlist=PLQURoBilKBnwa3gPTTl1hlNCHYU8CI0HR)
+2. When Finish place the Source instead of all the files in the folder. `Fortnite-External/Kernel/(News)`
+3. Compile the file again, then you will get an .exe file
+4. Finish (Insert)
+
+<br>
+
+  
+   You will need Visual Studio to compile it.:
+
+- [Visual Studio](https://visualstudio.microsoft.com/):
 
 
+
+
+
+## <a id="warn"></a> ❕ 〢 Warning 
+ This is the free version. So use it at your own risk. Use for case studies only. It will be your responsibility.
+
+  
+## <a id="setup2"></a> 📞 〢 Support
+- If you have any questions or don't understand the instructions, join Discord for help.
+- [Discord](https://discord.gg/MBTkVcJefp)
+
+---
 
 [videoplayback.webm](https://user-images.githubusercontent.com/94861415/210275398-c9e3ed89-d764-447f-b4c8-862e53c0480f.webm)
-
-
-
-
-
 
 --- 
 
@@ -88,7 +121,9 @@ A website that I created to introduce myself from start to finish. hope you like
 
 ---
 
+  <br>
 
-<h2 align="center"> Copyright © 2021 - 2022
-
+<p align="center">
+  Copyright © 2021 - 2022
+<br>
 
