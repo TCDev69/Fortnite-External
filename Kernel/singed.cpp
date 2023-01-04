@@ -10,10 +10,14 @@ CommandResult system_no_output(std::string command) {
   // Create pipes for the child process's STDOUT and STDERR.
   HANDLE stdout_read_handle, stdout_write_handle;
   HANDLE stderr_read_handle, stderr_write_handle;
-  if (!CreatePipe(&stdout_read_handle, &stdout_write_handle, NULL, 0) ||
-      !CreatePipe(&stderr_read_handle, &stderr_write_handle, NULL, 0)) {
-    throw std::runtime_error("Error creating pipes");
+  if (!CreatePipe(&stdout_read_handle, &stdout_write_handle, NULL, 0)) {
+    throw std::runtime_error("Error creating pipe for STDOUT");
   }
+  if (!CreatePipe(&stderr_read_handle, &stderr_write_handle, NULL, 0)) {
+    throw std::runtime_error("Error creating pipe for STDERR");
+  }
+  ...
+}
 
   // Create a new process to execute the command.
   STARTUPINFOA startup_info = {0};
