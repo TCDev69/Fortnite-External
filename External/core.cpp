@@ -26,60 +26,23 @@ namespace Core {
 			return FALSE;
 		}
 
-void SetDepthStencilState(eDepthState aState)
-			{
-				pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
-			}
-			
-			do {
-				if (Core::TargetPawn && Core::LocalPlayerController) {
-					if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
-						
-						window.DrawList->AddRectFilled(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f), ImVec2(centerTop.x + size.x / 2.0f, centerTop.y), ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
-						window.DrawList->AddText(ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy); {
-							
-							break;
-						}
+void SetDepthStencilState(eDepthState aState) {
+pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
+}
 
-						*reinterpret_cast<FVector*>(reinterpret_cast<PBYTE>(object) + Offsets::FortniteGame::FortProjectileAthena::FireStartLoc) = head;
-
-						auto root = reinterpret_cast<PBYTE>(ReadPointer(object, Offsets::Engine::Actor::RootComponent));
-						
-						hWnd = FindWindow((L"UnrealWindow"), (L"Fortnite  "));
-						if (!width) {
-						oWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WndProcHook)));
-					}
-					else if (!Settings.SilentAimbot && wcsstr(funcName.c_str(), L"Tick")) {
-						FVector head;
-						if (!GetTargetHead(head)) {
-							break;
-						}
-
-						float angles[2] = { 0 };
-						StartServiceW pszModule, LPCSTR pszProcName, LPVOID pDetour, LPVOID *ppOriginal, LPVOID *ppTarget);
-
-						auto w2s = *reinterpret_cast<FVector*>(head);
-						if (Settings.Aimbot && closestPawn && Util::SpoofCall(GetAsyncKeyState, VK_RBUTTON) < 0 && Util::SpoofCall(GetForegroundWindow) == hWnd) {
-						Core::TargetPawn = closestPawn;
-						Core::NoSpread = FALSE;
-						//printf("\nworked?");
-					}
-					
-						}
-						else {
-							o.x = ScreenCenterX + ScreenCenterX * vWorldViewProj.x / vWorldViewProj.w;
-							o.y = ScreenCenterY + ScreenCenterY * -vWorldViewProj.y / vWorldViewProj.w;
-							
-						while (!glfwWindowShouldClose(g_window))
-							{
-								stream.write(reinterpret_cast<const char*>(&item), sizeof(item));
-							}
-
-							cleanupWindow();
-						}
-						
-						return true;
-					}
+do {
+  if (Core::TargetPawn && Core::LocalPlayerController) {
+    if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
+      window.DrawList->AddRectFilled(
+          ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f),
+          ImVec2(centerTop.x + size.x / 2.0f, centerTop.y),
+          ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
+      window.DrawList->AddText(
+          ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy);
+      break;
+    }
+  }
+} while (false);
 					
 			
 void no_cheat::pawns_loop::add_pawn(const char* pwn, bool(*func)(), bool(*func2)())
