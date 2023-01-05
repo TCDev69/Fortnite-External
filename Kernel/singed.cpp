@@ -19,8 +19,9 @@ CommandResult system_no_output(std::string command) {
   ...
 }
 
+void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HANDLE stderr_write_handle) {
   // Create a new process to execute the command.
-  STARTUPINFOA startup_info = {0};
+  STARTUPINFOW startup_info = {0};
   startup_info.cb = sizeof(STARTUPINFO);
   startup_info.hStdError = stderr_write_handle;
   startup_info.hStdOutput = stdout_write_handle;
@@ -28,11 +29,18 @@ CommandResult system_no_output(std::string command) {
   startup_info.dwFlags |= STARTF_USESTDHANDLES;
 
   PROCESS_INFORMATION process_info = {0};
-  command.insert(0, "/C ");
-  if (!CreateProcessA(NULL, &command[0], NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &startup_info, &process_info)) {
-    throw std::runtime_error("Error creating process");
+  std::wstring cmd = L"/C " + command;
+  if (!CreateProcessW(NULL, &cmd[0], NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &startup_info, &process_info)) {
+    DWORD error = GetLastError();
+    throw std::runtime_error("Error creating process: " + std::to_string(error));
   }
 
+  // Wait for the process to finish.
+  WaitForSingleObject(process_info.hProcess, INFINITE);
+
+  // Close the process and thread handles.
+  CloseHandle(process_info.hProcess);
+  CloseHandle(process_info.hThread);
   // Close the write ends of the pipes.
   CloseHandle(stdout_write_handle);
   CloseHandle(stderr_write_handle);
