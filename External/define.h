@@ -1,46 +1,49 @@
+#include <Windows.h>
+#include <d3d9.h>
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx9.h"
 
-#define E
-ImFont* m_pFont;
+// Forward declarations of functions
+void CreateWindow();
+void InitD3d();
+void MainLoop();
+LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-DWORD_PTR Uworld;
-DWORD_PTR LocalPawn;
-DWORD_PTR PlayerState;
-DWORD_PTR Localplayer;
-DWORD_PTR Rootcomp;
-DWORD_PTR relativelocation;
-DWORD_PTR PlayerController;
-DWORD_PTR Persistentlevel;
-DWORD_PTR Ulevel;
+// Global variables
+ImFont* g_pFont;
 
-Vector3 localactorpos;
-Vector3 Localcam;
+DWORD_PTR g_uWorld;
+DWORD_PTR g_pLocalPawn;
+DWORD_PTR g_pPlayerState;
+DWORD_PTR g_pLocalPlayer;
+DWORD_PTR g_pRootComponent;
+DWORD_PTR g_pRelativeLocation;
+DWORD_PTR g_pPlayerController;
+DWORD_PTR g_pPersistentLevel;
+DWORD_PTR g_pULevel;
 
-uint64_t TargetPawn;
-int localplayerID;
+Vector3 g_localActorPos;
+Vector3 g_localCam;
 
-bool isaimbotting;
-bool CrosshairSnapLines = false;
-bool team_CrosshairSnapLines;
+uint64_t g_targetPawn;
+int g_localPlayerId;
 
+bool g_isAimbotting;
+bool g_crosshairSnapLines = false;
+bool g_teamCrosshairSnapLines;
 
-RECT GameRect = { NULL };
-D3DPRESENT_PARAMETERS d3dpp;
+RECT g_gameRect = { NULL };
+D3DPRESENT_PARAMETERS g_d3dpp;
 
-DWORD ScreenCenterX;
-DWORD ScreenCenterY;
-DWORD ScreenCenterZ;
+DWORD g_screenCenterX;
+DWORD g_screenCenterY;
+DWORD g_screenCenterZ;
 
-//static void xCreateWindow();
-//static void xInitD3d();
-//static void xMainLoop();
-//static LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
-//extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-static HWND Window = NULL;
-//IDirect3D9Ex* p_Object = NULL;
-static LPDIRECT3DDEVICE9 D3dDevice = NULL;
-static LPDIRECT3DVERTEXBUFFER9 TriBuf = NULL;
-
+HWND g_window = NULL;
+IDirect3D9Ex* g_pObject = NULL;
+LPDIRECT3DDEVICE9 g_pD3dDevice = NULL;
+LPDIRECT3DVERTEXBUFFER9 g_pTriBuf = NULL;
 
 
 
