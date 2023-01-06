@@ -584,13 +584,27 @@ bool Headd = true;
 bool Neck = false;
 bool Chest = false;
 ImDrawList* Rendererrr = ImGui::GetOverlayDrawList();
-
+			
 bool isVisible(uint64_t mesh)
 {
-	float bing = read<float>(mesh + 0x512);
-	float bong = read<float>(mesh + 0x284);
-	const float tick = 0.06f;
-	return bong + tick >= bing;
+    // Read the bing and bong values from memory
+    float bing = read<float>(mesh + 0x512);
+    float bong = read<float>(mesh + 0x284);
+
+    // The tick value is a small constant used to adjust the visibility threshold
+    const float tick = 0.06f;
+
+    // Check if bong is greater than or equal to bing
+    if (bong + tick >= bing)
+    {
+        // The mesh is visible
+        return true;
+    }
+    else
+    {
+        // The mesh is not visible
+        return false;
+    }
 }
 
 void DrawESP() {
