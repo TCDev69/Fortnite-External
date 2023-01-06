@@ -23,7 +23,7 @@
 
 ## <a id="features"></a>🔰 〢 Features
 
-```
+
 ## Feature 
  
 AIMBOT
@@ -45,7 +45,7 @@ ESP
 
 MISC
 - Save & Load Config
-```
+
 
 
 
