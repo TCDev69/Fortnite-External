@@ -23,16 +23,14 @@
 
 ## <a id="features"></a>🔰 〢 Features
 
-
-## Feature 
  
-AIMBOT
+### AIMBOT
 - Head , Body , etc
 - Custom Hotkey 
 - Aim Smooth 
 - Silent Aim (70% not safe)
 
-ESP
+### ESP
 - 3D Bounding Box  
 - Corner Box
 - Basic Box
@@ -43,7 +41,7 @@ ESP
 - Platform (in progress)
 - Max Distance
 
-MISC
+### MISC
 - Save & Load Config
 
 
