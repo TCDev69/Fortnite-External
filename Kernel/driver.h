@@ -38,28 +38,28 @@ public:
 	}
 
 private:
-	bool hypervisor_was_enabled_{false};
-	hypervisor hypervisor_{};
-	sleep_callback sleep_callback_{};
-	irp irp_{};
+    bool hypervisor_was_enabled_ = false;  // initialize to false by default
+    Hypervisor hypervisor_;
+    SleepCallback sleep_callback_;
+    Irp irp_;
 
-	void sleep_notification(const sleep_callback::type type)
-	{
-		if (type == sleep_callback::type::sleep)
-		{
-			debug_log("Going to sleep...\n");
-			this->hypervisor_was_enabled_ = this->hypervisor_.is_enabled();
-			this->hypervisor_.disable();
-		}
+public:
+    void SleepNotification(const SleepCallback::Type type)
+    {
+        if (type == SleepCallback::Type::Sleep)
+        {
+            DebugLog("Going to sleep...\n");
+            this->hypervisor_was_enabled_ = this->hypervisor_.IsEnabled();
+            this->hypervisor_.Disable();
+        }
 
-		if (type == sleep_callback::type::wakeup && this->hypervisor_was_enabled_)
-		{
-			debug_log("Waking up...\n");
-			this->hypervisor_.enable();
-		}
-	}
+        if (type == SleepCallback::Type::Wakeup && this->hypervisor_was_enabled_)
+        {
+            DebugLog("Waking up...\n");
+            this->hypervisor_.Enable();
+        }
+    }
 };
-
 global_driver* global_driver_instance{nullptr};
 
 _Function_class_(DRIVER_UNLOAD) void unload(const PDRIVER_OBJECT driver_object)
