@@ -946,30 +946,6 @@ void DrawESP() {
 
 
 
-
-
-void GetKey() {
-	if (item.hitboxpos == 0) {
-		item.hitbox = 98;
-	}
-	else if (item.hitboxpos == 1) {
-		item.hitbox = 66;
-	}
-	else if (item.hitboxpos == 2) {
-		item.hitbox = 5;
-	}
-
-	else if (item.hitboxpos == 15) {
-		item.hitbox = 10;
-	}
-
-
-
-
-
-	DrawESP();
-}
-
 static int Tab = 0;
 
 void shortcurts()
@@ -1516,18 +1492,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CleanuoD3D()
-{
-	if (p_Device != NULL)
-	{
-		p_Device->EndScene();
-		p_Device->Release();
-	}
-	if (p_Object != NULL)
-	{
-		p_Object->Release();
-	}
-}
 void SetWindowToTarget()
 {
 	while (true)
