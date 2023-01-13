@@ -84,21 +84,22 @@ _Function_class_(DRIVER_UNLOAD) void unload(const PDRIVER_OBJECT driver_object)
 
 extern "C" NTSTATUS DriverEntry(const PDRIVER_OBJECT driver_object, PUNICODE_STRING /*registry_path*/)
 {
-	try
-	{
-		driver_object->DriverUnload = unload;
-		global_driver_instance = new global_driver(driver_object);
-	}
-	catch (std::exception& e)
-	{
-		debug_log("Error: %s\n", e.what());
-		return STATUS_INTERNAL_ERROR;
-	}
-	catch (...)
-	{
-		debug_log("Unknown initialization error occured");
-		return STATUS_INTERNAL_ERROR;
-	}
-
-	return STATUS_SUCCESS;
+    NTSTATUS status = STATUS_SUCCESS;
+    try
+    {
+        driver_object->DriverUnload = unload;
+        global_driver_instance = new global_driver(driver_object);
+    }
+    catch (const std::exception& e)
+    {
+        KdPrint(("Error: %s\n", e.what()));
+        status = STATUS_INTERNAL_ERROR;
+    }
+    catch (...)
+    {
+        KdPrint(("Unknown initialization error occured"));
+        status = STATUS_INTERNAL_ERROR;
+    }
+    return status;
 }
+
