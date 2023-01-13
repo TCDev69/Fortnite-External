@@ -18,8 +18,7 @@ CommandResult system_no_output(std::string command) {
   }
   ...
 }
-
-void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HANDLE stderr_write_handle) {
+void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HANDLE stderr_write_handle, std::string &stdout_output, std::string &stderr_output, DWORD &exit_code) {
   // Create a new process to execute the command.
   STARTUPINFOW startup_info = {0};
   startup_info.cb = sizeof(STARTUPINFO);
@@ -35,18 +34,11 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
     throw std::runtime_error("Error creating process: " + std::to_string(error));
   }
 
-  // Wait for the process to finish.
-  WaitForSingleObject(process_info.hProcess, INFINITE);
-
-  // Close the process and thread handles.
-  CloseHandle(process_info.hProcess);
-  CloseHandle(process_info.hThread);
   // Close the write ends of the pipes.
   CloseHandle(stdout_write_handle);
   CloseHandle(stderr_write_handle);
 
   // Read the output from the child process's pipes.
-  std::string stdout_output, stderr_output;
   for (;;) {
     char buffer[1024];
     DWORD bytes_read;
@@ -66,10 +58,15 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
 
   // Wait for the child process to finish and retrieve its exit code.
   WaitForSingleObject(process_info.hProcess, INFINITE);
-  DWORD exit_code;
   if (!GetExitCodeProcess(process_info.hProcess, &exit_code)) {
     throw std::runtime_error("Error getting exit code");
   }
+
+  // Close the process and thread handles.
+  CloseHandle(process_info.hProcess);
+  CloseHandle(process_info.hThread);
+}
+
 
   // Close handles.
   CloseHandle(stdout_read_handle);
