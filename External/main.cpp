@@ -131,38 +131,59 @@ void AddMarker(ImGuiWindow& window, float width, float height, const float* star
 
 
 
-void SetupWindow()
+bool SetupWindow()
 {
-    CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
+    // Create thread for setting the window to target
+    HANDLE setWindowThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SetWindowToTarget, 0, 0, 0);
+    if (setWindowThread == NULL)
+    {
+        // Handle error
+        return false;
+    }
 
+    // Register the window class
     if (!RegisterWindowClass())
     {
-        // handle error
-        return;
+        // Handle error
+        return false;
     }
 
-    RECT Rect;
-    GetWindowRect(GetDesktopWindow(), &Rect);
+    // Get the dimensions of the desktop
+    RECT desktopRect;
+    if (!GetWindowRect(GetDesktopWindow(), &desktopRect))
+    {
+        // Handle error
+        return false;
+    }
 
-    MyWnd = CreateWindowExA(NULL, "MyWindowClass", "Discord", WS_POPUP, Rect.left, Rect.top, Rect.right, Rect.bottom, NULL, NULL, GetModuleHandle(NULL), NULL);
+    // Create the window
+    MyWnd = CreateWindowExA(NULL, "MyWindowClass", "Discord", WS_POPUP, desktopRect.left, desktopRect.top, desktopRect.right, desktopRect.bottom, NULL, NULL, GetModuleHandle(NULL), NULL);
     if (!MyWnd)
     {
-        // handle error
-        return;
+        // Handle error
+        return false;
     }
 
+    // Set the window's extended style
     SetWindowLong(MyWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
+
+    // Make the window layered and transparent
     SetLayeredWindowAttributes(MyWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
 
+    // Extend the window's frame into the client area
     MARGINS margin = { -1 };
-    DwmExtendFrameIntoClientArea(MyWnd, &margin);
+    if (FAILED(DwmExtendFrameIntoClientArea(MyWnd, &margin)))
+    {
+        // Handle error
+        return false;
+    }
 
+    // Show and update the window
     ShowWindow(MyWnd, SW_SHOW);
     UpdateWindow(MyWnd);
-	{
-		return false;
-	}
+    return true;
 }
+
 
 
 
@@ -950,19 +971,13 @@ static int Tab = 0;
 
 void shortcurts()
 {
-	if (Key.IsKeyPushing(VK_INSERT))
-	{
-		if (menu_key == false)
-		{
-			menu_key = true;
-		}
-		else if (menu_key == true)
-		{
-			menu_key = false;
-		}
-		Sleep(200);
-	}
+    if (GetAsyncKeyState(VK_INSERT) & 1) // Check if the INSERT key is pressed
+    {
+        menu_key = !menu_key; // toggle the value of menu_key
+        Sleep(200); // prevent key press from being registered multiple times
+    }
 }
+
 
 
 void render() {
