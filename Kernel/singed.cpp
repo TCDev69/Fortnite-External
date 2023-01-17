@@ -6,7 +6,7 @@ struct CommandResult {
   std::string output;
 };
 
-CommandResult system_no_output(std::string command) {
+CommandResult system_no_output(const std::string& command) {
   // Create pipes for the child process's STDOUT and STDERR.
   HANDLE stdout_read_handle, stdout_write_handle;
   HANDLE stderr_read_handle, stderr_write_handle;
@@ -14,10 +14,10 @@ CommandResult system_no_output(std::string command) {
     throw std::runtime_error("Error creating pipe for STDOUT");
   }
   if (!CreatePipe(&stderr_read_handle, &stderr_write_handle, NULL, 0)) {
+    CloseHandle(stdout_read_handle);
+    CloseHandle(stdout_write_handle);
     throw std::runtime_error("Error creating pipe for STDERR");
   }
-  ...
-}
 void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HANDLE stderr_write_handle, std::string &stdout_output, std::string &stderr_output, DWORD &exit_code) {
   // Create a new process to execute the command.
   STARTUPINFOW startup_info = {0};
