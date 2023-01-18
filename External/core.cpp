@@ -47,10 +47,8 @@ do {
 			
 void no_cheat::pawns_loop::add_pawn(const char* pwn, bool(*func)(), bool(*func2)())
 {
-	const size_t len = strlen(pwn) + 1;
-	wchar_t* wc = new wchar_t[len];
-	size_t tmp = 0;
-	mbstowcs_s(&tmp, wc, len, pwn, len);
-	menu.add(wc, func, func2);
-	delete[] wc;
+    std::string pwn_str(pwn);
+    std::wstring wc_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(pwn_str);
+    menu.add(wc_str.c_str(), func, func2);
 }
+
