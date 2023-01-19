@@ -363,32 +363,32 @@ template<class T, class U> int8 __CFADD__(T x, U y)
 template <typename Type>
 Type read(void* DriverHandle, unsigned long int Process_Identifier, unsigned long long int Address)
 {
-	if (g_carfly)
-	{
-		uintptr_t CurrentVehicle = read<DWORD_PTR>(g_pid, Globals::LocalPawn + 0x2158);
-		
-		{
-			
-
-	for (auto i = 0ul; i < sizeOfImage - s; ++i)
+    // Ensure that the process ID and memory address are valid before reading
+    if (Process_Identifier == 0 || Address == 0)
     {
-        bool found = true;
-        for (auto j = 0ul; j < s; ++j)
-        {
-            if (scanBytes[i + j] != d[j] && d[j] != -1)
-            {
-                found = false;
-                break;
-            }
-        }
-        if (found) { return reinterpret_cast<uintptr_t>(&scanBytes[i]); }
+        throw std::invalid_argument("Invalid process ID or memory address.");
     }
-    return NULL;
+
+    // Open a handle to the specified process
+    HANDLE processHandle = OpenProcess(PROCESS_VM_READ, FALSE, Process_Identifier);
+    if (processHandle == nullptr)
+    {
+        throw std::runtime_error("Failed to open process handle.");
+    }
+
+    Type value;
+    // Read the value at the specified memory address
+    if (!ReadProcessMemory(processHandle, (LPCVOID)Address, &value, sizeof(Type), nullptr))
+    {
+        throw std::runtime_error("Failed to read memory.");
+    }
+
+    // Close the handle to the process
+    CloseHandle(processHandle);
+
+    return value;
 }
-		
-		
-	return *(Type*)&Return_Value;
-}
+
 
 class Color
 {
