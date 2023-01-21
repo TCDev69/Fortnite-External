@@ -71,8 +71,43 @@ bool service_utils::delete_service(SC_HANDLE service_handle, bool close_on_fail,
 
 bool service_utils::start_service(SC_HANDLE service_handle)
 {
-    return StartService(service_handle, 0, nullptr);
+    SERVICE_STATUS service_status;
+    if (!QueryServiceStatus(service_handle, &service_status))
+    {
+        std::cerr << "Failed to query service status: " << GetLastError() << std::endl;
+        return false;
+    }
+
+    if (service_status.dwCurrentState == SERVICE_RUNNING)
+    {
+        std::cout << "Service is already running" << std::endl;
+        return true;
+    }
+
+    if (!StartService(service_handle, 0, nullptr))
+    {
+        std::cerr << "Failed to start service: " << GetLastError() << std::endl;
+        return false;
+    }
+
+    std::cout << "Waiting for service to start..." << std::endl;
+    while (QueryServiceStatus(service_handle, &service_status) && service_status.dwCurrentState == SERVICE_START_PENDING)
+    {
+        Sleep(1000);
+    }
+
+    if (service_status.dwCurrentState == SERVICE_RUNNING)
+    {
+        std::cout << "Service started successfully" << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cerr << "Failed to start service: " << GetLastError() << std::endl;
+        return false;
+    }
 }
+
 
 bool service_utils::stop_service(SC_HANDLE service_handle)
 {
