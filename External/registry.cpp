@@ -121,7 +121,7 @@ extern "C" {
 namespace RegistryUtils
 {
     template <typename T>
-    __forceinline T ReadRegistry(const std::wstring& regPath, const std::wstring& key)
+    T ReadRegistry(const std::wstring& regPath, const std::wstring& key)
     {
         HANDLE hKey;
         OBJECT_ATTRIBUTES objAttr;
@@ -162,12 +162,12 @@ namespace RegistryUtils
             return T();
         }
 
+        T result = *reinterpret_cast<T*>(reinterpret_cast<LONG64>(pKeyInfo) + pKeyInfo->DataOffset);
         ZwClose(hKey);
-        return *reinterpret_cast<T*>(reinterpret_cast<LONG64>(pKeyInfo) + pKeyInfo->DataOffset);
+
+        return result;
     }
 }
-
-
 
 DWORD Daimkey = VK_RBUTTON;		//aimkey
 int aimheight = 46;				//aim height value
