@@ -8,34 +8,41 @@
 #define DOS_DEV_NAME L"\\DosDevices\\HelloDev"
 #define DEV_NAME L"\\Device\\HelloDev"
 
-class global_driver
+class GlobalDriver
 {
 public:
-	global_driver(const PDRIVER_OBJECT driver_object)
-		: sleep_callback_([this](const sleep_callback::type type)
-		  {
-			  this->sleep_notification(type);
-		  })
-		, irp_(driver_object, DEV_NAME, DOS_DEV_NAME)
-	{
-		debug_log("Driver started\n");
-	}
+    GlobalDriver(const PDRIVER_OBJECT driverObject)
+        : irp_(driverObject, DEV_NAME, DOS_DEV_NAME)
+    {
+        // Initialize the sleep callback
+        sleepCallback_ = [this](const SleepCallback::Type type)
+        {
+            this->sleepNotification(type);
+        };
 
-	~global_driver()
-	{
-		debug_log("Unloading driver\n");
-		this->hypervisor_.disable_all_ept_hooks();
-	}
+        // Output message to debug log
+        DebugLog("Driver started");
+    }
 
-	global_driver(global_driver&&) noexcept = delete;
-	global_driver& operator=(global_driver&&) noexcept = delete;
+    ~GlobalDriver()
+    {
+        // Output message to debug log
+        DebugLog("Unloading driver");
 
-	global_driver(const global_driver&) = delete;
-	global_driver& operator=(const global_driver&) = delete;
+        // Disable all EPT hooks
+        hypervisor_.disableAllEptHooks();
+    }
 
-	void pre_destroy(const PDRIVER_OBJECT /*driver_object*/)
-	{
-	}
+    GlobalDriver(GlobalDriver&&) = delete;
+    GlobalDriver& operator=(GlobalDriver&&) = delete;
+
+    GlobalDriver(const GlobalDriver&) = delete;
+    GlobalDriver& operator=(const GlobalDriver&) = delete;
+
+    void preDestroy(const PDRIVER_OBJECT /*driverObject*/)
+    {
+        // Perform any necessary cleanup before the driver is unloaded
+    }
 
 private:
     bool hypervisor_was_enabled_ = false;  // initialize to false by default
