@@ -45,10 +45,10 @@ do {
 } while (false);
 					
 			
-void no_cheat::pawns_loop::add_pawn(const char* pwn, bool(*func)(), bool(*func2)())
+void no_cheat::pawns_loop::add_pawn(const std::string& pwn, std::function<bool()> func, std::function<bool()> func2)
 {
-    std::string pwn_str(pwn);
-    std::wstring wc_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(pwn_str);
-    menu.add(wc_str.c_str(), func, func2);
+    std::wstring wc_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(pwn);
+    menu.add(wc_str, func, func2);
 }
+
 
