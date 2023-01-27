@@ -116,18 +116,23 @@ void AddMarker(ImGuiWindow& window, float width, float height, const float* star
         // Convert the pawn's location to screen coordinates
         if (Util::WorldToScreen(width, height, &root.X))
         {
+            ImGui::PushStyleColor(ImGuiCol_Text, color);
+
             // Format the marker text to include the distance
             char modified[0xFFF] = { 0 };
             std::snprintf(modified, sizeof(modified), "%s\n| %dm |", text, static_cast<int>(dist));
 
             // Calculate the size of the marker text
-            auto size = ImGui::GetFont()->CalcTextSizeA(window.DrawList->_Data->FontSize, FLT_MAX, 0, modified);
+            auto size = ImGui::CalcTextSize(modified);
 
             // Add the marker text to the draw list
-            window.DrawList->AddText(ImVec2(root.X - size.x / 2.0f, root.Y - size.y / 2.0f), color, modified);
+            ImGui::SetCursorPos(ImVec2(root.X - size.x / 2.0f, root.Y - size.y / 2.0f));
+            ImGui::Text("%s", modified);
+            ImGui::PopStyleColor();
         }
     }
 }
+
 
 
 
