@@ -69,20 +69,14 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
 
 void Init()
 {
-	AllocConsole();
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "w", stdout);
-	VALORANT::Module = (uintptr_t)GetModuleHandleA(0);
-	uintptr_t WorldKey = *(uintptr_t*)(VALORANT::Module + Offsets::Key);
-	State StateKey = *(State*)(VALORANT::Module + Offsets::State);
-	uintptr_t UWorldXOR = Decryption::Decrypt_UWorld(WorldKey, (uintptr_t*)&StateKey);
-	UWorld* UWorldClass = Memory::ReadStub<UWorld*>(UWorldXOR);
-	UGameInstance* GameInstance = Memory::ReadStub<UGameInstance*>((uintptr_t)UWorldClass + 0x1A0);
-	ULocalPlayer* LocalPlayers = Memory::ReadStub<ULocalPlayer*>((uintptr_t)GameInstance + 0x40); //this is tarray but im paster lol
-	ULocalPlayer* LocalPlayer = Memory::ReadStub<ULocalPlayer*>((uintptr_t)LocalPlayers); //
-	APlayerController* LocalController = Memory::ReadStub<APlayerController*>((uintptr_t)LocalPlayer + 0x38);
-	uintptr_t ViewportClient = Memory::ReadStub<uintptr_t>((uintptr_t)LocalPlayer + 0x78);
-	Hook::VMT((void*)ViewportClient, PostRender, 0x68, (void**)&pRender);
+    AllocConsole();
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    VALORANT::Module = (uintptr_t)GetModuleHandleA(0);
+    uintptr_t UWorldXOR = Decryption::Decrypt_UWorld(*(uintptr_t*)(VALORANT::Module + Offsets::Key), (uintptr_t*)&(*(State*)(VALORANT::Module + Offsets::State)));
+    UWorld* UWorldClass = Memory::ReadStub<UWorld*>(UWorldXOR);
+    ULocalPlayer* LocalPlayer = Memory::ReadStub<ULocalPlayer*>(Memory::ReadStub<UGameInstance*>((uintptr_t)UWorldClass + 0x1A0) + 0x40);
+    Hook::VMT((void*)Memory::ReadStub<uintptr_t>((uintptr_t)LocalPlayer + 0x78), PostRender, 0x68, (void**)&pRender);
 }
 
 
