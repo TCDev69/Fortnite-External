@@ -464,17 +464,16 @@ ImGuiWindow& BeginScene() {
 	return *ImGui::GetCurrentWindow();
 }
 
-void DrawStrokeText2(int x, int y, RGBA* color, const std::string str)
+void DrawStrokeText(int x, int y, const RGBA& color, const std::string& str)
 {
-	ImFont a;
-	std::string utf_8_1 = std::string(str);
-	std::string utf_8_2 = string_To_UTF8(utf_8_1);
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y - 1), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y + 1), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x - 1, y), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x + 1, y), ImGui::ColorConvertFloat4ToU32(ImVec4(1 / 255.0, 1 / 255.0, 1 / 255.0, 255 / 255.0)), utf_8_2.c_str());
-	ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y), ImGui::ColorConvertFloat4ToU32(ImVec4(color->R / 255.0, color->G / 255.0, color->B / 255.0, color->A / 255.0)), utf_8_2.c_str());
+    ImGui::GetOverlayDrawList()->AddText(ImVec2(x - 1, y), ImGui::GetColorU32(ImVec4(0, 0, 0, color.A / 255.0f)), str.c_str());
+    ImGui::GetOverlayDrawList()->AddText(ImVec2(x + 1, y), ImGui::GetColorU32(ImVec4(0, 0, 0, color.A / 255.0f)), str.c_str());
+    ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, color.A / 255.0f)), str.c_str());
+    ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, color.A / 255.0f)), str.c_str());
+    ImGui::GetOverlayDrawList()->AddText(ImVec2(x, y), ImGui::GetColorU32(ImVec4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f)), str.c_str());
 }
+
+	
 void DrawNewText(int x, int y, RGBA* color, const char* str)
 {
 	ImFont a;
