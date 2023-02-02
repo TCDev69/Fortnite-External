@@ -82,14 +82,8 @@ Before starting to use You will want to read the manual carefully to avoid confu
 [videoplayback.webm](https://user-images.githubusercontent.com/94861415/210275398-c9e3ed89-d764-447f-b4c8-862e53c0480f.webm)
 
 --- 
-
-  <p align="center">
-    <a href="https://discord.gg/MBTkVcJefp">
-        <img title="Slackes server discord" alt="Slackes discord" src="https://discordapp.com/api/guilds/880135738077896764/widget.png?style=banner2"/>
-    </a>
-</p> 
-
-## 💬 ・[Discord](https://discord.gg/MBTkVcJefp) 
+ 
+## 💬 ・[Telegram](https://t.me/Slackes) 
 
  ### 🛒〢 `SHOP`
  
@@ -117,6 +111,7 @@ Before starting to use You will want to read the manual carefully to avoid confu
 A website that I created to introduce myself from start to finish. hope you like it [Slackes.me](http://slackes.me/)
 
 ---
+
 
   <br>
 
