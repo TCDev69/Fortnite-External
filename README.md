@@ -9,10 +9,10 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/github/languages/top/Slackes/Fortnite-External?style=flat-square"/>
-  <img src="https://img.shields.io/github/last-commit/Slackes/Fortnite-External?style=flat-square"/>
-  <img src="https://sonarcloud.io/api/project_badges/measure?project=Slackes_Fortnite-External&metric=ncloc"/>
-  <img src="https://img.shields.io/github/stars/Slackes/Fortnite-External?color=5ac18e&label=Stars&style=flat-square"/>
+  <img src="https://img.shields.io/github/languages/top/Serups/Fortnite-External?style=flat-square"/>
+  <img src="https://img.shields.io/github/last-commit/Serups/Fortnite-External?style=flat-square"/>
+  <img src="https://sonarcloud.io/api/project_badges/measure?project=Serups-External&metric=ncloc"/>
+  <img src="https://img.shields.io/github/stars/Serups/Fortnite-External?color=5ac18e&label=Stars&style=flat-square"/>
 
 </p>
 
@@ -75,15 +75,21 @@ Before starting to use You will want to read the manual carefully to avoid confu
 ## <a id="setup2"></a> 🗒 〢 Product
 - If the free version does not work You can pay to buy a personal project.
 - Safe  on main account without getting banned / no need to turn off virus scan Scroll down to the bottom to read more.
-- [Discord](https://discord.gg/MBTkVcJefp) 
+- [Discord](https://discord.gg/2euDQqzD8Y) 
 
 ---
 
 [videoplayback.webm](https://user-images.githubusercontent.com/94861415/210275398-c9e3ed89-d764-447f-b4c8-862e53c0480f.webm)
 
 --- 
- 
-## 💬 ・[Discord](https://discord.com/users/1031767513077387284) | ADD FRIEND FOR BUY 
+
+  <p align="center">
+    <a href="https://discord.gg/2euDQqzD8Y">
+        <img title="Serups server discord" alt="Serups discord" src="https://discordapp.com/api/guilds/923947526552432731/widget.png?style=banner2"/>
+    </a>
+</p> 
+
+## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y) 
 
  ### 🛒〢 `SHOP`
  
@@ -108,10 +114,9 @@ Before starting to use You will want to read the manual carefully to avoid confu
 - Update Free
 - If banned = `REFUND`
 
-A website that I created to introduce myself from start to finish. hope you like it [Slackes.me](http://slackes.me/)
+A website that I created to introduce myself from start to finish. hope you like it [Serups.me](http://Serups.me/)
 
 ---
-
 
   <br>
 
