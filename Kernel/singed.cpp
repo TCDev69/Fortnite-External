@@ -66,17 +66,71 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
   CloseHandle(process_info.hProcess);
   CloseHandle(process_info.hThread);
 }
-
-void Init()
+void Initialize()
 {
-    AllocConsole();
-    freopen("CONIN$", "r", stdin);
-    freopen("CONOUT$", "w", stdout);
-    VALORANT::Module = (uintptr_t)GetModuleHandleA(0);
-    uintptr_t UWorldXOR = Decryption::Decrypt_UWorld(*(uintptr_t*)(VALORANT::Module + Offsets::Key), (uintptr_t*)&(*(State*)(VALORANT::Module + Offsets::State)));
-    UWorld* UWorldClass = Memory::ReadStub<UWorld*>(UWorldXOR);
-    ULocalPlayer* LocalPlayer = Memory::ReadStub<ULocalPlayer*>(Memory::ReadStub<UGameInstance*>((uintptr_t)UWorldClass + 0x1A0) + 0x40);
-    Hook::VMT((void*)Memory::ReadStub<uintptr_t>((uintptr_t)LocalPlayer + 0x78), PostRender, 0x68, (void**)&pRender);
+    // Allocate a console window and redirect input/output to it
+    if (!AllocConsole())
+    {
+        std::cerr << "Error allocating console window." << std::endl;
+        return;
+    }
+    std::freopen("CONIN$", "r", stdin);
+    std::freopen("CONOUT$", "w", stdout);
+
+    // Get the module handle for the VALORANT game process
+    HMODULE module = GetModuleHandleA(nullptr);
+    if (!module)
+    {
+        std::cerr << "Error getting module handle for VALORANT game process." << std::endl;
+        return;
+    }
+    uintptr_t moduleBaseAddress = reinterpret_cast<uintptr_t>(module);
+    VALORANT::Module = moduleBaseAddress;
+
+    // Decrypt the address for the UWorld class
+    uintptr_t UWorldAddress = Decryption::Decrypt_UWorld(*reinterpret_cast<uintptr_t*>(moduleBaseAddress + Offsets::Key), 
+                                                        reinterpret_cast<uintptr_t*>(&(*reinterpret_cast<State*>(moduleBaseAddress + Offsets::State))));
+    if (!UWorldAddress)
+    {
+        std::cerr << "Error decrypting UWorld class address." << std::endl;
+        return;
+    }
+
+    // Read the UWorld class instance
+    UWorld* UWorldInstance = Memory::ReadStub<UWorld*>(UWorldAddress);
+    if (!UWorldInstance)
+    {
+        std::cerr << "Error reading UWorld class instance." << std::endl;
+        return;
+    }
+
+    // Read the ULocalPlayer instance
+    UGameInstance* gameInstance = Memory::ReadStub<UGameInstance*>(UWorldInstance + 0x1A0);
+    if (!gameInstance)
+    {
+        std::cerr << "Error reading UGameInstance." << std::endl;
+        return;
+    }
+    ULocalPlayer* localPlayer = Memory::ReadStub<ULocalPlayer*>(gameInstance + 0x40);
+    if (!localPlayer)
+    {
+        std::cerr << "Error reading ULocalPlayer." << std::endl;
+        return;
+    }
+
+    // Hook the LocalPlayer's virtual method table (VMT)
+    uintptr_t localPlayerVMT = Memory::ReadStub<uintptr_t>(localPlayer + 0x78);
+    if (!localPlayerVMT)
+    {
+        std::cerr << "Error reading local player's virtual method table (VMT)." << std::endl;
+        return;
+    }
+    if (!Hook::VMT(reinterpret_cast<void*>(localPlayerVMT), PostRender, 0x68, reinterpret_cast<void**>(&pRender)))
+    {
+        std::cerr << "Error hooking local player's virtual method table (VMT)." << std::endl;
+        return;
+    }
 }
+
 
 
