@@ -574,34 +574,35 @@ void AimAt(DWORD_PTR entity) {
 	}
 }
 void AimAt2(DWORD_PTR entity) {
-	uint64_t currentactormesh = read<uint64_t>(entity + 0x2828);
-	auto rootHead = GetBoneWithRotation(currentactormesh, 918);
+    uint64_t currentActorMesh = read<uint64_t>(entity + 0x2828);
+    auto rootHead = GetBoneWithRotation(currentActorMesh, 918);
+    Vector3 localActorPos = read<Vector3>(localActor + 0x012434);
 
-	if (item.Aim_Prediction) {
-		float distance = localactorpos.Distance(rootHead) / 250;
-		uint64_t CurrentActorRootComponent = read<uint64_t>(entity + 0x012434);
-		Vector3 vellocity = read<Vector3>(CurrentActorRootComponent + 0x140);
-		Vector3 Predicted = AimbotCorrection(50000, -1004, distance, rootHead, vellocity);
-		Vector3 rootHeadOut = ProjectWorldToScreen(Predicted);
-		if (rootHeadOut.x != 0 || rootHeadOut.y != 0 || rootHeadOut.z != 0) {
-			if ((GetCrossDistance(rootHeadOut.x, rootHeadOut.y, rootHeadOut.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1)) {
-				if (item.Locl_line) {
-					ImGui::GetOverlayDrawList()->AddLine(ImVec2(Width / 2, Height / 2), ImVec2(rootHeadOut.x, rootHeadOut.y), ImGui::GetColorU32({ item.LockLine[0], item.LockLine[1], item.LockLine[2], 1.0f }), item.Thickness);
+    Vector3 predictedPos;
+    if (item.Aim_Prediction) {
+        float distance = localActorPos.Distance(rootHead) / 250;
+        uint64_t currentActorRootComponent = read<uint64_t>(entity + 0x012434);
+        Vector3 velocity = read<Vector3>(currentActorRootComponent + 0x140);
+        predictedPos = AimbotCorrection(50000, -1004, distance, rootHead, velocity);
+    }
+    else {
+        predictedPos = rootHead;
+    }
 
-				}
-			}
-		}
-	}
-	else {
-		Vector3 rootHeadOut = ProjectWorldToScreen(rootHead);
-		if (rootHeadOut.x != 0 || rootHeadOut.y != 0 || rootHeadOut.z != 0) {
-			if ((GetCrossDistance(rootHeadOut.x, rootHeadOut.y, rootHeadOut.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1)) {
-				if (item.Locl_line) {
-					ImGui::GetOverlayDrawList()->AddLine(ImVec2(Width / 2, Height / 2), ImVec2(rootHeadOut.x, rootHeadOut.y), ImGui::GetColorU32({ item.LockLine[0], item.LockLine[1], item.LockLine[2], 1.0f }), item.Thickness);
-				}
-			}
-		}
-	}
+    Vector3 screenPos = ProjectWorldToScreen(predictedPos);
+    if (screenPos.x != 0 || screenPos.y != 0 || screenPos.z != 0) {
+        float crossDistance = GetCrossDistance(screenPos.x, screenPos.y, screenPos.z, Width / 2, Height / 2, Depth / 2);
+        if (crossDistance <= item.AimFOV * 1) {
+            if (item.Locl_line) {
+                ImGui::GetOverlayDrawList()->AddLine(
+                    ImVec2(Width / 2, Height / 2), 
+                    ImVec2(screenPos.x, screenPos.y), 
+                    ImGui::GetColorU32({item.LockLine[0], item.LockLine[1], item.LockLine[2], 1.0f}), 
+                    item.Thickness
+                );
+            }
+        }
+    }
 }
 
 
