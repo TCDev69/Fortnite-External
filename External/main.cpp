@@ -50,7 +50,7 @@ Vector3 GetBoneLocationWithRotation(const Mesh& mesh, int bone_index) {
 }
 
 
-Vector3 ProjectWorldToScreen(Vector3 WorldLocation, D3DXMATRIX ViewMatrix, D3DXMATRIX ProjectionMatrix, int ScreenWidth, int ScreenHeight)
+Vector3 ProjectWorldToScreen(const Vector3& WorldLocation, const D3DXMATRIX& ViewMatrix, const D3DXMATRIX& ProjectionMatrix, int ScreenWidth, int ScreenHeight)
 {
     // Transform point from world space to view space
     D3DXVECTOR3 ViewSpacePoint;
@@ -60,14 +60,21 @@ Vector3 ProjectWorldToScreen(Vector3 WorldLocation, D3DXMATRIX ViewMatrix, D3DXM
     D3DXVECTOR3 ProjectionSpacePoint;
     D3DXVec3TransformCoord(&ProjectionSpacePoint, &ViewSpacePoint, &ProjectionMatrix);
 
+    // Check if the point is behind the camera
+    if (ProjectionSpacePoint.z <= 0.0f)
+    {
+        return Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    }
+
     // Transform point from projection space to screen space
     Vector3 ScreenSpacePoint;
-    ScreenSpacePoint.x = (ProjectionSpacePoint.x / ProjectionSpacePoint.z) * (ScreenWidth / 2) + (ScreenWidth / 2);
-    ScreenSpacePoint.y = -(ProjectionSpacePoint.y / ProjectionSpacePoint.z) * (ScreenHeight / 2) + (ScreenHeight / 2);
+    ScreenSpacePoint.x = (ProjectionSpacePoint.x / ProjectionSpacePoint.w) * (ScreenWidth / 2) + (ScreenWidth / 2);
+    ScreenSpacePoint.y = -(ProjectionSpacePoint.y / ProjectionSpacePoint.w) * (ScreenHeight / 2) + (ScreenHeight / 2);
     ScreenSpacePoint.z = ProjectionSpacePoint.z;
 
     return ScreenSpacePoint;
 }
+
 	
 
 D3DMATRIX tempMatrix = Matrix(Camera);
