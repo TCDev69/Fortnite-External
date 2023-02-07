@@ -88,10 +88,10 @@ Before starting to use You will want to read the manual carefully to avoid confu
         <img title="Serups server discord" alt="Serups discord" src="https://discordapp.com/api/guilds/923947526552432731/widget.png?style=banner2"/>
     </a>
 </p> 
+ 
+## 💬 ・[Discord Server](https://discord.gg/2euDQqzD8Y) 
 
-## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y) 
-
- ### 🛒〢 `SHOP`
+ ### 🛒〢 `PRODUCT`
  
 <table>
 <tr>
@@ -108,7 +108,7 @@ Before starting to use You will want to read the manual carefully to avoid confu
 - Undetected
 - Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers)`
 
-### 📌〢 Warranty
+### 🔱〢 Warranty
 
 - Support 24 Hr
 - Update Free
@@ -123,4 +123,3 @@ A website that I created to introduce myself from start to finish. hope you like
 <p align="center">
   Copyright © 2021 - 2022
 <br>
-
