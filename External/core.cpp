@@ -27,28 +27,23 @@ namespace Core {
 		}
 
 void SetDepthStencilState(eDepthState aState) {
-pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
-}
-
-do {
-  if (Core::TargetPawn && Core::LocalPlayerController) {
-    if (wcsstr(objectName.c_str(), L"Injector") && funcName == L"Injector") {
-      window.DrawList->AddRectFilled(
-          ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f),
-          ImVec2(centerTop.x + size.x / 2.0f, centerTop.y),
-          ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
-      window.DrawList->AddText(
-          ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy);
-      break;
-    }
+  if (pContext) {
+    pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
   }
-} while (false);
-					
-			
-void no_cheat::pawns_loop::add_pawn(const std::string& pwn, std::function<bool()> func, std::function<bool()> func2)
-{
-    std::wstring wc_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(pwn);
-    menu.add(wc_str, func, func2);
 }
 
+if (Core::TargetPawn && Core::LocalPlayerController) {
+  if (objectName.find(L"Injector") != std::wstring::npos && funcName == L"Injector") {
+    ImVec2 centerTop(...);
+    ImVec2 size(...);
+    ImU32 color(...);
+    std::wstring copy(...);
 
+    ImGui::GetCurrentWindow()->DrawList->AddRectFilled(
+        ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f),
+        ImVec2(centerTop.x + size.x / 2.0f, centerTop.y),
+        ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
+    ImGui::GetCurrentWindow()->DrawList->AddText(
+        ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy.c_str());
+  }
+}
