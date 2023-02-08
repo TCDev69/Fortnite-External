@@ -90,6 +90,7 @@ Before starting to use You will want to read the manual carefully to avoid confu
 </p> 
  
 ## 💬 ・[Discord Server](https://discord.gg/2euDQqzD8Y) 
+`CLICK BLUE BUTTON FOR JOIN SERVER.`
 
  ### 🛒〢 `PRODUCT`
  
