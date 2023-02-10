@@ -69,27 +69,49 @@ public:
 };
 global_driver* global_driver_instance{nullptr};
 
-_Function_class_(DRIVER_UNLOAD) void unload(const PDRIVER_OBJECT driver_object)
+class global_driver
 {
-	try
-	{
-		if (global_driver_instance)
-		{
-			global_driver_instance->pre_destroy(driver_object);
-			delete global_driver_instance;
-		}
-	}
-	catch (std::exception& e)
-	{
-		debug_log("Destruction error occured: %s\n", e.what());
-	}
-	catch (...)
-	{
-		debug_log("Unknown destruction error occured. This should not happen!");
-	}
+public:
+    global_driver(PDRIVER_OBJECT driver_object)
+    {
+        // Perform driver-specific initialization here.
+    }
+
+    ~global_driver()
+    {
+        // Perform driver-specific cleanup here.
+    }
+
+    void pre_destroy(PDRIVER_OBJECT driver_object)
+    {
+        // Perform any necessary cleanup before destroying the instance.
+    }
+};
+
+global_driver* global_driver_instance = nullptr;
+
+void unload(PDRIVER_OBJECT driver_object)
+{
+    try
+    {
+        if (global_driver_instance)
+        {
+            global_driver_instance->pre_destroy(driver_object);
+            delete global_driver_instance;
+            global_driver_instance = nullptr;
+        }
+    }
+    catch (const std::exception& e)
+    {
+        printf("Destruction error occurred: %s\n", e.what());
+    }
+    catch (...)
+    {
+        printf("Unknown destruction error occurred. This should not happen!\n");
+    }
 }
 
-extern "C" NTSTATUS DriverEntry(const PDRIVER_OBJECT driver_object, PUNICODE_STRING /*registry_path*/)
+extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING /*registry_path*/)
 {
     NTSTATUS status = STATUS_SUCCESS;
     try
@@ -99,14 +121,13 @@ extern "C" NTSTATUS DriverEntry(const PDRIVER_OBJECT driver_object, PUNICODE_STR
     }
     catch (const std::exception& e)
     {
-        KdPrint(("Error: %s\n", e.what()));
+        printf("Error: %s\n", e.what());
         status = STATUS_INTERNAL_ERROR;
     }
     catch (...)
     {
-        KdPrint(("Unknown initialization error occured"));
+        printf("Unknown initialization error occurred\n");
         status = STATUS_INTERNAL_ERROR;
     }
     return status;
 }
-
