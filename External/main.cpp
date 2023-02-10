@@ -104,40 +104,37 @@ D3DMATRIX tempMatrix = Matrix(Camera);
 
 void AddMarker(ImGuiWindow& window, float width, float height, const float* start, void* pawn, const char* text, ImU32 color)
 {
-    // Check if start position and pawn pointer are valid
     if (!start || !pawn)
     {
         return;
     }
 
-    // Get the root location of the pawn object
     auto root = Util::GetPawnRootLocation(pawn);
-    if (root)
+    if (!root)
     {
-        // Calculate the distance from the start position to the pawn's location
-        float dx = start[0] - root.X;
-        float dy = start[1] - root.Y;
-        float dz = start[2] - root.Z;
-        float dist = std::sqrt(dx * dx + dy * dy + dz * dz) / 1500.0f;
-
-        // Convert the pawn's location to screen coordinates
-        if (Util::WorldToScreen(width, height, &root.X))
-        {
-            ImGui::PushStyleColor(ImGuiCol_Text, color);
-
-            // Format the marker text to include the distance
-            char modified[0xFFF] = { 0 };
-            std::snprintf(modified, sizeof(modified), "%s\n| %dm |", text, static_cast<int>(dist));
-
-            // Calculate the size of the marker text
-            auto size = ImGui::CalcTextSize(modified);
-
-            // Add the marker text to the draw list
-            ImGui::SetCursorPos(ImVec2(root.X - size.x / 2.0f, root.Y - size.y / 2.0f));
-            ImGui::Text("%s", modified);
-            ImGui::PopStyleColor();
-        }
+        return;
     }
+
+    float dx = start[0] - root.X;
+    float dy = start[1] - root.Y;
+    float dz = start[2] - root.Z;
+    float dist = std::sqrt(dx * dx + dy * dy + dz * dz) / 1500.0f;
+
+    if (!Util::WorldToScreen(width, height, &root.X))
+    {
+        return;
+    }
+
+    ImGui::PushStyleColor(ImGuiCol_Text, color);
+
+    char modified[0xFFF] = { 0 };
+    std::snprintf(modified, sizeof(modified), "%s\n| %dm |", text, static_cast<int>(dist));
+
+    auto size = ImGui::CalcTextSize(modified);
+
+    ImGui::SetCursorPos(ImVec2(root.X - size.x / 2.0f, root.Y - size.y / 2.0f));
+    ImGui::Text("%s", modified);
+    ImGui::PopStyleColor();
 }
 
 
