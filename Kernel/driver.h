@@ -111,23 +111,34 @@ void unload(PDRIVER_OBJECT driver_object)
     }
 }
 
-extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING /*registry_path*/)
+extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path)
 {
     NTSTATUS status = STATUS_SUCCESS;
+
     try
     {
+        // Set the DriverUnload function pointer to the unload function
         driver_object->DriverUnload = unload;
+
+        // Create a global driver instance
         global_driver_instance = new global_driver(driver_object);
+
+        // Log the driver initialization message
+        DbgPrint("Driver initialized successfully\n");
     }
     catch (const std::exception& e)
     {
-        printf("Error: %s\n", e.what());
+        // Log the error message and set the status code to indicate an error
+        DbgPrint("Error initializing driver: %s\n", e.what());
         status = STATUS_INTERNAL_ERROR;
     }
     catch (...)
     {
-        printf("Unknown initialization error occurred\n");
+        // Log the error message and set the status code to indicate an error
+        DbgPrint("Unknown initialization error occurred\n");
         status = STATUS_INTERNAL_ERROR;
     }
+
+    // Return the status code
     return status;
 }
