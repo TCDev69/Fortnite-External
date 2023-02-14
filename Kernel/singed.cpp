@@ -118,19 +118,27 @@ void Initialize()
         return;
     }
 
-    // Hook the LocalPlayer's virtual method table (VMT)
+// Purpose: Hook the PostRender method of the virtual method table (VMT) of the LocalPlayer object
+// Input:   localPlayer - memory address of the LocalPlayer object
+// Output:  pOriginalRender - pointer to the original PostRender method in the VMT
+void HookPostRenderMethod(uintptr_t localPlayer, void** pOriginalRender)
+{
+    // Read the VMT address from the LocalPlayer object
     uintptr_t localPlayerVMT = Memory::ReadStub<uintptr_t>(localPlayer + 0x78);
+
+    // Ensure that the VMT address is valid
     if (!localPlayerVMT)
     {
-        std::cerr << "Error reading local player's virtual method table (VMT)." << std::endl;
-        return;
+        throw std::runtime_error("Error: Invalid local player VMT address");
     }
-    if (!Hook::VMT(reinterpret_cast<void*>(localPlayerVMT), PostRender, 0x68, reinterpret_cast<void**>(&pRender)))
+
+    // Hook the PostRender method in the VMT
+    if (!Hook::VMT(static_cast<void*>(localPlayerVMT), PostRender, 0x68, pOriginalRender))
     {
-        std::cerr << "Error hooking local player's virtual method table (VMT)." << std::endl;
-        return;
+        throw std::runtime_error("Error: Failed to hook local player PostRender method");
     }
 }
+
 
 
 
