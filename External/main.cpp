@@ -14,39 +14,46 @@
 
 #include "main header.h"
 
-namespace Offsets {
-  static constexpr uint64_t offset_uworld = 0;
-  static constexpr uint64_t offset_gname = 0;
-  static constexpr uint64_t uworld = 0;
-  static constexpr uint64_t persistent_level = 0;
-  static constexpr uint64_t game_instance = 0;
-  static constexpr uint64_t local_players_array = 0;
-  static constexpr uint64_t player_controller = 0;
-  static constexpr uint64_t camera_manager = 0;
-  static constexpr uint64_t root_component = 0;
-  static constexpr uint64_t pawn = 0;
-  static constexpr Vector3 relative_location{0, 0, 0};
+namespace GameOffsets {
+  // Offset of various game objects and their properties
+  constexpr uint64_t UWorld = 0;
+  constexpr uint64_t GName = 0;
+  constexpr uint64_t PersistentLevel = 0;
+  constexpr uint64_t GameInstance = 0;
+  constexpr uint64_t LocalPlayersArray = 0;
+  constexpr uint64_t PlayerController = 0;
+  constexpr uint64_t CameraManager = 0;
+  constexpr uint64_t RootComponent = 0;
+  constexpr uint64_t Pawn = 0;
 }
 
-FTransform GetBoneTransform(DWORD_PTR mesh, int index) {
-  DWORD_PTR bone_array = read<DWORD_PTR>(mesh + Offsets::offset_uworld);
-  if (bone_array == nullptr) {
-    return FTransform{};
+// Get the transform of a bone in a mesh
+std::shared_ptr<FTransform> GetBoneTransform(const std::shared_ptr<void>& mesh, int boneIndex) {
+  const auto boneArray = read<std::shared_ptr<void>>(mesh + GameOffsets::UWorld);
+  if (!boneArray) {
+    return nullptr;
   }
-
-  return read<FTransform>(bone_array + (index * sizeof(FTransform)));
+  const auto boneTransform = read<std::shared_ptr<FTransform>>(boneArray + boneIndex * sizeof(std::shared_ptr<FTransform>));
+  if (!boneTransform) {
+    return nullptr;
+  }
+  return boneTransform;
 }
 
-Vector3 GetBoneLocationWithRotation(const Mesh& mesh, int bone_index) {
-  // Get the bone transform and component-to-world transform
-  const FTransform bone_transform = GetBoneTransform(mesh, bone_index);
-  const FTransform component_to_world = mesh.GetComponentToWorldTransform();
+// Get the world space location of a bone in a mesh
+Vector3 GetBoneLocation(const Mesh& mesh, int boneIndex) {
+  // Get the bone transform and the component-to-world transform
+  const auto boneTransform = GetBoneTransform(mesh, boneIndex);
+  if (!boneTransform) {
+    return Vector3::Zero();
+  }
+  const auto componentToWorld = mesh.GetComponentToWorldTransform();
 
   // Multiply the transforms to get the bone transform in world space
-  const D3DMATRIX matrix = MatrixMultiplication(bone_transform.ToMatrixWithScale(), component_to_world.ToMatrixWithScale());
+  const auto matrix = MatrixMultiplication(boneTransform->ToMatrixWithScale(), componentToWorld.ToMatrixWithScale());
 
   // Extract the location from the matrix and return it as a Vector3
-  return Vector3{matrix._41, matrix._42, matrix._43};
+  return Vector3(matrix._41, matrix._42, matrix._43);
 }
 
 
