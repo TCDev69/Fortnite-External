@@ -3,28 +3,61 @@
 
 
 namespace Core {
-	bool NoSpread = true;
-	PVOID LocalPlayerPawn = nullptr;
-	PVOID LocalPlayerController = nullptr;
-	PVOID TargetPawn = nullptr;
+    constexpr float kPi = 3.14159265358979323846f;
+    constexpr int kHeadOffset = 0x278;
+    constexpr float kDegToRad = kPi / 180.0f;
 
-	float* (*szOID_LOCAL_MACHINE_KEYSET)(PVOID, PVOID, PVOID) = nullptr;
+    struct PlayerData {
+        bool noSpread = true;
+        PVOID localPlayerPawn = nullptr;
+        PVOID localPlayerController = nullptr;
+        PVOID targetPawn = nullptr;
+    };
 
-	auto dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
-	auto yaw = atan2f(rel[1], rel[0]) * (180.0f / PI);
-	
-		angles[0] = Normalize(pitch);
-		angles[1] = Normalize(yaw);
- 
-		BOOLEAN GetTargetHead(FVector& out) {
-		if (!Settings.ESP.Players) continue;
+    float Normalize(float value) {
+        // TODO: Implement Normalize function
+        return value;
+    }
 
-		auto checking = ReadPointer(Core::TargetPawn, 0x278);
-		{
-			
-			MessageBox(0, L"Failed to find CalculateShot", L"Failure", 0);
-			return FALSE;
-		}
+    bool CalculateAngles(const FVector& source, const FVector& target, float* angles) {
+        // Calculate the relative position of the target relative to the source
+        FVector rel = target - source;
+
+        // Calculate the distance and yaw angle between the two points
+        float dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
+        float yaw = atan2f(rel[1], rel[0]) * (1.0f / kDegToRad);
+
+        // Calculate the pitch and yaw angles and normalize them
+        float pitch = -atan2f(rel[2], dist) * (1.0f / kDegToRad);
+        angles[0] = Normalize(pitch);
+        angles[1] = Normalize(yaw);
+
+        return true;
+    }
+
+    PVOID ReadPointer(PVOID base, int offset) {
+        // TODO: Implement ReadPointer function
+        return nullptr;
+    }
+
+    FVector GetTargetHead(PlayerData& data) {
+        // Check if the Players setting is enabled
+        if (!Settings.ESP.Players) {
+            throw std::runtime_error("Players setting is disabled");
+        }
+
+        // Get the target pawn's head location
+        PVOID targetController = ReadPointer(data.targetPawn, kHeadOffset);
+        if (!targetController) {
+            throw std::runtime_error("Failed to find target controller");
+        }
+
+        FVector targetHead = ...; // TODO: Implement code to get target head location
+
+        return targetHead;
+    }
+}
+
 
 void SetDepthStencilState(eDepthState aState) {
   if (pContext) {
