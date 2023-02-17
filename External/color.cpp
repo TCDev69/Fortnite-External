@@ -361,30 +361,39 @@ template<class T, class U> int8 __CFADD__(T x, U y)
 #pragma warning(pop)
 
 template <typename Type>
-Type read(void* DriverHandle, unsigned long int Process_Identifier, unsigned long long int Address)
+Type read(void* DriverHandle, unsigned long int ProcessIdentifier, unsigned long long int Address)
 {
     // Ensure that the process ID and memory address are valid before reading
-    if (Process_Identifier == 0 || Address == 0)
+    if (ProcessIdentifier == 0)
     {
-        throw std::invalid_argument("Invalid process ID or memory address.");
+        throw std::invalid_argument("Invalid process ID.");
+    }
+    if (Address == 0)
+    {
+        throw std::invalid_argument("Invalid memory address.");
     }
 
     // Open a handle to the specified process
-    HANDLE processHandle = OpenProcess(PROCESS_VM_READ, FALSE, Process_Identifier);
+    HANDLE processHandle = OpenProcess(PROCESS_VM_READ, FALSE, ProcessIdentifier);
     if (processHandle == nullptr)
     {
-        throw std::runtime_error("Failed to open process handle.");
+        throw std::runtime_error("Failed to open process handle. Error: " + std::to_string(GetLastError()));
     }
 
     Type value;
     // Read the value at the specified memory address
     if (!ReadProcessMemory(processHandle, (LPCVOID)Address, &value, sizeof(Type), nullptr))
     {
-        throw std::runtime_error("Failed to read memory.");
+        DWORD errorCode = GetLastError();
+        CloseHandle(processHandle);
+        throw std::runtime_error("Failed to read memory. Error: " + std::to_string(errorCode));
     }
 
     // Close the handle to the process
-    CloseHandle(processHandle);
+    if (!CloseHandle(processHandle))
+    {
+        throw std::runtime_error("Failed to close process handle. Error: " + std::to_string(GetLastError()));
+    }
 
     return value;
 }
