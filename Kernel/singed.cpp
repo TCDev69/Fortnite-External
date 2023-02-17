@@ -124,18 +124,12 @@ void Initialize()
 void HookPostRenderMethod(uintptr_t localPlayer, void** pOriginalRender)
 {
     // Read the VMT address from the LocalPlayer object
-    uintptr_t localPlayerVMT = Memory::ReadStub<uintptr_t>(localPlayer + 0x78);
-
-    // Ensure that the VMT address is valid
-    if (!localPlayerVMT)
-    {
-        throw std::runtime_error("Error: Invalid local player VMT address");
-    }
+    uintptr_t localPlayerVMT = *reinterpret_cast<uintptr_t*>(localPlayer + 0x78);
 
     // Hook the PostRender method in the VMT
-    if (!Hook::VMT(static_cast<void*>(localPlayerVMT), PostRender, 0x68, pOriginalRender))
+    if (!Hook::VMT(reinterpret_cast<void*>(localPlayerVMT), PostRender, 0x68, pOriginalRender))
     {
-        throw std::runtime_error("Error: Failed to hook local player PostRender method");
+        throw std::runtime_error("Failed to hook local player PostRender method");
     }
 }
 
