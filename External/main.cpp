@@ -1525,45 +1525,42 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 
 void SetWindowToTarget()
 {
-	while (true)
-	{
-		GameWnd = get_process_wnd(sdk::process_id);
-		if (GameWnd)
-		{
-			ZeroMemory(&GameRect, sizeof(GameRect));
-			GetWindowRect(GameWnd, &GameRect);
-			Width = GameRect.right - GameRect.left;
-			Height = GameRect.bottom - GameRect.top;
-			DWORD dwStyle = GetWindowLong(GameWnd, GWL_STYLE);
-			if (dwStyle & WS_BORDER)
-			{
-				GameRect.top += 32;
-				Height -= 39;
-			}
-			ScreenCenterX = Width / 2;
-			ScreenCenterY = Height / 2;
-			MoveWindow(MyWnd, GameRect.left, GameRect.top, Width, Height, true);
-		}
-	}
-}
+    while (true)
+    {
+        // Get the window handle of the target process
+        HWND targetWnd = FindWindow(nullptr, "Game Window Title");
 
-	if (driver->Init(FALSE)) {
-		printf(("Success!\n"));
-		Sleep(1500);
-		driver->Attach((L"FortniteClient-Win64-Shipping.exe"));
-		
-			SetupWindow();
+        if (targetWnd)
+        {
+            // Get the position and size of the target window
+            RECT targetRect;
+            GetClientRect(targetWnd, &targetRect);
 
-			DirectXInit(MyWnd);
+            // Calculate the client area size (excluding window borders and title bar)
+            int clientWidth = targetRect.right - targetRect.left;
+            int clientHeight = targetRect.bottom - targetRect.top;
 
-			sdk::process_id = driver->GetProcessId((L"FortniteClient-Win64-Shipping.exe"));
-			sdk::module_base = driver->GetModuleBase((L"FortniteClient-Win64-Shipping.exe"));
+            // Adjust for window style (if necessary)
+            DWORD windowStyle = GetWindowLong(targetWnd, GWL_STYLE);
+            if (windowStyle & WS_BORDER)
+            {
+                RECT borderRect = {};
+                AdjustWindowRect(&borderRect, windowStyle, FALSE);
+                int borderHeight = borderRect.bottom - borderRect.top;
+                clientWidth += (borderRect.right - borderRect.left);
+                clientHeight += (borderHeight - targetRect.bottom);
+            }
 
-			printf(("FortniteClient-Win64-Shipping.exe :0x%llX\n"), sdk::module_base);
-			std::cout << GetNameFromFName;
-			HANDLE handle = CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(cache), nullptr, NULL, nullptr);
-		
-		}
-		return 0;
+            // Get the center point of the target window
+            POINT center = {clientWidth / 2, clientHeight / 2};
+            ClientToScreen(targetWnd, &center);
+
+            // Set the position and size of the overlay window to match the target window
+            SetWindowPos(MyWnd, HWND_TOPMOST, targetRect.left, targetRect.top, clientWidth, clientHeight, SWP_SHOWWINDOW);
+        }
+
+        // Wait a short time before checking again (to avoid using too much CPU)
+        Sleep(10);
+    }
 }
 
