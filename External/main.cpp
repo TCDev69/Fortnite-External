@@ -1492,36 +1492,36 @@ void setupWindow() {
 }
 
 
-LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
+switch (Message)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
-		return true;
-
-	switch (Message)
-	{
-	case WM_DESTROY:
-		CleanuoD3D();
-		PostQuitMessage(0);
-		exit(4);
-		break;
-	case WM_SIZE:
-		if (p_Device != NULL && wParam != SIZE_MINIMIZED)
-		{
-			ImGui_ImplDX9_InvalidateDeviceObjects();
-			p_Params.BackBufferWidth = LOWORD(lParam);
-			p_Params.BackBufferHeight = HIWORD(lParam);
-			HRESULT hr = p_Device->Reset(&p_Params);
-			if (hr == D3DERR_INVALIDCALL)
-				IM_ASSERT(0);
-			MessageBox(0, L"Failed to find valid trampoline", L"Failure", 0);
-		}
-		break;
-	default:
-		return DefWindowProc(hWnd, Message, wParam, lParam);
-		break;
-	}
-	return 0;
+case WM_DESTROY:
+    CleanupD3D();
+    PostQuitMessage(0);
+    break;
+case WM_SIZE:
+    if (p_Device != NULL && wParam != SIZE_MINIMIZED)
+    {
+        ImGui_ImplDX9_InvalidateDeviceObjects();
+        p_Params.BackBufferWidth = LOWORD(lParam);
+        p_Params.BackBufferHeight = HIWORD(lParam);
+        HRESULT hr = p_Device->Reset(&p_Params);
+        if (hr == D3DERR_INVALIDCALL)
+        {
+            MessageBox(0, L"Failed to reset Direct3D device", L"Error", MB_ICONERROR);
+            PostQuitMessage(0);
+        }
+        else
+        {
+            ImGui_ImplDX9_CreateDeviceObjects();
+        }
+    }
+    break;
+default:
+    return DefWindowProc(hWnd, Message, wParam, lParam);
 }
+
+return 0;
+
 
 void SetWindowToTarget()
 {
