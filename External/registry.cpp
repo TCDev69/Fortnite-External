@@ -219,18 +219,13 @@ UINT pscStartSlot;
 ID3D11Buffer *mConstantBuffers;
 UINT vsConstant_StartSlot;
 
-UINT psStartSlot;
-UINT vsStartSlot;
+UINT psStartSlot = 0, vsStartSlot = 0;
 
+const auto pcall_present_discord = Helper::PatternScan(Discord::GetDiscordModuleBase(), "FF 15 ? ? ? ? 8B D8 E8 ? ? ? ? E8 ? ? ? ? EB 10");
 
-	const auto pcall_present_discord = Helper::PatternScan(Discord::GetDiscordModuleBase(), xorstr("FF 15 ? ? ? ? 8B D8 E8 ? ? ? ? E8 ? ? ? ? EB 10"));
-	auto presentSceneAdress = Helper::PatternScan(Discord::GetDiscordModuleBase(),
-		xorstr("56 57 53 48 83 EC 30 44 89 C6"));
+const auto presentSceneAdress = Helper::PatternScan(Discord::GetDiscordModuleBase(), "56 57 53 48 83 EC 30 44 89 C6");
 
-	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)PresentHook, (uintptr_t)&PresentOriginal);
+DISCORD.HookFunction(presentSceneAdress, reinterpret_cast<uintptr_t>(PresentHook), reinterpret_cast<uintptr_t>(&PresentOriginal));
 
-	DISCORD.HookFunction(presentSceneAdress, (uintptr_t)ResizeHook, (uintptr_t)&PresentOriginal);
-	{
-		
-	return true;
-};
+DISCORD.HookFunction(presentSceneAdress, reinterpret_cast<uintptr_t>(ResizeHook), reinterpret_cast<uintptr_t>(&PresentOriginal));
+
