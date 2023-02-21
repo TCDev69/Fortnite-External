@@ -1,39 +1,48 @@
 #include "main.cpp"
 #include "define.h"
 
-
 namespace Core {
-    constexpr float kPi = 3.14159265358979323846f;
-    constexpr int kHeadOffset = 0x278;
-    constexpr float kDegToRad = kPi / 180.0f;
 
-    struct PlayerData {
-        bool noSpread = true;
-        PVOID localPlayerPawn = nullptr;
-        PVOID localPlayerController = nullptr;
-        PVOID targetPawn = nullptr;
-    };
+// Mathematical constants and conversion factors
+constexpr float PI = 3.14159265358979323846f;
+constexpr float DEG_TO_RAD = PI / 180.0f;
 
-    float Normalize(float value) {
-        // TODO: Implement Normalize function
-        return value;
-    }
+// Offset for player head
+constexpr int HEAD_OFFSET = 0x278;
 
-    bool CalculateAngles(const FVector& source, const FVector& target, float* angles) {
-        // Calculate the relative position of the target relative to the source
-        FVector rel = target - source;
+// Data for a player
+struct PlayerData {
+    bool noSpread = true;
+    void* localPlayerPawn = nullptr;
+    void* localPlayerController = nullptr;
+    void* targetPawn = nullptr;
+};
 
-        // Calculate the distance and yaw angle between the two points
-        float dist = sqrtf(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
-        float yaw = atan2f(rel[1], rel[0]) * (1.0f / kDegToRad);
+// Normalize an angle to be between -180 and 180 degrees
+float NormalizeAngle(float angle) {
+    while (angle <= -180.0f) angle += 360.0f;
+    while (angle > 180.0f) angle -= 360.0f;
+    return angle;
+}
 
-        // Calculate the pitch and yaw angles and normalize them
-        float pitch = -atan2f(rel[2], dist) * (1.0f / kDegToRad);
-        angles[0] = Normalize(pitch);
-        angles[1] = Normalize(yaw);
+// Calculate pitch and yaw angles from source to target
+bool CalculateAngles(const FVector& source, const FVector& target, float* angles) {
+    // Calculate the relative position of the target relative to the source
+    FVector rel = target - source;
 
-        return true;
-    }
+    // Calculate the distance and yaw angle between the two points
+    float dist = rel.Size();
+    float yaw = atan2f(rel.Y, rel.X) / DEG_TO_RAD;
+
+    // Calculate the pitch and yaw angles and normalize them
+    float pitch = -asinf(rel.Z / dist) / DEG_TO_RAD;
+    angles[0] = NormalizeAngle(pitch);
+    angles[1] = NormalizeAngle(yaw);
+
+    return true;
+}
+
+} // namespace Core
 
     PVOID ReadPointer(PVOID base, int offset) {
         // TODO: Implement ReadPointer function
