@@ -68,10 +68,8 @@ bool CalculateAngles(const FVector& source, const FVector& target, float* angles
 }
 
 
-void SetDepthStencilState(eDepthState aState) {
-  if (pContext) {
+void SetDepthStencilState(int aState = 0) {
     pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
-  }
 }
 
 if (Core::TargetPawn && Core::LocalPlayerController) {
