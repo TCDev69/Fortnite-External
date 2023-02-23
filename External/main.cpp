@@ -1536,31 +1536,28 @@ void SetWindowToTarget()
             RECT targetRect;
             GetClientRect(targetWnd, &targetRect);
 
-            // Calculate the client area size (excluding window borders and title bar)
-            int clientWidth = targetRect.right - targetRect.left;
-            int clientHeight = targetRect.bottom - targetRect.top;
-
             // Adjust for window style (if necessary)
             DWORD windowStyle = GetWindowLong(targetWnd, GWL_STYLE);
             if (windowStyle & WS_BORDER)
             {
                 RECT borderRect = {};
-                AdjustWindowRect(&borderRect, windowStyle, FALSE);
-                int borderHeight = borderRect.bottom - borderRect.top;
-                clientWidth += (borderRect.right - borderRect.left);
-                clientHeight += (borderHeight - targetRect.bottom);
+                AdjustWindowRectEx(&borderRect, windowStyle, FALSE, 0);
+                targetRect.left += borderRect.left;
+                targetRect.top += borderRect.top;
+                targetRect.right += borderRect.right;
+                targetRect.bottom += borderRect.bottom;
             }
 
             // Get the center point of the target window
-            POINT center = {clientWidth / 2, clientHeight / 2};
-            ClientToScreen(targetWnd, &center);
+            POINT center = { (targetRect.right + targetRect.left) / 2, (targetRect.bottom + targetRect.top) / 2 };
 
             // Set the position and size of the overlay window to match the target window
-            SetWindowPos(MyWnd, HWND_TOPMOST, targetRect.left, targetRect.top, clientWidth, clientHeight, SWP_SHOWWINDOW);
+            SetWindowPos(MyWnd, HWND_TOPMOST, targetRect.left, targetRect.top, targetRect.right - targetRect.left, targetRect.bottom - targetRect.top, SWP_SHOWWINDOW);
         }
 
         // Wait a short time before checking again (to avoid using too much CPU)
         Sleep(10);
     }
 }
+
 
