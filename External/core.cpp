@@ -42,11 +42,13 @@ bool CalculateAngles(const FVector& source, const FVector& target, float* angles
     return true;
 }
 
-} // namespace Core
+namespace Core {
+    namespace {
+        const int kHeadOffset = 0x123; // Example offset for target pawn's head
+    }
 
     PVOID ReadPointer(PVOID base, int offset) {
-        // TODO: Implement ReadPointer function
-        return nullptr;
+        return *reinterpret_cast<PVOID*>(reinterpret_cast<char*>(base) + offset);
     }
 
     FVector GetTargetHead(PlayerData& data) {
@@ -61,7 +63,7 @@ bool CalculateAngles(const FVector& source, const FVector& target, float* angles
             throw std::runtime_error("Failed to find target controller");
         }
 
-        FVector targetHead = ...; // TODO: Implement code to get target head location
+        FVector targetHead = *reinterpret_cast<FVector*>(reinterpret_cast<char*>(targetController) + kHeadOffset);
 
         return targetHead;
     }
