@@ -585,37 +585,23 @@ void AimAt(DWORD_PTR entity) {
 	}
 }
 void AimAt2(DWORD_PTR entity) {
-    uint64_t currentActorMesh = read<uint64_t>(entity + 0x2828);
-    auto rootHead = GetBoneWithRotation(currentActorMesh, 918);
+    // Get the position of bone with index 918 in the actor mesh
+    Vector3 rootHead = GetBoneWithRotation(read<uint64_t>(entity + 0x2828), 918);
+
+    // Get the local player's position
     Vector3 localActorPos = read<Vector3>(localActor + 0x012434);
 
-    Vector3 predictedPos;
-    if (item.Aim_Prediction) {
-        float distance = localActorPos.Distance(rootHead) / 250;
-        uint64_t currentActorRootComponent = read<uint64_t>(entity + 0x012434);
-        Vector3 velocity = read<Vector3>(currentActorRootComponent + 0x140);
-        predictedPos = AimbotCorrection(50000, -1004, distance, rootHead, velocity);
-    }
-    else {
-        predictedPos = rootHead;
-    }
+    // Calculate the predicted position of the target
+    Vector3 predictedPos = item.Aim_Prediction ? AimbotCorrection(50000, -1004, localActorPos.Distance(rootHead) / 250, rootHead, read<Vector3>(read<uint64_t>(entity + 0x012434) + 0x140)) : rootHead;
 
+    // Convert the predicted position to screen coordinates
     Vector3 screenPos = ProjectWorldToScreen(predictedPos);
-    if (screenPos.x != 0 || screenPos.y != 0 || screenPos.z != 0) {
-        float crossDistance = GetCrossDistance(screenPos.x, screenPos.y, screenPos.z, Width / 2, Height / 2, Depth / 2);
-        if (crossDistance <= item.AimFOV * 1) {
-            if (item.Locl_line) {
-                ImGui::GetOverlayDrawList()->AddLine(
-                    ImVec2(Width / 2, Height / 2), 
-                    ImVec2(screenPos.x, screenPos.y), 
-                    ImGui::GetColorU32({item.LockLine[0], item.LockLine[1], item.LockLine[2], 1.0f}), 
-                    item.Thickness
-                );
-            }
-        }
+
+    // Draw a line from the center of the screen to the target's screen coordinates if the target is within the specified FOV
+    if (screenPos.x != 0 || screenPos.y != 0 || screenPos.z != 0 && GetCrossDistance(screenPos.x, screenPos.y, screenPos.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1 && item.Locl_line) {
+        ImGui::GetOverlayDrawList()->AddLine(ImVec2(Width / 2, Height / 2), ImVec2(screenPos.x, screenPos.y), ImGui::GetColorU32({item.LockLine[0], item.LockLine[1], item.LockLine[2], 1.0f}), item.Thickness);
     }
 }
-
 
 bool Headd = true;
 bool Neck = false;
