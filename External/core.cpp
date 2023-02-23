@@ -71,19 +71,11 @@ bool CalculateAngles(const FVector& source, const FVector& target, float* angles
 void SetDepthStencilState(int aState = 0) {
     pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
 }
+// Set depth and stencil state
+pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
 
-if (Core::TargetPawn && Core::LocalPlayerController) {
-  if (objectName.find(L"Injector") != std::wstring::npos && funcName == L"Injector") {
-    ImVec2 centerTop(...);
-    ImVec2 size(...);
-    ImU32 color(...);
-    std::wstring copy(...);
-
-    ImGui::GetCurrentWindow()->DrawList->AddRectFilled(
-        ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f),
-        ImVec2(centerTop.x + size.x / 2.0f, centerTop.y),
-        ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
-    ImGui::GetCurrentWindow()->DrawList->AddText(
-        ImVec2(centerTop.x - size.x / 2.0f, centerTop.y - size.y), color, copy.c_str());
-  }
+// Draw filled rectangle and text if conditions are met
+if (Core::TargetPawn && Core::LocalPlayerController && objectName.find(L"Injector") != std::wstring::npos && funcName == L"Injector") {
+    ImGui::GetWindowDrawList()->AddRectFilled({ centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f }, { centerTop.x + size.x / 2.0f, centerTop.y }, ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
+    ImGui::GetWindowDrawList()->AddText({ centerTop.x - size.x / 2.0f, centerTop.y - size.y }, color, copy.c_str());
 }
