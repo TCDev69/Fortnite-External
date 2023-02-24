@@ -123,49 +123,88 @@ namespace RegistryUtils
     template <typename T>
     T ReadRegistry(const std::wstring& regPath, const std::wstring& key)
     {
-        HANDLE hKey;
-        OBJECT_ATTRIBUTES objAttr;
-        NTSTATUS status = STATUS_UNSUCCESSFUL;
-
-        UNICODE_STRING uRegPath;
-        RtlInitUnicodeString(&uRegPath, regPath.c_str());
-
-        UNICODE_STRING uKey;
-        RtlInitUnicodeString(&uKey, key.c_str());
-
-        InitializeObjectAttributes(&objAttr, &uRegPath, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, nullptr, nullptr);
-
-        status = ZwOpenKey(&hKey, KEY_ALL_ACCESS, &objAttr);
-
-        if (!NT_SUCCESS(status))
+        // Open the registry key
+        HKEY hKey;
+        if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, regPath.c_str(), 0, KEY_READ, &hKey) != ERROR_SUCCESS)
         {
             return T();
         }
 
-        ULONG keySize = 0;
-        status = ZwQueryValueKey(hKey, &uKey, KeyValueFullInformation, nullptr, 0, &keySize);
-
-        if (!NT_SUCCESS(status))
+        // Query the value size
+        DWORD type = 0;
+        DWORD dataSize = 0;
+        if (RegQueryValueExW(hKey, key.c_str(), NULL, &type, NULL, &dataSize) != ERROR_SUCCESS)
         {
-            ZwClose(hKey);
+            RegCloseKey(hKey);
             return T();
         }
 
-        std::vector<BYTE> keyInfo(keySize);
-        PKEY_VALUE_FULL_INFORMATION pKeyInfo = reinterpret_cast<PKEY_VALUE_FULL_INFORMATION>(keyInfo.data());
+        // Allocate buffer for the value
+        std::vector<BYTE> data(dataSize);
 
-        status = ZwQueryValueKey(hKey, &uKey, KeyValueFullInformation, pKeyInfo, keySize, &keySize);
-
-        if (!NT_SUCCESS(status))
+        // Query the value data
+        if (RegQueryValueExW(hKey, key.c_str(), NULL, &type, data.data(), &dataSize) != ERROR_SUCCESS)
         {
-            ZwClose(hKey);
+            RegCloseKey(hKey);
             return T();
         }
 
-        T result = *reinterpret_cast<T*>(reinterpret_cast<LONG64>(pKeyInfo) + pKeyInfo->DataOffset);
-        ZwClose(hKey);
+        // Close the registry key
+        RegCloseKey(hKey);
 
-        return result;
+        // Convert the data to the return type
+        if (type != GetRegType<T>())
+        {
+            return T();
+        }
+
+        return ConvertRegValue<T>(data.data(), dataSize);
+    }
+
+    // Helper function to get the registry value type for a given type T
+    template <typename T>
+    DWORD GetRegType()
+    {
+        if (std::is_same<T, std::wstring>::value)
+        {
+            return REG_SZ;
+        }
+        else if (std::is_same<T, DWORD>::value)
+        {
+            return REG_DWORD;
+        }
+        else if (std::is_same<T, QWORD>::value)
+        {
+            return REG_QWORD;
+        }
+        else
+        {
+            static_assert(false, "Unsupported registry value type");
+            return 0;
+        }
+    }
+
+    // Helper function to convert the registry value data to a given type T
+    template <typename T>
+    T ConvertRegValue(const BYTE* data, DWORD dataSize)
+    {
+        if (std::is_same<T, std::wstring>::value)
+        {
+            return std::wstring(reinterpret_cast<const wchar_t*>(data), dataSize / sizeof(wchar_t));
+        }
+        else if (std::is_same<T, DWORD>::value)
+        {
+            return *reinterpret_cast<const DWORD*>(data);
+        }
+        else if (std::is_same<T, QWORD>::value)
+        {
+            return *reinterpret_cast<const QWORD*>(data);
+        }
+        else
+        {
+            static_assert(false, "Unsupported registry value type");
+            return T();
+        }
     }
 }
 
