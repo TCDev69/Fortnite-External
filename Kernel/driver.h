@@ -17,11 +17,14 @@ public:
         // Initialize the sleep callback
         sleepCallback_ = [this](const SleepCallback::Type type)
         {
-            this->sleepNotification(type);
+            sleepNotification(type);
         };
 
         // Output message to debug log
         DebugLog("Driver started");
+
+        // Initialize the hypervisor
+        hypervisor_.initialize();
     }
 
     ~GlobalDriver()
@@ -31,13 +34,16 @@ public:
 
         // Disable all EPT hooks
         hypervisor_.disableAllEptHooks();
+
+        // Cleanup the hypervisor
+        hypervisor_.cleanup();
     }
 
-    GlobalDriver(GlobalDriver&&) = delete;
-    GlobalDriver& operator=(GlobalDriver&&) = delete;
-
+    // Disallow copy and move construction/assignment
     GlobalDriver(const GlobalDriver&) = delete;
     GlobalDriver& operator=(const GlobalDriver&) = delete;
+    GlobalDriver(GlobalDriver&&) = delete;
+    GlobalDriver& operator=(GlobalDriver&&) = delete;
 
     void preDestroy(const PDRIVER_OBJECT /*driverObject*/)
     {
@@ -45,29 +51,30 @@ public:
     }
 
 private:
-    bool hypervisor_was_enabled_ = false;  // initialize to false by default
+    bool hypervisor_was_enabled_ = false;
     Hypervisor hypervisor_;
-    SleepCallback sleep_callback_;
+    SleepCallback sleepCallback_;
     Irp irp_;
 
-public:
-    void SleepNotification(const SleepCallback::Type type)
+    void sleepNotification(const SleepCallback::Type type)
     {
         if (type == SleepCallback::Type::Sleep)
         {
             DebugLog("Going to sleep...\n");
-            this->hypervisor_was_enabled_ = this->hypervisor_.IsEnabled();
-            this->hypervisor_.Disable();
-        }
 
-        if (type == SleepCallback::Type::Wakeup && this->hypervisor_was_enabled_)
+            // Save the previous hypervisor state before disabling it
+            hypervisor_was_enabled_ = hypervisor_.isEnabled();
+            hypervisor_.disable();
+        }
+        else if (type == SleepCallback::Type::Wakeup && hypervisor_was_enabled_)
         {
             DebugLog("Waking up...\n");
-            this->hypervisor_.Enable();
+
+            // Restore the previous hypervisor state
+            hypervisor_.enable();
         }
     }
 };
-global_driver* global_driver_instance{nullptr};
 
 class global_driver
 {
