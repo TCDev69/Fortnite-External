@@ -1478,36 +1478,58 @@ void setupWindow() {
 }
 
 
-switch (Message)
+switch (message)
 {
-case WM_DESTROY:
-    CleanupD3D();
-    PostQuitMessage(0);
-    break;
-case WM_SIZE:
-    if (p_Device != NULL && wParam != SIZE_MINIMIZED)
-    {
-        ImGui_ImplDX9_InvalidateDeviceObjects();
-        p_Params.BackBufferWidth = LOWORD(lParam);
-        p_Params.BackBufferHeight = HIWORD(lParam);
-        HRESULT hr = p_Device->Reset(&p_Params);
-        if (hr == D3DERR_INVALIDCALL)
+    // Handle the WM_DESTROY message
+    case WM_DESTROY:
         {
-            MessageBox(0, L"Failed to reset Direct3D device", L"Error", MB_ICONERROR);
+            // Release any resources associated with Direct3D
+            CleanupD3D();
+
+            // Terminate the message loop
             PostQuitMessage(0);
+            break;
         }
-        else
+
+    // Handle the WM_SIZE message
+    case WM_SIZE:
         {
-            ImGui_ImplDX9_CreateDeviceObjects();
+            // If the Direct3D device has been created and the window has not been minimized
+            if (pDevice != nullptr && wParam != SIZE_MINIMIZED)
+            {
+                // Release any resources associated with the Direct3D device
+                ImGui_ImplDX9_InvalidateDeviceObjects();
+
+                // Set the new size of the back buffer
+                const auto newWidth = LOWORD(lParam);
+                const auto newHeight = HIWORD(lParam);
+                pParams->BackBufferWidth = newWidth;
+                pParams->BackBufferHeight = newHeight;
+
+                // Recreate the Direct3D device with the new parameters
+                const auto hr = pDevice->Reset(pParams.get());
+                if (FAILED(hr))
+                {
+                    // Log the error and give the user an opportunity to gracefully exit the application
+                    const auto message = L"Failed to reset Direct3D device. Error code: " + std::to_wstring(hr);
+                    MessageBox(nullptr, message.c_str(), L"Error", MB_ICONERROR | MB_OK);
+                }
+                else
+                {
+                    // Recreate any resources associated with the Direct3D device
+                    ImGui_ImplDX9_CreateDeviceObjects();
+                }
+            }
+            break;
         }
-    }
-    break;
-default:
-    return DefWindowProc(hWnd, Message, wParam, lParam);
+
+    // Handle all other messages using the default window procedure
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
+// Return 0 to indicate that the message has been handled
 return 0;
-
 
 void SetWindowToTarget()
 {
