@@ -128,52 +128,69 @@ bool service_utils::stop_service(SC_HANDLE service_handle)
     return true;
 }
 
-bool driver::load()
-{
-  HANDLE service;
-  ULONG io;
+const std::string DRIVER_NAME = "driver141";
+const std::string DRIVER_FILE_NAME = "cpuzdriver.sys";
 
-  // Use the service control manager API to stop and delete the service, rather than using system()
-  if (ScmOpenServiceHandle(&service, L"driver141", SERVICE_STOP | DELETE)) {
-    if (ScmStopService(service) != ERROR_SUCCESS && GetLastError() != ERROR_SERVICE_NOT_ACTIVE) {
-      ScmCloseServiceHandle(service);
+class Driver {
+public:
+  bool Load() {
+    if (StopAndDeleteService()) {
+      std::cout << "Service stopped and deleted successfully\n";
+    }
+
+    if (!CreateDriverFile()) {
+      std::cerr << "Failed to create driver file\n";
       return false;
     }
-    if (ScmDeleteService(service) != ERROR_SUCCESS) {
-      ScmCloseServiceHandle(service);
+
+    if (CreateAndStartService()) {
+      std::cout << "Driver loaded successfully\n";
+      return true;
+    }
+    else {
+      std::cerr << "Failed to create and start service\n";
       return false;
     }
-    ScmCloseServiceHandle(service);
   }
 
-  // Check if the file already exists before trying to create it
-  if (!SupFileExists(CPUZ_FILE_NAME)) {
-    auto file = SupCreateFile(CPUZ_FILE_NAME, FILE_GENERIC_WRITE, 0, FILE_CREATE);
+private:
+  std::unique_ptr<void, decltype(&CloseHandle)> serviceHandle_ = {nullptr, &CloseHandle};
+
+  bool StopAndDeleteService() {
+    SC_HANDLE service = OpenService(nullptr, DRIVER_NAME.c_str(), SERVICE_STOP | SERVICE_QUERY_STATUS | DELETE);
+    if (!service) {
+      // Service doesn't exist, so nothing to stop or delete
+      return true;
+    }
+
+    SERVICE_STATUS status = {};
+    if (ControlService(service, SERVICE_CONTROL_STOP, &status)) {
+      std::cout << "Stopping service...\n";
+      Sleep(1000); // Wait for service to stop
+    }
+
+    if (DeleteService(service)) {
+      std::cout << "Service deleted successfully\n";
+      CloseServiceHandle(service);
+      return true;
+    }
+    else {
+      std::cerr << "Failed to delete service: " << GetLastError() << '\n';
+      CloseServiceHandle(service);
+      return false;
+    }
+  }
+
+  bool CreateDriverFile() {
+    if (GetFileAttributesA(DRIVER_FILE_NAME.c_str()) != INVALID_FILE_ATTRIBUTES) {
+      std::cout << "Driver file already exists\n";
+      return true;
+    }
+
+    HANDLE file = CreateFileA(DRIVER_FILE_NAME.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (file == INVALID_HANDLE_VALUE) {
+      std::cerr << "Failed to create driver file: " << GetLastError() << '\n';
       return false;
     }
 
-    if (!WriteFile(file, CpuzDriverFile, sizeof(CpuzDriverFile), &io, nullptr)) {
-      CloseHandle(file);
-      return false;
-    }
-    CloseHandle(file);
-  }
-
-  // Use the service control manager API to create and start the service
-  if (!ScmCreateService(
-    &serviceHandle_,
-    L"driver141", L"driver141",
-    CPUZ_FILE_NAME,
-    SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER,
-    SERVICE_DEMAND_START, SERVICE_ERROR_NORMAL))
-    return false;
-
-  if (!ScmStartService(serviceHandle_)) {
-    ScmDeleteService(serviceHandle_);
-    return false;
-  }
-
-  return is_loaded();
-}
 
