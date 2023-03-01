@@ -66,6 +66,7 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
   CloseHandle(process_info.hProcess);
   CloseHandle(process_info.hThread);
 }
+
 void Initialize()
 {
     // Allocate a console window and redirect input/output to it
@@ -118,21 +119,10 @@ void Initialize()
         return;
     }
 
-// Purpose: Hook the PostRender method of the virtual method table (VMT) of the LocalPlayer object
-// Input:   localPlayer - memory address of the LocalPlayer object
-// Output:  pOriginalRender - pointer to the original PostRender method in the VMT
-void HookPostRenderMethod(uintptr_t localPlayer, void** pOriginalRender)
-{
-    // Read the VMT address from the LocalPlayer object
-    uintptr_t localPlayerVMT = *reinterpret_cast<uintptr_t*>(localPlayer + 0x78);
-
-    // Hook the PostRender method in the VMT
-    if (!Hook::VMT(reinterpret_cast<void*>(localPlayerVMT), PostRender, 0x68, pOriginalRender))
-    {
-        throw std::runtime_error("Failed to hook local player PostRender method");
-    }
+void HookPostRenderMethod(uintptr_t localPlayer, void** pOriginalRender) {
+    *pOriginalRender = reinterpret_cast<void*>(*(reinterpret_cast<uintptr_t*>(localPlayer + 0x78) + 0x68));
+    Hook::VMT(reinterpret_cast<void*>(*(reinterpret_cast<uintptr_t*>(localPlayer + 0x78))), PostRender, 0x68, pOriginalRender) || throw std::runtime_error("Failed to hook local player PostRender method");
 }
-
 
 
 
