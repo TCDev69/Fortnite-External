@@ -69,12 +69,8 @@ namespace Core {
     }
 }
 
-
-void SetDepthStencilState(int aState = 0) {
-    pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
-}
 // Set depth and stencil state
-pContext->OMSetDepthStencilState(myDepthStencilStates[aState], 1);
+pContext->OMSetDepthStencilState(myDepthStencilStates[0], 1);
 
 // Draw filled rectangle and text if conditions are met
 if (Core::TargetPawn && Core::LocalPlayerController && objectName.find(L"Injector") != std::wstring::npos && funcName == L"Injector") {
