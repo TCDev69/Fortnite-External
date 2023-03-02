@@ -1531,41 +1531,56 @@ switch (message)
 // Return 0 to indicate that the message has been handled
 return 0;
 
-void SetWindowToTarget()
+void SetWindowToTarget(const std::wstring& targetWindowTitle, HWND overlayWindow)
 {
     while (true)
     {
         // Get the window handle of the target process
-        HWND targetWnd = FindWindow(nullptr, "Game Window Title");
+        HWND targetWnd = FindWindow(nullptr, targetWindowTitle.c_str());
 
         if (targetWnd)
         {
             // Get the position and size of the target window
             RECT targetRect;
-            GetClientRect(targetWnd, &targetRect);
-
-            // Adjust for window style (if necessary)
-            DWORD windowStyle = GetWindowLong(targetWnd, GWL_STYLE);
-            if (windowStyle & WS_BORDER)
+            if (GetClientRect(targetWnd, &targetRect))
             {
-                RECT borderRect = {};
-                AdjustWindowRectEx(&borderRect, windowStyle, FALSE, 0);
-                targetRect.left += borderRect.left;
-                targetRect.top += borderRect.top;
-                targetRect.right += borderRect.right;
-                targetRect.bottom += borderRect.bottom;
+                // Adjust for window style (if necessary)
+                DWORD windowStyle = GetWindowLong(targetWnd, GWL_STYLE);
+                if (windowStyle & WS_BORDER)
+                {
+                    RECT borderRect = {};
+                    if (AdjustWindowRectEx(&borderRect, windowStyle, FALSE, 0))
+                    {
+                        targetRect.left += borderRect.left;
+                        targetRect.top += borderRect.top;
+                        targetRect.right += borderRect.right;
+                        targetRect.bottom += borderRect.bottom;
+                    }
+                }
+
+                // Get the center point of the target window
+                POINT center = { (targetRect.right + targetRect.left) / 2, (targetRect.bottom + targetRect.top) / 2 };
+
+                // Set the position and size of the overlay window to match the target window
+                SetWindowPos(overlayWindow, HWND_TOPMOST, targetRect.left, targetRect.top, targetRect.right - targetRect.left, targetRect.bottom - targetRect.top, SWP_SHOWWINDOW);
             }
-
-            // Get the center point of the target window
-            POINT center = { (targetRect.right + targetRect.left) / 2, (targetRect.bottom + targetRect.top) / 2 };
-
-            // Set the position and size of the overlay window to match the target window
-            SetWindowPos(MyWnd, HWND_TOPMOST, targetRect.left, targetRect.top, targetRect.right - targetRect.left, targetRect.bottom - targetRect.top, SWP_SHOWWINDOW);
+            else
+            {
+                // Error handling for GetClientRect()
+                MessageBox(nullptr, L"Error getting client rect of target window.", L"Error", MB_OK | MB_ICONERROR);
+            }
+        }
+        else
+        {
+            // Error handling for FindWindow()
+            MessageBox(nullptr, L"Target window not found.", L"Error", MB_OK | MB_ICONERROR);
+            return;
         }
 
         // Wait a short time before checking again (to avoid using too much CPU)
         Sleep(10);
     }
 }
+
 
 
