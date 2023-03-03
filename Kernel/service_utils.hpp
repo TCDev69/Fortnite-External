@@ -15,11 +15,18 @@ if (!CHECK_HANDLE(x))																		\
 
 namespace service_utils
 {
-	SC_HANDLE open_sc_manager();
+    // Open a handle to the Service Control Manager
+    SC_HANDLE open_sc_manager();
 
-	SC_HANDLE create_service(const std::string_view driver_path);
-	bool delete_service(SC_HANDLE service_handle, bool close_on_fail = true, bool close_on_success = true);
+    // Create a new service with the specified driver path
+    SC_HANDLE create_service(const std::string& driver_path, const std::string& service_name, const std::string& display_name);
 
-	bool start_service(SC_HANDLE service_handle);
-	bool stop_service(SC_HANDLE service_handle);
+    // Delete the service with the specified handle
+    bool delete_service(SC_HANDLE service_handle);
+
+    // Start the service with the specified handle
+    bool start_service(SC_HANDLE service_handle);
+
+    // Stop the service with the specified handle
+    bool stop_service(SC_HANDLE service_handle);
 }
