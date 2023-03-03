@@ -121,6 +121,7 @@ void unload(PDRIVER_OBJECT driver_object)
 extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path)
 {
     NTSTATUS status = STATUS_SUCCESS;
+    global_driver* driver_instance = nullptr;
 
     try
     {
@@ -128,7 +129,7 @@ extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING re
         driver_object->DriverUnload = unload;
 
         // Create a global driver instance
-        global_driver_instance = new global_driver(driver_object);
+        driver_instance = new global_driver(driver_object);
 
         // Log the driver initialization message
         DbgPrint("Driver initialized successfully\n");
@@ -146,6 +147,17 @@ extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING re
         status = STATUS_INTERNAL_ERROR;
     }
 
+    if (status != STATUS_SUCCESS)
+    {
+        // If an error occurred, clean up the driver instance if it was created
+        if (driver_instance != nullptr)
+        {
+            delete driver_instance;
+            driver_instance = nullptr;
+        }
+    }
+
     // Return the status code
     return status;
 }
+
