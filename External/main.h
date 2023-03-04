@@ -70,42 +70,41 @@ void MapBuffer(ID3D11Buffer* pStageBuffer, void** ppData, UINT* pByteWidth)
 		return false;
 	    }
 
-void UnmapBuffer(ID3D11Buffer* pStageBuffer)
+void UnmapBuffer(ID3D11Buffer* pBuffer)
 {
-	pContext->Unmap(pStageBuffer, 0);
+    pContext->Unmap(pBuffer, 0);
 }
 
-ID3D11Buffer* CopyBufferToCpu(ID3D11Buffer* pBuffer)
+HRESULT CopyBufferToCpu(ID3D11Buffer* pBuffer, ID3D11Buffer** ppStagingBuffer)
 {
-    if (pBuffer == nullptr)
+    if (pBuffer == nullptr || ppStagingBuffer == nullptr)
     {
-        return nullptr;
+        return E_INVALIDARG;
     }
 
-    ID3D11Buffer* pStageBuffer = nullptr;
     HRESULT hr;
 
-    D3D11_BUFFER_DESC CBDesc;
-    pBuffer->GetDesc(&CBDesc);
+    D3D11_BUFFER_DESC bufferDesc;
+    pBuffer->GetDesc(&bufferDesc);
 
-    D3D11_BUFFER_DESC desc;
-    desc.BindFlags = 0;
-    desc.ByteWidth = CBDesc.ByteWidth;
-    desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-    desc.MiscFlags = 0;
-    desc.StructureByteStride = 0;
-    desc.Usage = D3D11_USAGE_STAGING;
+    D3D11_BUFFER_DESC stagingBufferDesc;
+    stagingBufferDesc.BindFlags = 0;
+    stagingBufferDesc.ByteWidth = bufferDesc.ByteWidth;
+    stagingBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    stagingBufferDesc.MiscFlags = 0;
+    stagingBufferDesc.StructureByteStride = 0;
+    stagingBufferDesc.Usage = D3D11_USAGE_STAGING;
 
-    hr = pDevice->CreateBuffer(&desc, nullptr, &pStageBuffer);
+    hr = pDevice->CreateBuffer(&stagingBufferDesc, nullptr, ppStagingBuffer);
     if (FAILED(hr))
     {
         Log("CopyBufferToCpu: failed to create staging buffer (hr=0x%08lx)", hr);
-        return nullptr;
+        return hr;
     }
 
-    pContext->CopyResource(pStageBuffer, pBuffer);
+    pContext->CopyResource(*ppStagingBuffer, pBuffer);
 
-    return pStageBuffer;
+    return S_OK;
 }
 
 
