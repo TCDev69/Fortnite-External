@@ -1482,54 +1482,71 @@ switch (message)
 {
     // Handle the WM_DESTROY message
     case WM_DESTROY:
-        {
-            // Release any resources associated with Direct3D
-            CleanupD3D();
+    {
+        // Release any resources associated with Direct3D
+        CleanupD3D();
 
-            // Terminate the message loop
-            PostQuitMessage(0);
-            break;
-        }
+        // Terminate the message loop
+        PostQuitMessage(0);
+        return 0;
+    }
 
     // Handle the WM_SIZE message
     case WM_SIZE:
+    {
+        // If the Direct3D device has been created and the window has not been minimized
+        if (pDevice != nullptr && wParam != SIZE_MINIMIZED)
         {
-            // If the Direct3D device has been created and the window has not been minimized
-            if (pDevice != nullptr && wParam != SIZE_MINIMIZED)
+            // Release any resources associated with the Direct3D device
+            ImGui_ImplDX9_InvalidateDeviceObjects();
+
+            // Set the new size of the back buffer
+            const auto newWidth = LOWORD(lParam);
+            const auto newHeight = HIWORD(lParam);
+            pParams->BackBufferWidth = newWidth;
+            pParams->BackBufferHeight = newHeight;
+
+            // Recreate the Direct3D device with the new parameters
+            const auto hr = pDevice->Reset(pParams.get());
+            if (FAILED(hr))
             {
-                // Release any resources associated with the Direct3D device
-                ImGui_ImplDX9_InvalidateDeviceObjects();
-
-                // Set the new size of the back buffer
-                const auto newWidth = LOWORD(lParam);
-                const auto newHeight = HIWORD(lParam);
-                pParams->BackBufferWidth = newWidth;
-                pParams->BackBufferHeight = newHeight;
-
-                // Recreate the Direct3D device with the new parameters
-                const auto hr = pDevice->Reset(pParams.get());
-                if (FAILED(hr))
-                {
-                    // Log the error and give the user an opportunity to gracefully exit the application
-                    const auto message = L"Failed to reset Direct3D device. Error code: " + std::to_wstring(hr);
-                    MessageBox(nullptr, message.c_str(), L"Error", MB_ICONERROR | MB_OK);
-                }
-                else
-                {
-                    // Recreate any resources associated with the Direct3D device
-                    ImGui_ImplDX9_CreateDeviceObjects();
-                }
+                // Log the error and give the user an opportunity to gracefully exit the application
+                const auto message = L"Failed to reset Direct3D device. Error code: " + std::to_wstring(hr);
+                MessageBox(nullptr, message.c_str(), L"Error", MB_ICONERROR | MB_OK);
+                return 0;
             }
-            break;
+
+            // Recreate any resources associated with the Direct3D device
+            ImGui_ImplDX9_CreateDeviceObjects();
         }
+        break;
+    }
+
+    // Handle the WM_ERASEBKGND message
+    case WM_ERASEBKGND:
+    {
+        // Return non-zero to indicate that the background has been erased
+        return 1;
+    }
+
+    // Handle the WM_PAINT message
+    case WM_PAINT:
+    {
+        // Create a PAINTSTRUCT object to receive the paint message information
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        // End the paint operation
+        EndPaint(hWnd, &ps);
+        return 0;
+    }
 
     // Handle all other messages using the default window procedure
     default:
+    {
         return DefWindowProc(hWnd, message, wParam, lParam);
+    }
 }
-
-// Return 0 to indicate that the message has been handled
-return 0;
 
 void SetWindowToTarget(const std::wstring& targetWindowTitle, HWND overlayWindow)
 {
