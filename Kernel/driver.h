@@ -107,14 +107,24 @@ void unload(PDRIVER_OBJECT driver_object)
             delete global_driver_instance;
             global_driver_instance = nullptr;
         }
+        else
+        {
+            // If global_driver_instance is null, there is nothing to unload.
+            // This may indicate an error in the driver initialization process.
+            printf("Error: global_driver_instance is null.\n");
+        }
     }
     catch (const std::exception& e)
     {
+        // If an exception is caught, log the error and attempt to clean up
         printf("Destruction error occurred: %s\n", e.what());
+        global_driver_instance = nullptr;
     }
     catch (...)
     {
+        // If an unknown exception is caught, log the error and attempt to clean up
         printf("Unknown destruction error occurred. This should not happen!\n");
+        global_driver_instance = nullptr;
     }
 }
 
