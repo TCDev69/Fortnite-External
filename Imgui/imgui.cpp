@@ -7114,24 +7114,33 @@ void ImGui::SetColumnWidth(int column_index, float width)
 
 void ImGui::PushColumnClipRect(int column_index)
 {
+    // Get the current window being drawn
     ImGuiWindow* window = GetCurrentWindowRead();
+    if (!window)
+    {
+        ImGui::LogError("Cannot push column clip rect without a valid window.");
+        return;
+    }
+
+    // Get the current set of columns being drawn in that window
     ImGuiColumnsSet* columns = window->DC.ColumnsSet;
-    if (column_index < 0)
+    if (!columns)
+    {
+        ImGui::LogError("Cannot push column clip rect without a valid columns set.");
+        return;
+    }
+
+    // Determine the index of the column to push the clip rect for
+    const int column_count = columns->Count;
+    if (column_index < 0 || column_index >= column_count)
+    {
         column_index = columns->Current;
+    }
 
-    PushClipRect(columns->Columns[column_index].ClipRect.Min, columns->Columns[column_index].ClipRect.Max, false);
-}
-
-static ImGuiColumnsSet* FindOrAddColumnsSet(ImGuiWindow* window, ImGuiID id)
-{
-    for (int n = 0; n < window->ColumnsStorage.Size; n++)
-        if (window->ColumnsStorage[n].ID == id)
-            return &window->ColumnsStorage[n];
-
-    window->ColumnsStorage.push_back(ImGuiColumnsSet());
-    ImGuiColumnsSet* columns = &window->ColumnsStorage.back();
-    columns->ID = id;
-    return columns;
+    // Push a clip rect for the specified column
+    const ImVec2& clip_rect_min = columns->Columns[column_index].ClipRect.Min;
+    const ImVec2& clip_rect_max = columns->Columns[column_index].ClipRect.Max;
+    PushClipRect(clip_rect_min, clip_rect_max, false);
 }
 
 void ImGui::BeginColumns(const char* str_id, int columns_count, ImGuiColumnsFlags flags)
