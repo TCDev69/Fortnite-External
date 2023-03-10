@@ -20,6 +20,14 @@
 
 ## <a id="content"></a>🌐 〢 Read
 - Free and free version You just need to create a driver for it to work. and use it at your own risk, If you don't want to create a driver, please contact Discord for a safer alternative.
+- **Scroll Down for Raed more**
+
+
+#### ❗ Help & Support
+- Not understand How To Use | Join Discord For Helps: [Discord Servers](https://discord.gg/2euDQqzD8Y)
+
+---
+
 
 ## <a id="features"></a>🔰 〢 Features
 
@@ -43,8 +51,6 @@
 
 ### MISC
 - Save & Load Config
-
-
 
 
 ---
@@ -71,8 +77,9 @@ Before starting to use You will want to read the manual carefully to avoid confu
 ## <a id="warn"></a> ❕ 〢 Warning 
  This is the free version. So use it at your own risk. Use for case studies only. It will be your responsibility.
 
+  ---
   
-## <a id="setup2"></a> 🗒 〢 Undetected
+### <a id="setup2"></a> 🗒 〢 Undetected
 - Free version is used by many Users, Detected are quite High | Our recommended alternative is Private Cheat.
 - **Legit Playing & Waranty & Lifetime | Up To You.**
 - [Discord Server](https://discord.gg/2euDQqzD8Y) 
