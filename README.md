@@ -49,7 +49,7 @@
 
 ---
 
-## <a id="setup"></a> 📁 〢 Using
+## <a id="setup"></a> 📁 〢 How To Use
 
 Before starting to use You will want to read the manual carefully to avoid confusion.
 
@@ -95,6 +95,8 @@ https://user-images.githubusercontent.com/94861415/218284317-f90ed6de-4c8e-473a-
  
 ## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y)
 
+`BLUE BUTTON FOR JOIN SERVER`
+
  ### 🛒〢 `SHOP`
  
 <table>
@@ -109,12 +111,12 @@ https://user-images.githubusercontent.com/94861415/218284317-f90ed6de-4c8e-473a-
 
 - Lifetime & Free updated
 - Undetected / Legit
-- Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers + More)`
+- **Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers + More)`**
 
 ### 🩹 〢 Warranty
 
-- Support 24/7 & Free updated 
-- Banned = `FULL REFUND`
+- **Support 24/7 & Free updated** 
+- **Banned = `FULL REFUND`**
 
 #### Website | Resume [Serups.me](http://Serups.me/)
 
@@ -123,5 +125,6 @@ https://user-images.githubusercontent.com/94861415/218284317-f90ed6de-4c8e-473a-
   <br>
 
 <p align="center">
-  Copyright © 2021 - 2022
+  Copyright © 2023 All rights reserved
 <br>
+
