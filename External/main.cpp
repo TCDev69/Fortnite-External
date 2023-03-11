@@ -611,24 +611,16 @@ ImDrawList* Rendererrr = ImGui::GetOverlayDrawList();
 bool isVisible(uint64_t mesh)
 {
     // Read the bing and bong values from memory
-    float bing = read<float>(mesh + 0x512);
-    float bong = read<float>(mesh + 0x284);
+    const float bing = read<float>(mesh + 0x512);
+    const float bong = read<float>(mesh + 0x284);
 
-    // The tick value is a small constant used to adjust the visibility threshold
-    const float tick = 0.06f;
+    // Define the visibility threshold using a constant variable
+    const float visibilityThreshold = 0.06f;
 
-    // Check if bong is greater than or equal to bing
-    if (bong + tick >= bing)
-    {
-        // The mesh is visible
-        return true;
-    }
-    else
-    {
-        // The mesh is not visible
-        return false;
-    }
+    // Check if bong is greater than or equal to bing with the visibility threshold adjustment
+    return (bong + visibilityThreshold >= bing);
 }
+
 
 void DrawESP() {
 
@@ -1571,7 +1563,6 @@ void SetWindowToTarget(const std::wstring& targetWindowTitle, HWND overlayWindow
                         targetRect.left += borderRect.left;
                         targetRect.top += borderRect.top;
                         targetRect.right += borderRect.right;
-                        targetRect.bottom += borderRect.bottom;
                     }
                 }
 
