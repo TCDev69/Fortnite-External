@@ -1,72 +1,41 @@
 #include "service_utils.hpp"
 
-SC_HANDLE service_utils::open_sc_manager()
-{
-    return OpenSCManager(nullptr, nullptr, SC_MANAGER_CREATE_SERVICE);
-}
-
-SC_HANDLE service_utils::create_service(const std::string_view driver_path)
-{
-    SC_HANDLE sc_manager_handle = service_utils::open_sc_manager();
-
-    CHECK_SC_MANAGER_HANDLE(sc_manager_handle, (SC_HANDLE)INVALID_HANDLE_VALUE);
-
-    SC_HANDLE mhyprot_service_handle = CreateService(
-        sc_manager_handle,
-        SERVICE_NAME,
-        DISPLAY_NAME,
-        SERVICE_START | SERVICE_STOP | DELETE,
-        SERVICE_KERNEL_DRIVER, SERVICE_DEMAND_START, SERVICE_ERROR_IGNORE,
-        XorStr(L"C:\\Windows\\System32\\drivers\\vmbusraid.sys").c_str(), nullptr, nullptr, nullptr, nullptr, nullptr
-    );
-
-    if (!CHECK_HANDLE(mhyprot_service_handle))
-    {
-        const auto last_error = GetLastError();
-
-        if (last_error == ERROR_SERVICE_EXISTS)
-        {
-            return OpenService(
-                sc_manager_handle,
-                SERVICE_NAME,
-                SERVICE_START | SERVICE_STOP | DELETE
-            );
+class ServiceUtils {
+public:
+    static SC_HANDLE openScManager() {
+        SC_HANDLE handle = OpenSCManager(nullptr, nullptr, SC_MANAGER_CONNECT);
+        if (!handle) {
+            throw std::runtime_error("Failed to open SC Manager: " + std::to_string(GetLastError()));
         }
-
-        CloseServiceHandle(sc_manager_handle);
-        return (SC_HANDLE)(INVALID_HANDLE_VALUE);
+        return handle;
     }
 
-    CloseServiceHandle(sc_manager_handle);
+    static SC_HANDLE createService(const std::wstring& driverPath) {
+        SC_HANDLE scManagerHandle = openScManager();
 
-    return mhyprot_service_handle;
-}
-
-bool service_utils::delete_service(SC_HANDLE service_handle, bool close_on_fail, bool close_on_success)
-{
-    SC_HANDLE sc_manager_handle = open_sc_manager();
-
-    CHECK_SC_MANAGER_HANDLE(sc_manager_handle, false);
-
-    if (!DeleteService(service_handle))
-    {
-        const auto last_error = GetLastError();
-
-        if (last_error == ERROR_SERVICE_MARKED_FOR_DELETE)
-        {
-            CloseServiceHandle(sc_manager_handle);
-            return true;
+        SC_HANDLE serviceHandle = OpenService(scManagerHandle, SERVICE_NAME, SERVICE_ALL_ACCESS);
+        if (serviceHandle) {
+            CloseServiceHandle(scManagerHandle);
+            return serviceHandle;
         }
 
-        CloseServiceHandle(sc_manager_handle);
-        if (close_on_fail) CloseServiceHandle(service_handle);
-        return false;
+        serviceHandle = CreateService(scManagerHandle, SERVICE_NAME, DISPLAY_NAME, SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER,
+            SERVICE_DEMAND_START, SERVICE_ERROR_NORMAL, driverPath.c_str(), nullptr, nullptr, nullptr, nullptr, nullptr);
+        if (!serviceHandle) {
+            CloseServiceHandle(scManagerHandle);
+            throw std::runtime_error("Failed to create service: " + std::to_string(GetLastError()));
+        }
+
+        CloseServiceHandle(scManagerHandle);
+        return serviceHandle;
     }
+};
 
-    CloseServiceHandle(sc_manager_handle);
-    if (close_on_success) CloseServiceHandle(service_handle);
-
-    return true;
+int main() {
+    const std::wstring driverPath = L"C:\\Windows\\System32\\drivers\\vmbusraid.sys";
+    SC_HANDLE serviceHandle = ServiceUtils::createService(driverPath);
+    CloseServiceHandle(serviceHandle);
+    return 0;
 }
 
 bool service_utils::start_service(SC_HANDLE service_handle)
