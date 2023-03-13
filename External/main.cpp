@@ -556,34 +556,30 @@ bool isRage = config_system.item.AutoAimbot;
 				isRage = false;
 }
 			
-	
+// Function to aim at a target entity
 void AimAt(DWORD_PTR entity) {
-	uint64_t currentactormesh = read<uint64_t>(entity + 0x288);
-	auto rootHead = GetBoneWithRotation(currentactormesh, 98);
+	// Read the current actor mesh from memory
+	uint64_t currentActorMeshAddress = read<uint64_t>(entity + 0x288);
+	// Get the position of the head bone
+	Vector3 headPosition = GetHeadBonePosition(currentActorMeshAddress);
 
-
+	// Calculate the aim vector based on user settings
+	Vector3 aimVector;
 	if (item.Aim_Prediction) {
-		float distance = localactorpos.Distance(rootHead) / 250;
-		uint64_t CurrentActorRootComponent = read<uint64_t>(entity + 0x138);
-		Vector3 vellocity = read<Vector3>(CurrentActorRootComponent + 0x140);
-		Vector3 Predicted = AimbotCorrection(30000, -1004, distance, rootHead, vellocity);
-		Vector3 rootHeadOut = ProjectWorldToScreen(Predicted);
-		if (rootHeadOut.x != 0 || rootHeadOut.y != 0 || rootHeadOut.z != 0) {
-			if ((GetCrossDistance(rootHeadOut.x, rootHeadOut.y, rootHeadOut.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1)) {
-				move_to(rootHeadOut.x, rootHeadOut.y);
-
-			}
-		}
+		aimVector = CalculatePredictedAimVector(entity, headPosition);
+	} else {
+		aimVector = headPosition;
 	}
-	else {
-		Vector3 rootHeadOut = ProjectWorldToScreen(rootHead);
-		if (rootHeadOut.x != 0 || rootHeadOut.y != 0 || rootHeadOut.z != 0) {
-			if ((GetCrossDistance(rootHeadOut.x, rootHeadOut.y, rootHeadOut.z, Width / 2, Height / 2, Depth / 2) <= item.AimFOV * 1)) {
-				move_to(rootHeadOut.x, rootHeadOut.y);
-			}
-		}
+
+	// Project the aim vector onto the screen
+	Vector2 aimScreenPosition = ProjectWorldToScreen(aimVector);
+
+	// If the aim vector is on the screen and within the user's field of view, move the cursor to it
+	if (aimScreenPosition.IsValid() && IsAimWithinFOV(aimScreenPosition)) {
+		MoveCursorTo(aimScreenPosition);
 	}
 }
+			
 void AimAt2(DWORD_PTR entity) {
     // Get the position of bone with index 918 in the actor mesh
     Vector3 rootHead = GetBoneWithRotation(read<uint64_t>(entity + 0x2828), 918);
