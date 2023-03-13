@@ -25,22 +25,13 @@ float NormalizeAngle(float angle) {
     return angle;
 }
 
-// Calculate pitch and yaw angles from source to target
 bool CalculateAngles(const FVector& source, const FVector& target, float* angles) {
-    // Calculate the relative position of the target relative to the source
     FVector rel = target - source;
-
-    // Calculate the distance and yaw angle between the two points
-    float dist = rel.Size();
-    float yaw = atan2f(rel.Y, rel.X) / DEG_TO_RAD;
-
-    // Calculate the pitch and yaw angles and normalize them
-    float pitch = -asinf(rel.Z / dist) / DEG_TO_RAD;
-    angles[0] = NormalizeAngle(pitch);
-    angles[1] = NormalizeAngle(yaw);
-
+    angles[0] = -asinf(rel.Z / rel.Size()) * (180 / PI);
+    angles[1] = atan2f(rel.Y, rel.X) * (180 / PI);
     return true;
 }
+
 
 namespace Game {
 
