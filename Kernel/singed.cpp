@@ -119,27 +119,12 @@ void Initialize()
         return;
     }
 
-// Hook the PostRender method of the local player object
-// localPlayer: a memory address representing the local player object
-// pOriginalRender: a pointer to a memory address that will hold the address of the original PostRender method
 void hookPostRenderMethod(uintptr_t localPlayer, uintptr_t* pOriginalRender) {
-    // Get the address of the original PostRender method from the VMT
-    uintptr_t* vmt = reinterpret_cast<uintptr_t*>(localPlayer + 0x78);
-    if (!vmt) {
-        throw std::runtime_error("Failed to get VMT address");
-    }
-    uintptr_t originalRender = *(vmt + 0x68);
-    if (!originalRender) {
-        throw std::runtime_error("Failed to get original PostRender method address");
-    }
-    *pOriginalRender = originalRender;
-
-    // Replace the original PostRender method in the VMT with a new method called PostRender
-    bool success = Hook::VMT(reinterpret_cast<void*>(vmt), PostRender, 0x68, reinterpret_cast<void*>(pOriginalRender));
-    if (!success) {
-        throw std::runtime_error("Failed to hook local player PostRender method");
-    }
+    uintptr_t* vmt = *(uintptr_t**)(localPlayer + 0x78);
+    *pOriginalRender = vmt[0x68];
+    Hook::VMT(vmt, PostRender, 0x68, (void*)pOriginalRender);
+  {
+     return;
 }
-
-}
+  
 
