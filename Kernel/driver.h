@@ -11,8 +11,14 @@
 class GlobalDriver
 {
 public:
+    // Constants for device names
+    static constexpr const char* DEV_NAME = "MyDevice";
+    static constexpr const char* DOS_DEV_NAME = "\\DosDevices\\MyDevice";
+
+    // Constructor initializes member objects
     GlobalDriver(const PDRIVER_OBJECT driverObject)
-        : irp_(driverObject, DEV_NAME, DOS_DEV_NAME)
+        : irp_(driverObject, DEV_NAME, DOS_DEV_NAME),
+          hypervisor_()
     {
         // Initialize the sleep callback
         sleepCallback_ = [this](const SleepCallback::Type type)
@@ -21,22 +27,31 @@ public:
         };
 
         // Output message to debug log
-        DebugLog("Driver started");
+        Log::info("Driver started");
 
         // Initialize the hypervisor
-        hypervisor_.initialize();
+        if (!hypervisor_.initialize())
+        {
+            Log::error("Failed to initialize hypervisor");
+            // Add error handling code here
+        }
     }
 
+    // Destructor cleans up member objects
     ~GlobalDriver()
     {
         // Output message to debug log
-        DebugLog("Unloading driver");
+        Log::info("Unloading driver");
 
         // Disable all EPT hooks
         hypervisor_.disableAllEptHooks();
 
         // Cleanup the hypervisor
-        hypervisor_.cleanup();
+        if (!hypervisor_.cleanup())
+        {
+            Log::error("Failed to cleanup hypervisor");
+            // Add error handling code here
+        }
     }
 
     // Disallow copy and move construction/assignment
@@ -44,6 +59,20 @@ public:
     GlobalDriver& operator=(const GlobalDriver&) = delete;
     GlobalDriver(GlobalDriver&&) = delete;
     GlobalDriver& operator=(GlobalDriver&&) = delete;
+
+private:
+    // Member objects
+    IRP irp_;
+    Hypervisor hypervisor_;
+    SleepCallback sleepCallback_;
+
+    // Private method for handling sleep notifications
+    void sleepNotification(const SleepCallback::Type type)
+    {
+        // Add sleep notification handling code here
+    }
+};
+
 
 class DriverClass {
 public:
