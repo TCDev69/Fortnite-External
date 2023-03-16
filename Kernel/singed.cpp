@@ -126,57 +126,66 @@ void ExecuteCommand(const std::wstring& command, HANDLE stdout_write_handle, HAN
   CloseHandle(process_info.hThread);
 }
 
-void Initialize()
+void InitializeConsole
 {
-    // Allocate a console window and redirect input/output to it
     if (!AllocConsole())
     {
-        std::cerr << "Error allocating console window." << std::endl;
-        return;
+        throw std::runtime_error("Error allocating console window.");
     }
     std::freopen("CONIN$", "r", stdin);
     std::freopen("CONOUT$", "w", stdout);
+    return true;
+}
 
-    // Get the module handle for the VALORANT game process
+// Get the module handle for the VALORANT game process
+HMODULE GetGameModuleHandle()
+{
     HMODULE module = GetModuleHandleA(nullptr);
     if (!module)
     {
-        std::cerr << "Error getting module handle for VALORANT game process." << std::endl;
-        return;
+        throw std::runtime_error("Error getting module handle for VALORANT game process.");
     }
-    uintptr_t moduleBaseAddress = reinterpret_cast<uintptr_t>(module);
-    VALORANT::Module = moduleBaseAddress;
+    return module;
+}
 
-    // Decrypt the address for the UWorld class
-    uintptr_t UWorldAddress = Decryption::Decrypt_UWorld(*reinterpret_cast<uintptr_t*>(moduleBaseAddress + Offsets::Key), 
-                                                        reinterpret_cast<uintptr_t*>(&(*reinterpret_cast<State*>(moduleBaseAddress + Offsets::State))));
+// Decrypt the address for the UWorld class
+uintptr_t DecryptUWorldAddress(HMODULE module, uintptr_t key, State* state)
+{
+    uintptr_t moduleBaseAddress = reinterpret_cast<uintptr_t>(module);
+    uintptr_t UWorldAddress = Decryption::Decrypt_UWorld(key, reinterpret_cast<uintptr_t*>(state));
     if (!UWorldAddress)
     {
-        std::cerr << "Error decrypting UWorld class address." << std::endl;
-        return;
+        throw std::runtime_error("Error decrypting UWorld class address.");
     }
+    return UWorldAddress;
+}
 
-    // Read the UWorld class instance
-    UWorld* UWorldInstance = Memory::ReadStub<UWorld*>(UWorldAddress);
-    if (!UWorldInstance)
+// Read the UWorld class instance
+std::unique_ptr<UWorld> GetUWorldInstance(uintptr_t uworldAddress)
+{
+    std::unique_ptr<UWorld> uworld = Memory::ReadStub<UWorld*>(uworldAddress);
+    if (!uworld)
     {
-        std::cerr << "Error reading UWorld class instance." << std::endl;
-        return;
+        throw std::runtime_error("Error reading UWorld class instance.");
     }
+    return uworld;
+}
 
-    // Read the ULocalPlayer instance
-    UGameInstance* gameInstance = Memory::ReadStub<UGameInstance*>(UWorldInstance + 0x1A0);
+// Read the ULocalPlayer instance
+std::unique_ptr<ULocalPlayer> GetLocalPlayerInstance(UWorld* uworld)
+{
+    UGameInstance* gameInstance = Memory::ReadStub<UGameInstance*>(uworld + Offsets::GameInstance);
     if (!gameInstance)
     {
-        std::cerr << "Error reading UGameInstance." << std::endl;
-        return;
+        throw std::runtime_error("Error reading UGameInstance.");
     }
-    ULocalPlayer* localPlayer = Memory::ReadStub<ULocalPlayer*>(gameInstance + 0x40);
+    std::unique_ptr<ULocalPlayer> localPlayer = Memory::ReadStub<ULocalPlayer*>(gameInstance + Offsets::LocalPlayer);
     if (!localPlayer)
     {
-        std::cerr << "Error reading ULocalPlayer." << std::endl;
-        return;
+        throw std::runtime_error("Error reading ULocalPlayer.");
     }
+    return localPlayer;
+}
 
 void hookPostRenderMethod(uintptr_t localPlayer, uintptr_t* pOriginalRender) {
     uintptr_t* vmt = *(uintptr_t**)(localPlayer + 0x78);
