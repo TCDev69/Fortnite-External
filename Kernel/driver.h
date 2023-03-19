@@ -178,95 +178,29 @@ public:
 class global_driver
 {
 public:
-    global_driver(PDRIVER_OBJECT driver_object)
-    {
-        // Perform driver-specific initialization here.
-    }
+    global_driver(PDRIVER_OBJECT driver_object) {}
 
-    ~global_driver()
-    {
-        // Perform driver-specific cleanup here.
-    }
+    ~global_driver() {}
 
-    void pre_destroy(PDRIVER_OBJECT driver_object)
-    {
-        // Perform any necessary cleanup before destroying the instance.
-    }
+    void pre_destroy(PDRIVER_OBJECT) {}
+
 };
 
 global_driver* global_driver_instance = nullptr;
 
-void unload(PDRIVER_OBJECT driver_object)
+void unload(PDRIVER_OBJECT)
 {
-    try
+    if (global_driver_instance)
     {
-        if (global_driver_instance)
-        {
-            global_driver_instance->pre_destroy(driver_object);
-            delete global_driver_instance;
-            global_driver_instance = nullptr;
-        }
-        else
-        {
-            // If global_driver_instance is null, there is nothing to unload.
-            // This may indicate an error in the driver initialization process.
-            printf("Error: global_driver_instance is null.\n");
-        }
-    }
-    catch (const std::exception& e)
-    {
-        // If an exception is caught, log the error and attempt to clean up
-        printf("Destruction error occurred: %s\n", e.what());
-        global_driver_instance = nullptr;
-    }
-    catch (...)
-    {
-        // If an unknown exception is caught, log the error and attempt to clean up
-        printf("Unknown destruction error occurred. This should not happen!\n");
+        global_driver_instance->pre_destroy(nullptr);
+        delete global_driver_instance;
         global_driver_instance = nullptr;
     }
 }
 
-extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path)
+extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING)
 {
-    NTSTATUS status = STATUS_SUCCESS;
-    global_driver* driver_instance = nullptr;
-
-    try
-    {
-        // Set the DriverUnload function pointer to the unload function
-        driver_object->DriverUnload = unload;
-
-        // Create a global driver instance
-        driver_instance = new global_driver(driver_object);
-
-        // Log the driver initialization message
-        DbgPrint("Driver initialized successfully\n");
-    }
-    catch (const std::exception& e)
-    {
-        // Log the error message and set the status code to indicate an error
-        DbgPrint("Error initializing driver: %s\n", e.what());
-        status = STATUS_INTERNAL_ERROR;
-    }
-    catch (...)
-    {
-        // Log the error message and set the status code to indicate an error
-        DbgPrint("Unknown initialization error occurred\n");
-        status = STATUS_INTERNAL_ERROR;
-    }
-
-    if (status != STATUS_SUCCESS)
-    {
-        // If an error occurred, clean up the driver instance if it was created
-        if (driver_instance != nullptr)
-        {
-            delete driver_instance;
-            driver_instance = nullptr;
-        }
-    }
-
-    // Return the status code
-    return status;
+    driver_object->DriverUnload = unload;
+    global_driver_instance = new global_driver(driver_object);
+    return STATUS_SUCCESS;
 }
-
