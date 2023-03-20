@@ -115,7 +115,7 @@ private:
         }
     }
 
-    static NTSTATUS dispatch(PDEVICE_OBJECT device_object, PIRP irp)
+static NTSTATUS dispatch(PDEVICE_OBJECT device_object, PIRP irp)
     {
         auto status = STATUS_SUCCESS;
 
@@ -175,28 +175,6 @@ public:
         return STATUS_SUCCESS;
     }
 
-class global_driver
-{
-public:
-    global_driver(PDRIVER_OBJECT driver_object) {}
-
-    ~global_driver() {}
-
-    void pre_destroy(PDRIVER_OBJECT) {}
-
-};
-
-global_driver* global_driver_instance = nullptr;
-
-void unload(PDRIVER_OBJECT)
-{
-    if (global_driver_instance)
-    {
-        global_driver_instance->pre_destroy(nullptr);
-        delete global_driver_instance;
-        global_driver_instance = nullptr;
-    }
-}
 
 extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT driver_object, PUNICODE_STRING)
 {
