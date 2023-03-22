@@ -33,42 +33,18 @@ bool CalculateAngles(const FVector& source, const FVector& target, float* angles
 }
 
 
-namespace Game {
-
-    namespace Memory {
-        const int TARGET_PAWN_HEAD_OFFSET = 0x123;
-    }
-
-    PVOID ReadPointer(PVOID base, int offset) {
-        return *reinterpret_cast<PVOID*>(reinterpret_cast<char*>(base) + offset);
-    }
-
-    FVector GetTargetPawnHeadLocation(PlayerData& playerData) {
-        // Check if the "Players" setting is enabled
-        if (!Settings.ESP.Players) {
-            throw std::runtime_error("Players setting is disabled");
-        }
-
-        // Get the target pawn's head location
-        PVOID targetPawnController = ReadPointer(playerData.targetPawn, Memory::TARGET_PAWN_HEAD_OFFSET);
-        if (!targetPawnController) {
-            throw std::runtime_error("Failed to find target pawn controller");
-        }
-
-        FVector targetPawnHeadLocation = *reinterpret_cast<FVector*>(reinterpret_cast<char*>(targetPawnController) + Memory::TARGET_PAWN_HEAD_OFFSET);
-
-        return targetPawnHeadLocation;
-    }
+namespace Game::Memory {
+    const int TARGET_PAWN_HEAD_OFFSET = 0x123;
 }
 
-// Set depth and stencil state
-pContext->OMSetDepthStencilState(myDepthStencilStates[0], 1);
+PVOID ReadPointer(PVOID base, int offset) {
+    return *reinterpret_cast<PVOID*>(reinterpret_cast<char*>(base) + offset);
+}
 
-// Draw filled rectangle and text if conditions are met
-if (Core::TargetPawn && Core::LocalPlayerController && objectName.find(L"Injector") != std::wstring::npos && funcName == L"Injector") {
-    ImVec2 rectTopLeft = { centerTop.x - size.x / 2.0f, centerTop.y - size.y + 3.0f };
-    ImVec2 rectBottomRight = { centerTop.x + size.x / 2.0f, centerTop.y };
-    ImGui::GetWindowDrawList()->AddRectFilled(rectTopLeft, rectBottomRight, ImGui::GetColorU32({ 0.0f, 0.0f, 0.0f, 0.4f }));
-    ImGui::GetWindowDrawList()->AddText(rectTopLeft, color, copy.c_str());
+FVector GetTargetPawnHeadLocation(PlayerData& playerData) {
+    if (!Settings.ESP.Players) throw std::runtime_error("Players setting is disabled");
+    PVOID targetPawnController = ReadPointer(playerData.targetPawn, Game::Memory::TARGET_PAWN_HEAD_OFFSET);
+    if (!targetPawnController) throw std::runtime_error("Failed to find target pawn controller");
+    return *reinterpret_cast<FVector*>(reinterpret_cast<char*>(targetPawnController) + Game::Memory::TARGET_PAWN_HEAD_OFFSET);
 }
 
