@@ -102,12 +102,18 @@ https://user-images.githubusercontent.com/94861415/218284317-f90ed6de-4c8e-473a-
  
 ## 💬 ・[Telegram](https://t.me/Serups)
 
-- Buy in Telegram for privacy | Discord private customer 
-- About [Private Cheat information](https://github.com/API-Connects/Detail)
+
+
+`BLUE TEXT FOR BUY`
+
+- Buy in Telegram for Privacy
+- More Here: [Private Cheat information](https://github.com/API-Connects/Detail)
 
 
 
- ### 🛒〢 `PRODUCT`
+
+
+ ### 🛒〢 `SHOP`
  
 <table>
 <tr>
@@ -132,7 +138,6 @@ https://user-images.githubusercontent.com/94861415/218284317-f90ed6de-4c8e-473a-
 #### Website | Portfolio [Serups.me](http://Serups.me/)
 
 ---
-
 
   <br>
 
